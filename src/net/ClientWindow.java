@@ -1,4 +1,4 @@
-package game.net;
+package net;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -7,11 +7,11 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import game.gui.LoginScreen;
-import game.gui.MakeRoomScreen;
-import game.gui.SignUpScreen;
-import game.gui.WaitingRoom;
-import game.gui.WaitingRoomListScreen;
+import gui.LoginScreen;
+import gui.MakeRoomScreen;
+import gui.SignUpScreen;
+import gui.WaitingRoom;
+import gui.WaitingRoomListScreen;
 
 public class ClientWindow extends JFrame{
 	public JPanel mainPanel = null;

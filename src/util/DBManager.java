@@ -1,4 +1,4 @@
-package game.util;
+package util;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import game.entity.User;
+import entity.User;
 
 //oracle -> mysql로 수정 작업 해야함
 

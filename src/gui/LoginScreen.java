@@ -1,4 +1,4 @@
-package game.gui;
+package gui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,8 +14,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import game.entity.Login;
-import game.net.ClientWindow;
+import entity.Login;
+import net.ClientWindow;
 
 public class LoginScreen extends JPanel {
 	private JTextField idField;

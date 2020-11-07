@@ -1,12 +1,10 @@
-package game.gui;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Choice;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
@@ -22,8 +20,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import game.entity.User;
-import game.net.ClientWindow;
+import entity.User;
+import net.ClientWindow;
 
 public class SignUpScreen extends JPanel implements ActionListener {
 	private ClientWindow win;

@@ -1,4 +1,4 @@
-package game.entity;
+package entity;
 
 public class Login {
 	private String id;

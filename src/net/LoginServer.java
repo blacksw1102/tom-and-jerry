@@ -1,13 +1,9 @@
-package game.net;
+package net;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.ServerSocket;
-import java.net.Socket;
 
-import game.entity.User;
-import game.util.DBManager;
+import entity.User;
 
 public class LoginServer {
 	private ServerSocket ss;
