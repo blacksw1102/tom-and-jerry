@@ -4,6 +4,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -16,6 +23,7 @@ import javax.swing.border.LineBorder;
 
 import entity.Login;
 import net.ClientWindow;
+import util.GameProtocol;
 
 public class LoginScreen extends JPanel {
 	private JTextField idField;
@@ -43,7 +51,26 @@ public class LoginScreen extends JPanel {
 		loginBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Login login = new Login(idField.getText() ,pwField.getText());
+				try {
+					Socket socket = new Socket("localhost", 4001);
+					ObjectOutputStream output  = new ObjectOutputStream(socket.getOutputStream());
+					ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+
+					// 서버에게 로그인 정보 전송
+					GameProtocol protocol = new GameProtocol(GameProtocol.PT_RES_LOGIN);
+					protocol.setData(new Login(idField.getText() ,pwField.getText()));
+					output.writeObject(protocol);
+
+					// 로그인에 성공 하면 페이지 이동
+					if(input.readBoolean()) {
+						win.change("waitingRoomListScreen");
+					}
+				} catch (UnknownHostException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 		add(loginBtn);
@@ -76,8 +103,9 @@ public class LoginScreen extends JPanel {
 		idField.setBorder(BorderFactory.createEmptyBorder());
 		idField.setFont(new Font("HY견고딕", Font.PLAIN, 18));
 		idField.setBounds(66, 12, 230, 26);
-		idPanel.add(idField);
 		idField.setColumns(10);
+		idField.setText("admin");
+		idPanel.add(idField);
 		
 		JPanel pwPanel = new JPanel();
 		pwPanel.setLayout(null);
@@ -96,6 +124,7 @@ public class LoginScreen extends JPanel {
 		pwField.setColumns(10);
 		pwField.setBorder(BorderFactory.createEmptyBorder());
 		pwField.setBounds(66, 12, 230, 26);
+		pwField.setText("admin");
 		pwPanel.add(pwField);
 	}
 

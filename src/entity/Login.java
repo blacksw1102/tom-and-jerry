@@ -1,6 +1,8 @@
 package entity;
 
-public class Login {
+import java.io.Serializable;
+
+public class Login implements Serializable {
 	private String id;
 	private String pw;
 
@@ -23,5 +25,10 @@ public class Login {
 	
 	public void setPw(String pw) {
 		this.pw = pw;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("id:%s, pw:%s", id, pw);
 	}
 }

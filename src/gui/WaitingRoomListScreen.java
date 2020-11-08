@@ -122,11 +122,6 @@ abstract class RoomListRow extends JPanel {
         this.userCntGbc.fill = GridBagConstraints.BOTH;
         this.roomStateGbc.fill = GridBagConstraints.BOTH;
 
-//        this.numberGbc.weightx = 0.1;
-//        this.titleGbc.weightx = 0.5;
-//        this.userCntGbc.weightx = 0.2;
-//        this.roomStateGbc.weightx = 0.2;
-
         this.numberGbc.weightx = 0.5;
         this.titleGbc.weightx = 1;
         this.userCntGbc.weightx = 1;
