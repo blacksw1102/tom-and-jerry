@@ -38,7 +38,7 @@ public class ClientWindow extends JFrame{
         mainPanel.add("makeRoomScreen", makeRoomScreen);
         mainPanel.add("waitingRoomListScreen", waitingRoomListScreen);
         mainPanel.add("waitingRoom", waitingRoom);
-        change("signUpScreen");
+        change("loginScreen");
 
         this.setTitle("frame test");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
