@@ -110,7 +110,7 @@ public class WaitingRoomListScreen extends JPanel {
         
         JLabel chatLabel = new JLabel("채팅창");
         chatLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-        gbc.insets = new Insets(3, 0, 0, 0);
+        gbc.insets = new Insets(5, 0, 0, 0);
     	gbc.gridx = 0;
     	gbc.gridy = 0;
     	gbc.gridwidth = 1;
@@ -122,7 +122,7 @@ public class WaitingRoomListScreen extends JPanel {
     	
         JLabel playerLabel = new JLabel("접속자 목록");
         playerLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-        gbc.insets = new Insets(3, 0, 0, 0);
+        gbc.insets = new Insets(5, 0, 0, 0);
     	gbc.gridx = 1;
     	gbc.gridy = 0;
     	gbc.gridwidth = 1;
@@ -135,7 +135,7 @@ public class WaitingRoomListScreen extends JPanel {
         JTextArea chatArea = new JTextArea();
         chatArea.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
         JScrollPane scrollChatArea = new JScrollPane(chatArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollChatArea.setBorder(new CompoundBorder(new EmptyBorder(5, 0, 0, 0), new LineBorder(Color.BLACK, 3)));
+        scrollChatArea.setBorder(new LineBorder(Color.BLACK, 3));
         // 샘플 데이터
         chatArea.append("[도움말] : 테스트 채팅 내용..\n");
         chatArea.append("[도움말] : 테스트 채팅 내용..\n");
@@ -151,7 +151,7 @@ public class WaitingRoomListScreen extends JPanel {
         chatArea.append("[도움말] : 테스트 채팅 내용..\n");
         chatArea.append("[도움말] : 테스트 채팅 내용..\n");
         chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        gbc.insets = new Insets(0, 0, 3, 3);
+        gbc.insets = new Insets(0, 0, 5, 5);
     	gbc.gridx = 0;
     	gbc.gridy = 1;
     	gbc.gridwidth = 1;
@@ -164,7 +164,7 @@ public class WaitingRoomListScreen extends JPanel {
         JTextArea playArea = new JTextArea();
         playArea.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
         JScrollPane scrolPlayArea= new JScrollPane(playArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrolPlayArea.setBorder(new CompoundBorder(new EmptyBorder(5, 0, 0, 0), new LineBorder(Color.BLACK, 3)));
+        scrolPlayArea.setBorder(new LineBorder(Color.BLACK, 3));
         // 샘플 데이터
         playArea.append("user\n");
         playArea.append("user\n");
@@ -177,7 +177,7 @@ public class WaitingRoomListScreen extends JPanel {
         playArea.append("user\n");
         playArea.append("user\n");
         playArea.append("user\n");
-        gbc.insets = new Insets(0, 3, 3, 0);
+        gbc.insets = new Insets(0, 5, 5, 0);
     	gbc.gridx = 1;
     	gbc.gridy = 1;
     	gbc.gridwidth = 1;
@@ -189,8 +189,8 @@ public class WaitingRoomListScreen extends JPanel {
         
         JTextField chatField = new JTextField();
         chatField.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
-        chatField.setBorder(new CompoundBorder(new EmptyBorder(5, 0, 0, 0), new LineBorder(Color.BLACK, 3)));
-        gbc.insets = new Insets(0, 0, 3, 3);
+        chatField.setBorder(new LineBorder(Color.BLACK, 3));
+        gbc.insets = new Insets(0, 0, 5, 5);
     	gbc.gridx = 0;
     	gbc.gridy = 2;
     	gbc.gridwidth = 1;
@@ -203,8 +203,8 @@ public class WaitingRoomListScreen extends JPanel {
         JButton button = new JButton("전송");
         button.setBackground(Color.LIGHT_GRAY);
         button.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-        button.setBorder(new CompoundBorder(new EmptyBorder(5, 0, 0, 0), new LineBorder(Color.BLACK, 3)));
-        gbc.insets = new Insets(0, 3, 3, 0);
+        button.setBorder(new LineBorder(Color.BLACK, 3));
+        gbc.insets = new Insets(0, 5, 5, 0);
     	gbc.gridx = 1;
     	gbc.gridy = 2;
     	gbc.gridwidth = 1;
