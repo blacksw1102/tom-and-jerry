@@ -60,7 +60,6 @@ public class LoginScreen extends JPanel {
 					GameProtocol protocol = new GameProtocol(GameProtocol.PT_RES_LOGIN);
 					protocol.setData(new Login(idField.getText() ,pwField.getText()));
 					output.writeObject(protocol);
-
 					// 로그인에 성공 하면 페이지 이동
 					if(input.readBoolean()) {
 						win.change("waitingRoomListScreen");

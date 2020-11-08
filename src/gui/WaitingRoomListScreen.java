@@ -1,9 +1,27 @@
 package gui;
 
-import javax.swing.*;
-import javax.swing.border.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.util.Random;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 
 public class WaitingRoomListScreen extends JPanel {
     public WaitingRoomListScreen() {
@@ -83,15 +101,120 @@ public class WaitingRoomListScreen extends JPanel {
     
     private void initBottomArea() {
         JPanel bottomArea = new JPanel();
-        bottomArea.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-        JTextArea textarea = new JTextArea("채팅 창\n[도움말] : 테스트 채팅 내용..\n[도움말] : 테스트 채팅 내용..");
-        bottomArea.add(textarea);
-
-        JScrollPane scrollArea = new JScrollPane(textarea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollArea.setBorder(new CompoundBorder(new EmptyBorder(5, 0, 0, 0), new LineBorder(Color.BLACK, 3)));
-
-        this.add(scrollArea, BorderLayout.PAGE_END);
+        GridBagLayout gbl = new GridBagLayout();
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        bottomArea.setLayout(gbl);
+        bottomArea.setPreferredSize(new Dimension(0, 200));
+        
+        JLabel chatLabel = new JLabel("채팅창");
+        chatLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+        gbc.insets = new Insets(3, 0, 0, 0);
+    	gbc.gridx = 0;
+    	gbc.gridy = 0;
+    	gbc.gridwidth = 1;
+    	gbc.gridheight = 1;
+    	gbc.weightx = 0;
+    	gbc.weighty = 0;
+    	gbl.setConstraints(chatLabel, gbc);
+    	bottomArea.add(chatLabel);
+    	
+        JLabel playerLabel = new JLabel("접속자 목록");
+        playerLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+        gbc.insets = new Insets(3, 0, 0, 0);
+    	gbc.gridx = 1;
+    	gbc.gridy = 0;
+    	gbc.gridwidth = 1;
+    	gbc.gridheight = 1;
+    	gbc.weightx = 0;
+    	gbc.weighty = 0;
+    	gbl.setConstraints(playerLabel, gbc);
+    	bottomArea.add(playerLabel);
+        
+        JTextArea chatArea = new JTextArea();
+        chatArea.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+        JScrollPane scrollChatArea = new JScrollPane(chatArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollChatArea.setBorder(new CompoundBorder(new EmptyBorder(5, 0, 0, 0), new LineBorder(Color.BLACK, 3)));
+        // 샘플 데이터
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        gbc.insets = new Insets(0, 0, 3, 3);
+    	gbc.gridx = 0;
+    	gbc.gridy = 1;
+    	gbc.gridwidth = 1;
+    	gbc.gridheight = 1;
+    	gbc.weightx = 1;
+    	gbc.weighty = 1;
+    	gbl.setConstraints(scrollChatArea, gbc);
+    	bottomArea.add(scrollChatArea);
+    	
+        JTextArea playArea = new JTextArea();
+        playArea.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+        JScrollPane scrolPlayArea= new JScrollPane(playArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrolPlayArea.setBorder(new CompoundBorder(new EmptyBorder(5, 0, 0, 0), new LineBorder(Color.BLACK, 3)));
+        // 샘플 데이터
+        playArea.append("user\n");
+        playArea.append("user\n");
+        playArea.append("user\n");
+        playArea.append("user\n");
+        playArea.append("user\n");
+        playArea.append("user\n");
+        playArea.append("user\n");
+        playArea.append("user\n");
+        playArea.append("user\n");
+        playArea.append("user\n");
+        playArea.append("user\n");
+        gbc.insets = new Insets(0, 3, 3, 0);
+    	gbc.gridx = 1;
+    	gbc.gridy = 1;
+    	gbc.gridwidth = 1;
+    	gbc.gridheight = 1;
+    	gbc.weightx = 1;
+    	gbc.weighty = 1;
+    	gbl.setConstraints(scrolPlayArea, gbc);
+    	bottomArea.add(scrolPlayArea);
+        
+        JTextField chatField = new JTextField();
+        chatField.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+        chatField.setBorder(new CompoundBorder(new EmptyBorder(5, 0, 0, 0), new LineBorder(Color.BLACK, 3)));
+        gbc.insets = new Insets(0, 0, 3, 3);
+    	gbc.gridx = 0;
+    	gbc.gridy = 2;
+    	gbc.gridwidth = 1;
+    	gbc.gridheight = 1;
+    	gbc.weightx = 8;
+    	gbc.weighty = 0;
+    	gbl.setConstraints(chatField, gbc);
+        bottomArea.add(chatField);
+        
+        JButton button = new JButton("전송");
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+        button.setBorder(new CompoundBorder(new EmptyBorder(5, 0, 0, 0), new LineBorder(Color.BLACK, 3)));
+        gbc.insets = new Insets(0, 3, 3, 0);
+    	gbc.gridx = 1;
+    	gbc.gridy = 2;
+    	gbc.gridwidth = 1;
+    	gbc.gridheight = 1;
+    	gbc.weightx = 1;
+    	gbc.weighty = 0;
+    	gbl.setConstraints(button, gbc);
+        bottomArea.add(button);
+        
+        this.add(bottomArea, BorderLayout.SOUTH);
     }
 }
 
