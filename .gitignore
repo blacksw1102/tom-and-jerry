@@ -1,3 +1,6 @@
 # DB #
 DBManager.java
 *.sql
+
+# class #
+*.class
