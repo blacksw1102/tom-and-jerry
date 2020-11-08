@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import entity.Login;
 import entity.User;
 
 //oracle -> mysql로 수정 작업 해야함
@@ -100,5 +101,27 @@ public class DBManager {
 			} catch (SQLException e) {
 			}
 		}
+	}
+
+	public static boolean login(Login loginInfo) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = "SELECT COUNT(*) FROM user WHERE id = ? AND pw = ?";
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "test");
+			pstmt.setString(2, "1234");
+			rs = pstmt.executeQuery();
+			
+			if(rs.next())
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+		return false;
 	}
 }
