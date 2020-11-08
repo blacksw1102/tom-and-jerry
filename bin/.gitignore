@@ -1,2 +1,4 @@
-/game/
-/sample/
+/gui/
+/entity/
+/net/
+/util/
