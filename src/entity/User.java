@@ -1,6 +1,10 @@
 package entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.Socket;
 import java.util.Arrays;
 
 public class User implements Serializable {
@@ -12,6 +16,10 @@ public class User implements Serializable {
 	private String birth; 		// 생년월일
 	private String tel; 		// 전화번호
 	
+	public Socket socket;
+	public ObjectInputStream in = null;
+	public ObjectOutputStream out = null;
+	
 	public User(String id, String pw, String nickname, String email, String birth, String tel) {
 		this.id = id;
 		this.pw = pw;
@@ -21,11 +29,20 @@ public class User implements Serializable {
 		this.tel = tel;
 	}
 	
+	public User(String id, String nickname) {
+		this.id = id;
+		this.nickname = nickname;
+	}
+
 	@Override
 	public String toString() {
 		return "User : " + Arrays.asList(id, pw, nickname, email, birth, tel).toString();
 	}
-
+	
+	public void setSocket(Socket socket) {
+		this.socket = socket;
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -81,5 +98,10 @@ public class User implements Serializable {
 	public void setTel(String tel) {
 		this.tel = tel;
 	}
+
+	public Socket getSocket() {
+		return socket;
+	}
+	
 
 }

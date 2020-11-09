@@ -103,25 +103,27 @@ public class DBManager {
 		}
 	}
 
-	public static boolean login(Login loginInfo) {
+	public static User login(Login loginInfo) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		User user = null;
 		try {
-			String sql = "SELECT COUNT(*) FROM user WHERE id = ? AND pw = ?";
+			String sql = "SELECT id, nickname FROM user WHERE id = ? AND pw = ?";
 			conn = DBManager.getConnection();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "test");
-			pstmt.setString(2, "1234");
+			pstmt.setString(1, loginInfo.getId());
+			pstmt.setString(2, loginInfo.getPw());
 			rs = pstmt.executeQuery();
 			
-			if(rs.next())
-				return true;
+			if(rs.next()) {
+				user = new User(rs.getString(1), rs.getString(2));
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			close(conn, pstmt, rs);
 		}
-		return false;
+		return user;
 	}
 }

@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -10,6 +9,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.JButton;
@@ -23,7 +30,21 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
-public class WaitingRoomListScreen extends JPanel {
+import entity.User;
+import net.ClientWindow;
+import util.GameProtocol;
+
+public class WaitingRoomListScreen extends JPanel implements Runnable {
+	ClientWindow win;
+	User user;
+	
+    private JPanel bottomArea;
+    private JLabel chatLabel, playerLabel;
+    private JTextArea chatArea, userArea;
+    private JScrollPane scrollChatArea, scrolPlayArea;
+    private JTextField chatField;
+    private JButton sendButton;
+	
     public WaitingRoomListScreen() {
         super();
 
@@ -35,8 +56,61 @@ public class WaitingRoomListScreen extends JPanel {
         this.initMiddleArea();
         this.initBottomArea();
     }
+    
+    public WaitingRoomListScreen(ClientWindow win, User user) {
+    	this();
+    	this.win = win;
+    	this.user = user;
+    }
+    
+    @Override
+    public void run() {
+    	boolean isRun = true;
+		while(isRun) {
+			// CPU 독식 방지
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			
+			try {
+				GameProtocol protocol = (GameProtocol) user.in.readObject();
+				if(protocol == null)
+					throw new IOException("Null pointer received...");
+				
+				switch(protocol.getProtocol()) {
+					case GameProtocol.PT_RES_USER_LIST:	// 유저 리스트 조회
+						List<String> userList = (ArrayList) protocol.getData();
+						initUserList(userList);
+						break;
+					case GameProtocol.PT_SEND_MESSAGE:	// 채팅 메시지 수신
+						String message = (String) protocol.getData();
+						if(!chatArea.getText().equals(""))
+							message = "\n" + message;
+						chatArea.append(message);
+						chatArea.setCaretPosition(chatArea.getDocument().getLength());  // 맨아래로 스크롤
+						break;
+				}
+				
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (EOFException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		// 룸 리스트 조회
+    }
 
-    private void initTopArea() {
+    private void initUserList(List<String> userList) {
+    	userArea.setText("");
+    	for(String user : userList)
+    		userArea.append(user + "\n");
+    }
+
+	private void initTopArea() {
         JPanel topArea = new JPanel();
         topArea.setLayout(new GridLayout(1, 2));
 
@@ -100,7 +174,7 @@ public class WaitingRoomListScreen extends JPanel {
     }
     
     private void initBottomArea() {
-        JPanel bottomArea = new JPanel();
+        bottomArea = new JPanel();
 
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -108,7 +182,7 @@ public class WaitingRoomListScreen extends JPanel {
         bottomArea.setLayout(gbl);
         bottomArea.setPreferredSize(new Dimension(0, 200));
         
-        JLabel chatLabel = new JLabel("채팅창");
+        chatLabel = new JLabel("채팅창");
         chatLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
         gbc.insets = new Insets(5, 0, 0, 0);
     	gbc.gridx = 0;
@@ -120,7 +194,7 @@ public class WaitingRoomListScreen extends JPanel {
     	gbl.setConstraints(chatLabel, gbc);
     	bottomArea.add(chatLabel);
     	
-        JLabel playerLabel = new JLabel("접속자 목록");
+        playerLabel = new JLabel("접속자 목록");
         playerLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
         gbc.insets = new Insets(5, 0, 0, 0);
     	gbc.gridx = 1;
@@ -132,25 +206,11 @@ public class WaitingRoomListScreen extends JPanel {
     	gbl.setConstraints(playerLabel, gbc);
     	bottomArea.add(playerLabel);
         
-        JTextArea chatArea = new JTextArea();
+        chatArea = new JTextArea();
         chatArea.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
-        JScrollPane scrollChatArea = new JScrollPane(chatArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        chatArea.setEditable(false);
+        scrollChatArea = new JScrollPane(chatArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollChatArea.setBorder(new LineBorder(Color.BLACK, 3));
-        // 샘플 데이터
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
-        chatArea.append("[도움말] : 테스트 채팅 내용..\n");
         gbc.insets = new Insets(0, 0, 5, 5);
     	gbc.gridx = 0;
     	gbc.gridy = 1;
@@ -161,22 +221,11 @@ public class WaitingRoomListScreen extends JPanel {
     	gbl.setConstraints(scrollChatArea, gbc);
     	bottomArea.add(scrollChatArea);
     	
-        JTextArea playArea = new JTextArea();
-        playArea.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
-        JScrollPane scrolPlayArea= new JScrollPane(playArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        userArea = new JTextArea();
+        userArea.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+        userArea.setEditable(false);
+        scrolPlayArea= new JScrollPane(userArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrolPlayArea.setBorder(new LineBorder(Color.BLACK, 3));
-        // 샘플 데이터
-        playArea.append("user\n");
-        playArea.append("user\n");
-        playArea.append("user\n");
-        playArea.append("user\n");
-        playArea.append("user\n");
-        playArea.append("user\n");
-        playArea.append("user\n");
-        playArea.append("user\n");
-        playArea.append("user\n");
-        playArea.append("user\n");
-        playArea.append("user\n");
         gbc.insets = new Insets(0, 5, 5, 0);
     	gbc.gridx = 1;
     	gbc.gridy = 1;
@@ -187,9 +236,16 @@ public class WaitingRoomListScreen extends JPanel {
     	gbl.setConstraints(scrolPlayArea, gbc);
     	bottomArea.add(scrolPlayArea);
         
-        JTextField chatField = new JTextField();
+        chatField = new JTextField();
         chatField.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
         chatField.setBorder(new LineBorder(Color.BLACK, 3));
+        chatField.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyPressed(KeyEvent e) {
+        		if(e.getKeyCode() == KeyEvent.VK_ENTER)
+        			sendMessage(chatField.getText());
+        	}
+		});
         gbc.insets = new Insets(0, 0, 5, 5);
     	gbc.gridx = 0;
     	gbc.gridy = 2;
@@ -200,10 +256,10 @@ public class WaitingRoomListScreen extends JPanel {
     	gbl.setConstraints(chatField, gbc);
         bottomArea.add(chatField);
         
-        JButton button = new JButton("전송");
-        button.setBackground(Color.LIGHT_GRAY);
-        button.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-        button.setBorder(new LineBorder(Color.BLACK, 3));
+        sendButton = new JButton("전송");
+        sendButton.setBackground(Color.LIGHT_GRAY);
+        sendButton.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+        sendButton.setBorder(new LineBorder(Color.BLACK, 3));
         gbc.insets = new Insets(0, 5, 5, 0);
     	gbc.gridx = 1;
     	gbc.gridy = 2;
@@ -211,10 +267,31 @@ public class WaitingRoomListScreen extends JPanel {
     	gbc.gridheight = 1;
     	gbc.weightx = 1;
     	gbc.weighty = 0;
-    	gbl.setConstraints(button, gbc);
-        bottomArea.add(button);
+    	gbl.setConstraints(sendButton, gbc);
+    	sendButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sendMessage(chatField.getText());
+			}
+		});
+        bottomArea.add(sendButton);
         
         this.add(bottomArea, BorderLayout.SOUTH);
+    }
+    
+    // 서버로 채팅 메시지를 전달한다
+    public void sendMessage(String message) {
+		GameProtocol protocol = new GameProtocol(GameProtocol.PT_SEND_MESSAGE);
+		try {
+			if(message != null && !message.equals("")) {
+				String data = String.format("[%s]:%s", user.getNickname(), message);
+				protocol.setData(data);
+				user.out.writeObject(protocol);
+				chatField.setText("");
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
     }
 }
 

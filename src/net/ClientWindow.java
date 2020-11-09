@@ -3,6 +3,8 @@ package net;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -26,7 +28,7 @@ public class ClientWindow extends JFrame{
     	loginScreen = new LoginScreen(ClientWindow.this);
         signUpScreen = new SignUpScreen(ClientWindow.this);
         makeRoomScreen = new MakeRoomScreen(ClientWindow.this);
-        waitingRoomListScreen = new WaitingRoomListScreen();
+        // waitingRoomListScreen = new WaitingRoomListScreen();
         waitingRoom = new WaitingRoom();
         
         mainPanel = new JPanel();
@@ -36,7 +38,7 @@ public class ClientWindow extends JFrame{
         mainPanel.add("loginScreen", loginScreen);
         mainPanel.add("signUpScreen", signUpScreen);
         mainPanel.add("makeRoomScreen", makeRoomScreen);
-        mainPanel.add("waitingRoomListScreen", waitingRoomListScreen);
+        // mainPanel.add("waitingRoomListScreen", waitingRoomListScreen);
         mainPanel.add("waitingRoom", waitingRoom);
         change("loginScreen");
 
@@ -46,8 +48,18 @@ public class ClientWindow extends JFrame{
 		int x = (screenSize.width - getWidth()) / 2;
 		int y = (screenSize.height - getHeight()) / 2;
 		this.setLocation(x, y);
-		this.setVisible(true);    
+		this.setVisible(true);
+		
+		this.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e) { 
+                System.exit(0);
+            }
+        });
 	}
+    
+    public void addScreen(String screenName, JPanel panel) {
+    	mainPanel.add(screenName, panel);
+    }
     
     // 패널을 변경합니다.
     public void change(String panelName) {

@@ -1,7 +1,13 @@
 package net;
 
+import java.io.IOException;
+import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
+
+import util.GameProtocol;
 
 public class Lobby extends Thread {
 	Hashtable<String, ServerPlayer> chatList = null;	// 로비 내에 있는 클라이언트 리스트 (플레이어 아이디, ServerPlayer 객체)
@@ -15,12 +21,49 @@ public class Lobby extends Thread {
 	
 	@Override
 	public void run() {
-		super.run();
+		System.out.println("Lobby run start");
+		while(true) {
+			// CPU 독식 방지
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			Enumeration<ServerPlayer> e = chatList.elements();
+			while(e.hasMoreElements()) {
+				ServerPlayer player = e.nextElement();
+				try {
+					GameProtocol protocol = (GameProtocol) player.in.readObject();
+					if(protocol == null)
+						throw new IOException("Null pointer received...");
+					switch(protocol.getProtocol()) {
+						case GameProtocol.PT_SEND_MESSAGE:
+							String message = (String) protocol.getData();
+							Enumeration<ServerPlayer> elements = chatList.elements();
+							while(elements.hasMoreElements()) {
+								ServerPlayer toPlayer = elements.nextElement();
+								GameProtocol toProtocol = new GameProtocol(GameProtocol.PT_SEND_MESSAGE, message);
+								toPlayer.out.writeObject(toProtocol);
+							}
+							break;
+					}
+					
+				} catch(ClassNotFoundException ne) {
+					ne.printStackTrace();
+				} catch(SocketException ne) {
+					System.out.println("socket exception");
+					removePlayer(player);
+				} catch(IOException ne) {
+					System.out.println("ioe exception");
+				}
+			}
+		}
 	}
 	
 	// 방금 접속한 클라이언트를 로비에 추가한다.
 	public void addPlayer(ServerPlayer player) {
-		if(player.id != null && chatList.get(player.id) == null) {
+		if(chatList.get(player.id) == null) {
 			int i = 0;
 			String message = null;
 			
@@ -34,21 +77,17 @@ public class Lobby extends Thread {
 			
 			// 방금 접속한 클라이언트를 클라이언트 리스트에 추가한다.
 			chatList.put(player.id, player);
-			Enumeration<ServerPlayer> e = chatList.elements();
-			while(e.hasMoreElements()) {
-				player = e.nextElement();
-				i++;
-			}
 			
 			// 로비내의 모두에게 갱신된 사용자 리스트를 보낸다.
-			broadcastUserList("로비");
+			broadcastUserList();
 		}
 		
 	}
 	
-	// 주어진 클라이언트를 로비에서 삭제한다.
-	public void removePlayer(ServerPlayer serverPlayer) {
-		// TODO Auto-generated method stub
+	// 접속이 끊긴 클라이언트를 로비에서 삭제한다.
+	public void removePlayer(ServerPlayer player) {
+		chatList.remove(player.id);
+		broadcastUserList();
 	}
 	
 	// 주어진 아이디의 클라이언트에게 메시지를 보낸다.
@@ -73,8 +112,7 @@ public class Lobby extends Thread {
 	}
 
 	// 주어진 아이디의 플레이어에게 룸 리스트를 보낸다.
-	public void sendRoomList(String id) {
-		// TODO Auto-generated method stub
+	public void sendRoomList(ServerPlayer player) {
 	}
 
 	// 로비 내에 있는 전체에게 룸 리스트를 전달한다.
@@ -84,8 +122,28 @@ public class Lobby extends Thread {
 	}
 	
 	// 로비 내에 있는 전체에게 주어진 룸 내에 있는 사용자 리스트를 보낸다.
-	public void broadcastUserList(String roomId) {
-		// TODO Auto-generated method stub
+	public void broadcastUserList() {
+		Enumeration elements = chatList.elements();
+		List<String> userList = new ArrayList<>();
+		
+		// 유저 리스트를 만든다.
+		while(elements.hasMoreElements()) {
+			ServerPlayer player = (ServerPlayer) elements.nextElement();
+			userList.add(player.getNickname());
+		}
+		
+		// 유저 리스트를 모든 유저들에게 보낸다.
+		elements = chatList.elements();
+		while(elements.hasMoreElements()) {
+			ServerPlayer player = (ServerPlayer) elements.nextElement();
+			GameProtocol protocol = new GameProtocol(GameProtocol.PT_RES_USER_LIST, userList);
+			try {
+				player.out.writeObject(protocol);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 	
 	// 주어진 이름의 게임 룸을 생성한다.

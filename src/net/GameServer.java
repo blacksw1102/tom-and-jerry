@@ -7,15 +7,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import entity.Login;
+import entity.User;
 import util.DBManager;
 import util.GameProtocol;
 
 public class GameServer extends Thread {
 	private static final int SERVER_PORT = 4001;
-	Lobby lobby = null;
+	private Lobby lobby = null;
 	
-	int port;
-	ServerSocket serverSocket;
+	private int port;
+	private ServerSocket serverSocket;
 	
 	public GameServer(int port) {
 		try {
@@ -26,9 +27,8 @@ public class GameServer extends Thread {
 			System.out.println("Couldn't access port " + SERVER_PORT + " PORT");
 			System.exit(1);
 		}
-		
-		lobby = new Lobby();
-		lobby.start();
+		lobby = new Lobby();	// 로비에서의 네트워킹을 담당하는 서버로서 동작한다.
+		lobby.start();			// 로비 스레드 실행
 	}
 	
 	@Override
@@ -42,40 +42,41 @@ public class GameServer extends Thread {
 				// SERVER_PORT(=4001)에서 클라이언트 접속 대기
 				socket = serverSocket.accept();
 
-				ObjectOutputStream output  = new ObjectOutputStream(socket.getOutputStream());
-				ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
-				GameProtocol gameProtocol = (GameProtocol) input.readObject();
+				ObjectOutputStream out  = new ObjectOutputStream(socket.getOutputStream());
+				ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+				GameProtocol gameProtocol = (GameProtocol) in.readObject();
 				
 				switch(gameProtocol.getProtocol()) {
-				case GameProtocol.PT_SIGN_UP:
+				case GameProtocol.PT_REQ_SIGN_UP:
 					break;
 				case GameProtocol.PT_RES_LOGIN:
+					// 가입되어있는 클라이언트가 맞는지 체크
 					Login login = (Login) gameProtocol.getData();
-					boolean loginResult = loginValidate(login);
-					if(loginResult == false) {
+					User user = loginValidate(login);
+					if(user == null) {
 						System.out.println("로그인 실패");
 						continue;
 					}
+					// 로그인을 성공하고 받아온 유저 정보를 클라이언트에게 전달해줌
 					System.out.println("로그인 성공!");
-					output.writeBoolean(true);
-					// player = new ServerPlayer(socket, lobby, null);
-					// 클라이언트가 톰과제리 게임의 클라이언트가 맞는지 체크
-//					player.validation();
+					out.writeObject(user);
+					
+					// 네트워킹을 전담하는 ServerPlayer 객체 생성
+					player = new ServerPlayer(socket, lobby, null, user);
+					player.out = out;
+					player.in = in;
 					
 					// 접속한 클라이언트에게 룸 리스트를 보낸다.
-					// lobby.sendRoomList(player.id);
+					// lobby.sendRoomList(player);
 					
 					// 접속한 클라이언트를 로비의 플레이어 리스트에 추가한다.
-					// lobby.addPlayer(player);
+					lobby.addPlayer(player);
 					
 					// 로비에 룸 리스트를 전체에게 다시 보낸다.
 					// lobby.broadcastRoomList();
 					
 					// 플레이어의 소켓 타임아웃을 10msec로 설정한다.
-					// player.socket.setSoTimeout(10);
-					
-					output.close();
-					input.close();
+					player.socket.setSoTimeout(10);
 					break;
 				}
 			} catch(Exception e) {
@@ -85,7 +86,7 @@ public class GameServer extends Thread {
 	}
 	
 	// 로그인 검증
-	public boolean loginValidate(Login loginInfo) {
+	public User loginValidate(Login loginInfo) {
 		return DBManager.login(loginInfo);
 	}
 	

@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -22,6 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import entity.Login;
+import entity.User;
 import net.ClientWindow;
 import util.GameProtocol;
 
@@ -53,23 +52,34 @@ public class LoginScreen extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Socket socket = new Socket("localhost", 4001);
-					ObjectOutputStream output  = new ObjectOutputStream(socket.getOutputStream());
-					ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+					ObjectOutputStream out  = new ObjectOutputStream(socket.getOutputStream());
+					ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-					// 서버에게 로그인 정보 전송
+					// 서버에게 로그인 요청 처리
 					GameProtocol protocol = new GameProtocol(GameProtocol.PT_RES_LOGIN);
 					protocol.setData(new Login(idField.getText() ,pwField.getText()));
-					output.writeObject(protocol);
-					// 로그인에 성공 하면 페이지 이동
-					if(input.readBoolean()) {
+					out.writeObject(protocol);
+
+					// 로그인 응답 결과 처리
+					User user = (User) in.readObject();
+					user.setSocket(socket);
+					user.out = out;
+					user.in = in;
+					if(user != null) {
+						// 유저 데이터를 가지고 로비 화면으로 이동한다.
+						WaitingRoomListScreen waitingRoomListScreen = new WaitingRoomListScreen(win, user);
+						win.waitingRoomListScreen = waitingRoomListScreen;
+						win.addScreen("waitingRoomListScreen", waitingRoomListScreen);
+						new Thread(waitingRoomListScreen).start();
 						win.change("waitingRoomListScreen");
 					}
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
 				} catch (UnknownHostException e1) {
 					e1.printStackTrace();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				
 			}
 		});
 		add(loginBtn);
@@ -103,7 +113,7 @@ public class LoginScreen extends JPanel {
 		idField.setFont(new Font("HY견고딕", Font.PLAIN, 18));
 		idField.setBounds(66, 12, 230, 26);
 		idField.setColumns(10);
-		idField.setText("admin");
+		idField.setText("test");
 		idPanel.add(idField);
 		
 		JPanel pwPanel = new JPanel();
@@ -123,7 +133,7 @@ public class LoginScreen extends JPanel {
 		pwField.setColumns(10);
 		pwField.setBorder(BorderFactory.createEmptyBorder());
 		pwField.setBounds(66, 12, 230, 26);
-		pwField.setText("admin");
+		pwField.setText("1234");
 		pwPanel.add(pwField);
 	}
 
