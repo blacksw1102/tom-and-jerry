@@ -113,7 +113,7 @@ public class LoginScreen extends JPanel {
 		idField.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 18));
 		idField.setBounds(66, 12, 230, 26);
 		idField.setColumns(10);
-		idField.setText("test");
+		idField.setText("admin");
 		idPanel.add(idField);
 		
 		JPanel pwPanel = new JPanel();

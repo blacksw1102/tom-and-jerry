@@ -63,27 +63,23 @@ public class ClientWindow extends JFrame{
     
     // 패널을 변경합니다.
     public void change(String panelName) {
-    	JPanel changePanel = null;
-    	if(panelName.equals("loginScreen")) {
-        	changePanel = loginScreen;
-        	this.setSize(960, 540);
-        }
-    	if(panelName.equals("signUpScreen")) {
-        	changePanel = signUpScreen;
-        	this.setSize(1280, 720);
-        }
-        if(panelName.equals("makeRoomScreen")) {
-        	changePanel = makeRoomScreen;
-        	this.setSize(400, 250);
-        }
-        if(panelName.equals("waitingRoomListScreen")) {
-        	changePanel = waitingRoomListScreen;
-        	this.setSize(1280, 720);        	
-        }
-        if(panelName.equals("waitingRoom")) {
-        	changePanel = waitingRoom;
-        	this.setSize(1280, 720);    
-        }
+    	switch(panelName) {
+    		case "loginScreen":
+    			this.setSize(960, 540);
+    			break;
+    		case "signUpScreen":
+    			this.setSize(1280, 720);
+    			break;
+    		case "makeRoomScreen":
+    			this.setSize(400, 250);
+    			break;
+    		case "waitingRoomListScreen":
+    			this.setSize(1280, 720);        	
+    			break;
+    		case "waitingRoom":
+    			this.setSize(1280, 750);    
+    			break;
+    	}
     	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (screenSize.width - getWidth()) / 2;
 		int y = (screenSize.height - getHeight()) / 2;

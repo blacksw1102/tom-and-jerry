@@ -32,10 +32,10 @@ public class DBManager {
 	}
 	
 	// 회원가입
-	public static int signUp(User user) {
+	public static boolean signUp(User user) {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
-		int result = 0;
+		boolean isSuccess = false;
 		try {
 			String sql = "INSERT INTO user (id, pw, nickname, email, "
 					+ "birth, tel) VALUES (?, ?, ?, ?, ?, ?)";
@@ -48,11 +48,9 @@ public class DBManager {
 					.parse(user.getBirth()).getTime()));
 			pstmt.setString(6, user.getTel());
 			
-			result = pstmt.executeUpdate();
-			if(result == 1)
-				System.out.println("[DBManager][signUp]: 회원가입 성공");
-			else
-				System.out.println("[DBManager][signUp]: 회원가입 실패");
+			if(pstmt.executeUpdate() == 1)
+				isSuccess = true;
+				
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
@@ -60,7 +58,7 @@ public class DBManager {
 		} finally {
 			close(conn, pstmt);
 		}
-		return result;
+		return isSuccess;
 	}
 
 	// DB 연결 종료1
@@ -125,5 +123,29 @@ public class DBManager {
 			close(conn, pstmt, rs);
 		}
 		return user;
+	}
+
+	public static boolean checkIdDuplicate(String id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		boolean isSuccess = false;
+		
+		try {
+			String sql = "SELECT COUNT(*) FROM user WHERE id = ?";
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next() && rs.getInt(1) == 0)
+				isSuccess = true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+		
+		return isSuccess;
 	}
 }

@@ -45,14 +45,27 @@ public class GameServer extends Thread {
 				ObjectOutputStream out  = new ObjectOutputStream(socket.getOutputStream());
 				ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 				GameProtocol gameProtocol = (GameProtocol) in.readObject();
+				User user = null;
 				
 				switch(gameProtocol.getProtocol()) {
 				case GameProtocol.PT_REQ_SIGN_UP:
+					// 회원가입 요청처리후 결과 응답
+					user = (User) gameProtocol.getData();
+					gameProtocol = new GameProtocol(GameProtocol.PT_RES_SIGN_UP);
+					gameProtocol.setData(DBManager.signUp(user));
+					out.writeObject(gameProtocol);
+					break;
+				case GameProtocol.PT_ID_DUPLICATE_CHECK:
+					// 회원가입 아이디 중복 체크
+					String id = (String) gameProtocol.getData();
+					gameProtocol = new GameProtocol(GameProtocol.PT_ID_DUPLICATE_CHECK);
+					gameProtocol.setData(DBManager.checkIdDuplicate(id));
+					out.writeObject(gameProtocol);
 					break;
 				case GameProtocol.PT_RES_LOGIN:
 					// 가입되어있는 클라이언트가 맞는지 체크
 					Login login = (Login) gameProtocol.getData();
-					User user = loginValidate(login);
+					user = loginValidate(login);
 					if(user == null) {
 						System.out.println("로그인 실패");
 						continue;

@@ -7,8 +7,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
@@ -22,26 +22,24 @@ import javax.swing.SwingConstants;
 
 import entity.User;
 import net.ClientWindow;
+import util.GameProtocol;
 
-public class SignUpScreen extends JPanel implements ActionListener {
+public class SignUpScreen extends JPanel {
 	private ClientWindow win;
 	private JPasswordField pwField, pwConfirmField;
 	private JTextField idField, nicknameField, emailField, birthField3, telField2, telField3;
 	private JLabel idLabel, pwLabel, nicknameLable, emailLabel, pwConfirmLabel, birthLabel, birthLabel1, birthLabel2, birthLabel3, lineLabel1, lineLabel2;
 	private Choice birthField1, birthField2, telField1;
-	private JButton submitBtn, cancelBtn;
+	private JButton idCheckBtn, submitBtn, cancelBtn;
 
-	private Socket socket;
-	private DataInputStream input;
-	private ObjectOutputStream output;
+	private String verifiedId;	// 중복체크를 통과한 아이디
 	
-	/**
-	 * Create the panel.
-	 */
 	public SignUpScreen(ClientWindow win) {
 		this.win = win;
 		this.setLayout(new BorderLayout());
 		this.setSize(1280, 720);
+		
+		verifiedId = null;
 		
 		JLabel signUpTitle = new JLabel("\uD68C\uC6D0 \uAC00\uC785");
 		signUpTitle.setHorizontalAlignment(SwingConstants.CENTER);
@@ -65,9 +63,10 @@ public class SignUpScreen extends JPanel implements ActionListener {
 		idField.setColumns(20);
 		idField.setText("testUser1");
 		
-		JButton idCheckBtn = new JButton("\uC911\uBCF5\uD655\uC778");
+		idCheckBtn = new JButton("\uC911\uBCF5\uD655\uC778");
 		idCheckBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				checkIdDuplicate();
 			}
 		});
 		idCheckBtn.setFont(new Font("HY견고딕", Font.PLAIN, 14));
@@ -218,7 +217,13 @@ public class SignUpScreen extends JPanel implements ActionListener {
 		submitBtn.setBackground(Color.ORANGE);
 		submitBtn.setFont(new Font("HY견고딕", Font.PLAIN, 20));
 		submitBtn.setBounds(492, 471, 150, 50);
-		submitBtn.addActionListener(this);
+		submitBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(isValidate())
+					signUp();
+			}
+		});
 		inputForm.add(submitBtn);
 		
 		cancelBtn = new JButton("\uCDE8\uC18C");
@@ -234,62 +239,149 @@ public class SignUpScreen extends JPanel implements ActionListener {
 		inputForm.add(cancelBtn);
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == submitBtn) {
-			System.out.println("[SignUpScreen]: clicked submitBtn");
-			String id = idField.getText();
-			String pw = pwField.getText();
-			String confirmPw = pwConfirmField.getText();
-			String nickname = nicknameField.getText();
-			String email = emailField.getText();
-			String birth = String.format("%s-%s-%s", birthField1.getSelectedItem(), birthField2.getSelectedItem(), birthField3.getText());
-			String tel = String.format("%s-%s-%s", telField1.getSelectedItem(), telField2.getText(), telField3.getText());
-			User user = new User(id, pw, nickname, email, birth, tel);
-			
-			if(pw.equals(confirmPw)) {
+	// 아이디 중복 체크
+	private void checkIdDuplicate() {
+		String id = idField.getText();
 
-			}
+		Socket socket = null;
+		ObjectOutputStream output = null;
+		ObjectInputStream input = null;
+		
+		try {
+			socket = new Socket("localhost", 4001);
+			output = new ObjectOutputStream(socket.getOutputStream());
+			input = new ObjectInputStream(socket.getInputStream());
 			
-			// 서버와 통신
+			GameProtocol protocol = new GameProtocol(GameProtocol.PT_ID_DUPLICATE_CHECK);
+			protocol.setData(id);
+			output.writeObject(protocol);
+			
+			// 아이디 중복체크 결과 기다림
+			protocol = (GameProtocol) input.readObject();
+			boolean isSuccess = (boolean) protocol.getData();
+			
+			// 아이디 중복체크 결과를 유저에게 알림
+			if(isSuccess) {
+				verifiedId = id;
+				showDialog("사용가능한 아이디입니다.");
+			} else 
+				showDialog("이미 존재하는 아이디입니다.");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		} finally {
 			try {
-				socket = new Socket("localhost", 9001);
-				output = new ObjectOutputStream(socket.getOutputStream());
-				input = new DataInputStream(socket.getInputStream());
-				output.writeObject(user);
-				
-				if(input.readInt() == 1) {
-					JDialog info = new JDialog(win, true);
-					info.setSize(200, 110);
-					info.setLocationRelativeTo(this);
-					info.setLayout(new FlowLayout());
-					JLabel msg = new JLabel("회원가입이 되었습니다.", JLabel.CENTER);
-					JButton ok = new JButton("확인");
-					info.add(msg);
-					info.add(ok);
-					ok.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							info.setVisible(false);
-							info.dispose();
-							win.change("makeRoomScreen");							
-						}
-					});
-					info.setVisible(true);
-				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			} finally {
-				try {
-					socket.close();
-				} catch(IOException ee) {
-					System.out.println("소켓 종료 오류 : " + ee);
-				}
+				socket.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
-		}
-		else {
-			System.out.println("[SignUpScreen]: Clicked cancelBtn");
 		}
 	}
+	
+	// 회원가입 유효성 체크
+	private boolean isValidate() {
+
+		// 아이디 중복 체크
+		if(verifiedId.isEmpty() || !verifiedId.equals(idField.getText())) {
+			showDialog("아이디 중복을 체크해주세요.");
+			return false;
+		}
+		
+		// 비밀번호 확인 체크
+		if(!pwField.getText().equals(pwConfirmField.getText())) {
+			showDialog("비밀번호를 정확히 입력해주세요.");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private void signUp() {
+		String id = idField.getText();
+		String pw = pwField.getText();
+		String nickname = nicknameField.getText();
+		String email = emailField.getText();
+		String birth = String.format("%s-%s-%s", birthField1.getSelectedItem(), birthField2.getSelectedItem(), birthField3.getText());
+		String tel = String.format("%s-%s-%s", telField1.getSelectedItem(), telField2.getText(), telField3.getText());
+		User user = new User(id, pw, nickname, email, birth, tel);
+		
+		Socket socket = null;
+		ObjectOutputStream output = null;
+		ObjectInputStream input = null;
+		
+		// 회원가입 정보에 대한 유효성 검사
+		if(!isValidate())
+			return; 
+		
+		try {
+			// 회원가입 정보 서버에 전송
+			socket = new Socket("localhost", 4001);
+			output = new ObjectOutputStream(socket.getOutputStream());
+			input = new ObjectInputStream(socket.getInputStream());
+			
+			GameProtocol protocol = new GameProtocol(GameProtocol.PT_REQ_SIGN_UP);
+			protocol.setData(user);
+			output.writeObject(protocol);
+			
+			// 회원가입 처리결과 기다림
+			protocol = (GameProtocol) input.readObject();
+			boolean isSuccess = (boolean) protocol.getData();
+			
+			// 회원가입 결과를 유저에게 알림
+			if(isSuccess) {
+				showSignUpSuccessDialog();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		} finally {
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}				
+	}
+	
+	public void showDialog(String message) {
+		JDialog info = new JDialog(win, true);
+		info.setSize(200, 110);
+		info.setLocationRelativeTo(null);
+		info.setLayout(new FlowLayout());
+		JButton ok = new JButton("확인");
+		info.add(new JLabel(message, JLabel.CENTER));
+		info.add(ok);
+		ok.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				info.setVisible(false);
+				info.dispose();
+			}
+		});
+		info.setVisible(true);
+	}
+	
+	// 회원가입에 성공했을 때 나타나는 Dialog
+	public void showSignUpSuccessDialog() {
+		JDialog info = new JDialog(win, true);
+		info.setSize(200, 110);
+		info.setLocationRelativeTo(null);
+		info.setLayout(new FlowLayout());
+		JButton ok = new JButton("확인");
+		info.add(new JLabel("회원가입이 되었습니다.", JLabel.CENTER));
+		info.add(ok);
+		ok.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				info.setVisible(false);
+				info.dispose();
+				win.change("loginScreen");							
+			}
+		});
+		info.setVisible(true);
+	}
+
 }
 
