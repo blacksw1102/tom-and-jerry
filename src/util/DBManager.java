@@ -12,12 +12,16 @@ import java.text.SimpleDateFormat;
 import entity.Login;
 import entity.User;
 
-//oracle -> mysql로 수정 작업 해야함
-
 public class DBManager {
-	private static String url = "jdbc:mysql://localhost/tom_n_jerry";
-	private static String uid = "admin";
-	private static String pwd = "admin";
+	/* 원굑 DB 전용 */
+	private static String url = "jdbc:mysql://cloud1.igkim.com:30306/tomnjerry_db";
+	private static String uid = "tomnjerry";
+	private static String pwd = "tnj6jo!";
+
+	/* 로컬 DB 전용 */
+//	private static String url = "jdbc:mysql://localhost/tom_n_jerry";
+//	private static String uid = "admin";
+//	private static String pwd = "admin";
 
 	// DB 연결
 	public static Connection getConnection() {
