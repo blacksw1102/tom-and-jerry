@@ -7,16 +7,19 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import entity.WaitingRoom;
 import util.GameProtocol;
 
 public class Lobby extends Thread {
-	Hashtable<String, ServerPlayer> chatList = null;	// 로비 내에 있는 클라이언트 리스트 (플레이어 아이디, ServerPlayer 객체)
-	Hashtable<String, GRoom> roomList = null;			// 게설된 룸 리스트 (룸아이디, GRoom 객체)
-	GRoom room = null;
+	private Hashtable<String, ServerPlayer> chatList = null;	// 로비 내에 있는 클라이언트 리스트 (플레이어 아이디, ServerPlayer 객체)
+	private Hashtable<String, WaitingRoom> roomList = null;		// 게설된 룸 리스트 (룸아이디, GRoom 객체)
+	
+	private static int currentRoomId;
 	
 	public Lobby() {
 		chatList = new Hashtable<>();
 		roomList = new Hashtable<>();
+		currentRoomId = 0;
 	}
 	
 	@Override
@@ -39,6 +42,7 @@ public class Lobby extends Thread {
 						throw new IOException("Null pointer received...");
 					switch(protocol.getProtocol()) {
 						case GameProtocol.PT_SEND_MESSAGE:
+							// 로비 채팅메시지 브로드캐스팅
 							String message = (String) protocol.getData();
 							Enumeration<ServerPlayer> elements = chatList.elements();
 							while(elements.hasMoreElements()) {
@@ -46,6 +50,25 @@ public class Lobby extends Thread {
 								GameProtocol toProtocol = new GameProtocol(GameProtocol.PT_SEND_MESSAGE, message);
 								toPlayer.out.writeObject(toProtocol);
 							}
+							break;
+						case GameProtocol.PT_REQ_CREATE_WAIT_ROOM:
+							// 대기방 생성 
+							WaitingRoom waitingRoom = (WaitingRoom) protocol.getData();
+							int result = -1;
+							
+							chatList.remove(player.getId());
+							waitingRoom.addPlayer(player);
+							waitingRoom.setRoomId(currentRoomId++);
+							roomList.put(waitingRoom.getRoomName(), waitingRoom);
+
+							System.out.println("current : " + currentRoomId);
+							
+							result = 1;
+							protocol = new GameProtocol(GameProtocol.PT_RES_CREATE_WAIT_ROOM, result);
+							player.out.writeObject(protocol);
+							
+							broadcastUserList(); // 유저 리스트 브로드캐스팅
+							
 							break;
 					}
 					

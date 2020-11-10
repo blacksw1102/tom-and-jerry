@@ -31,6 +31,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
 import entity.User;
+import entity.WaitingRoom;
 import net.ClientWindow;
 import util.GameProtocol;
 
@@ -44,10 +45,11 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
     private JScrollPane scrollChatArea, scrolPlayArea;
     private JTextField chatField;
     private JButton sendButton;
-	
-    public WaitingRoomListScreen() {
-        super();
+    JButton btnMakeRoom, btnWaitRoom, btnLogout, btnSetting;
 
+    MakeRoomScreen makeRoomScreen;
+    
+    public WaitingRoomListScreen() {
         this.setSize(1280, 720);
         this.setLayout(new BorderLayout());
         this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 5), new EmptyBorder(40, 300, 40, 300)));
@@ -66,7 +68,9 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
     @Override
     public void run() {
     	boolean isRun = true;
-		while(isRun) {
+    	String message = null;
+
+    	while(isRun) {
 			// CPU 독식 방지
 			try {
 				Thread.sleep(100);
@@ -85,11 +89,25 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
 						initUserList(userList);
 						break;
 					case GameProtocol.PT_SEND_MESSAGE:	// 채팅 메시지 수신
-						String message = (String) protocol.getData();
+						message = (String) protocol.getData();
 						if(!chatArea.getText().equals(""))
 							message = "\n" + message;
 						chatArea.append(message);
 						chatArea.setCaretPosition(chatArea.getDocument().getLength());  // 맨아래로 스크롤
+						break;
+					case GameProtocol.PT_RES_CREATE_WAIT_ROOM:
+						if((int) protocol.getData() == 1) {
+							win.setEnabled(true);
+							makeRoomScreen.dispose();
+
+							// 유저 데이터를 가지고 대기방 화면으로 이동한다.
+							WaitingRoomScreen waitingRoomScreen = new WaitingRoomScreen(win, user);
+							win.waitingRoom = waitingRoomScreen;
+							win.addScreen("waitingRoom", waitingRoomScreen);
+							new Thread(waitingRoomScreen).start();
+							win.change("waitingRoom");
+							
+						}
 						break;
 				}
 				
@@ -119,10 +137,10 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
         buttonsPanel1.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         /* 방만들기 버튼 */
-        JButton btnMakeRoom = new MakeRoomButton();
+        btnMakeRoom = new MakeRoomButton();
 
         /* 대기 방 버튼 */
-        JButton btnWaitRoom = new WaitRoomButton();
+        btnWaitRoom = new WaitRoomButton();
 
         buttonsPanel1.add(btnMakeRoom);
         buttonsPanel1.add(btnWaitRoom);
@@ -132,9 +150,9 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
         buttonsPanel2.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
         /* 로그아웃 */
-        JButton btnLogout = new LogoutButton();
+        btnLogout = new LogoutButton();
         /* 설정 */
-        JButton btnSetting = new SettingButton();
+        btnSetting = new SettingButton();
 
         buttonsPanel2.add(btnLogout);
         buttonsPanel2.add(btnSetting);
@@ -293,6 +311,21 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
 			e1.printStackTrace();
 		}
     }
+    
+    class MakeRoomButton extends WaitRoomListButton {
+        /* 방 만들기 버튼 */
+        MakeRoomButton() {
+            super("방 만들기");
+            this.setBackground(new Color(0xFFC000));
+            this.addActionListener(new ActionListener() {
+    			@Override
+    			public void actionPerformed(ActionEvent e) {
+    				makeRoomScreen = new MakeRoomScreen(win, user);
+    				win.setEnabled(false);
+    			}
+    		});
+        }
+    }
 }
 
 abstract class RoomListRow extends JPanel {
@@ -419,15 +452,6 @@ class WaitRoomListButton extends JButton {
         this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 3), new EmptyBorder(5, 5, 5, 5)));
         this.setFont(new Font("맑은 고딕", Font.BOLD, 18));
         this.setFocusPainted(false);
-    }
-}
-
-class MakeRoomButton extends WaitRoomListButton {
-    /* 방 만들기 버튼 */
-    MakeRoomButton() {
-        super("방 만들기");
-
-        this.setBackground(new Color(0xFFC000));
     }
 }
 

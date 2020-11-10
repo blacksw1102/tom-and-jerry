@@ -39,6 +39,14 @@ public class ServerPlayer {
 		this.nickname = user.getNickname();
 	}
 	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getNickname() {
 		return nickname;
 	}

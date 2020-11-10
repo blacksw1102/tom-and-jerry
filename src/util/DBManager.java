@@ -14,14 +14,14 @@ import entity.User;
 
 public class DBManager {
 	/* 원굑 DB 전용 */
-	private static String url = "jdbc:mysql://cloud1.igkim.com:30306/tomnjerry_db";
-	private static String uid = "tomnjerry";
-	private static String pwd = "tnj6jo!";
+//	private static String url = "jdbc:mysql://cloud1.igkim.com:30306/tomnjerry_db";
+//	private static String uid = "tomnjerry";
+//	private static String pwd = "tnj6jo!";
 
 	/* 로컬 DB 전용 */
-//	private static String url = "jdbc:mysql://localhost/tom_n_jerry";
-//	private static String uid = "admin";
-//	private static String pwd = "admin";
+	private static String url = "jdbc:mysql://localhost/tom_n_jerry";
+	private static String uid = "admin";
+	private static String pwd = "admin";
 
 	// DB 연결
 	public static Connection getConnection() {

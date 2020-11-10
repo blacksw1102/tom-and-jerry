@@ -10,16 +10,26 @@ import java.awt.Font;
 import java.awt.BorderLayout;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+
+import entity.User;
+import net.ClientWindow;
+
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
-public class WaitingRoom extends JPanel {
+public class WaitingRoomScreen extends JPanel implements Runnable {
+	ClientWindow win;
+	User user;
+	
 	private JTextField textField;
 
 	/**
 	 * Create the panel.
 	 */
-	public WaitingRoom() {
+	public WaitingRoomScreen(ClientWindow win, User user) {
+    	this.win = win;
+    	this.user = user;
+		
 		this.setLayout(null);
 		this.setSize(1280, 780);
 		
@@ -195,5 +205,10 @@ public class WaitingRoom extends JPanel {
 		btnNewButton_2.setBounds(638, 645, 80, 35);
 		btnNewButton_2.setBackground(new Color(0xf2f2f2));
 		add(btnNewButton_2);
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
 	}
 }

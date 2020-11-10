@@ -1,144 +1,160 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
+import entity.User;
+import entity.WaitingRoom;
 import net.ClientWindow;
+import util.GameProtocol;
 
-public class MakeRoomScreen extends JPanel implements ActionListener {
+public class MakeRoomScreen extends JDialog {
+	private JButton createButton, cancelButton;
+	private JTextField roomName;
+	private JPasswordField roomPassword;
+	private JCheckBox pwCheckbox;
+	
 	private ClientWindow win;
-	private Font f1;
+	private User user;
+	
 
-	public MakeRoomScreen(ClientWindow win) {
+	public MakeRoomScreen(ClientWindow win, User user) {
 		this.win = win;
-		setBackground(Color.WHITE); 
-       
-		f1 = new Font("바탕",Font.BOLD,18);       
+		this.user = user;
+		
+		this.setBackground(Color.WHITE);
+		this.getRootPane().setBorder(new LineBorder(Color.BLACK, 3));
+		this.setUndecorated(true);
+		
 		JLabel label1 = new JLabel("방 만들기");
-		label1.setBounds(20,10, 150,40);
-		label1.setFont(f1);
-       
-       JLabel label2=new JLabel("방 제목");
-       label2.setBounds(20,50, 80,30);
-       label2.setFont(f1);
-       label2.setOpaque(true);
-       label2.setBackground(Color.ORANGE);
-       label2.setBorder(new LineBorder(Color.BLACK));
-       
-       JTextField roomname = new JTextField();
-       roomname.setBounds(110,50, 200,30);
-       roomname.setFont(f1);
-       
-       JLabel lb3=new JLabel("비밀번호");
-       lb3.setBounds(20,100, 80,30);
-       lb3.setFont(f1);
-       lb3.setOpaque(true);
-       lb3.setBackground(Color.ORANGE);
-       lb3.setBorder(new LineBorder(Color.BLACK));
-       
-       JPasswordField pw = new JPasswordField();
-       pw.setBounds(110,100,200,30);
-       pw.setFont(f1);
-  
-       
-       JCheckBox pwCheckbox= new JCheckBox();
-       pwCheckbox.setBounds(320,105,20,20);
-       pwCheckbox.addActionListener(new ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent e) { 
-             if(e.getSource()==pwCheckbox)
-             {
-                  pw.setOpaque(true);
-                  pw.setBackground(Color.GRAY);
-              }
-             else if (e.getSource()!=pwCheckbox){
-                  pw.setOpaque(true);
-                  pw.setBackground(Color.WHITE);
-             }
-           }
-       });
+		label1.setBounds(20, 10, 150, 40);
+		label1.setFont(new Font("HY견고딕", Font.BOLD, 18));
+		
+		JLabel label2 = new JLabel("방 제목");
+		label2.setHorizontalAlignment(SwingConstants.CENTER);
+		label2.setBounds(20, 50, 80, 30);
+		label2.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		label2.setOpaque(true);
+		label2.setBackground(Color.ORANGE);
+		label2.setBorder(new LineBorder(Color.BLACK, 3));
 
-       
-       JButton bt1 = new JButton("생성");
-       bt1.setBounds(100,150, 80,30);
-       bt1.setFont(f1);
-       bt1.setOpaque(true);
-       bt1.setBackground(Color.WHITE);
-       bt1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new Confirm(); 
-            }
-        });
-       
-       JButton bt2 = new JButton("취소");
-       bt2.setBounds(200,150, 80,30);
-       bt2.setFont(f1);
-       bt2.setOpaque(true);
-       bt2.setBackground(Color.WHITE);
-       bt2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new Cancel(); 
-            }
-        }); 
-       
-       add(label1);
-       add(pw);
-       add(pwCheckbox);
-       add(label2);
-       add(roomname);
-       add(lb3);
-       add(bt1);
-       add(bt2);
-       setSize(400,250);
-       setLayout(null);
-       setVisible(true);
+		roomName = new JTextField();
+		roomName.setBounds(110, 50, 200, 30);
+		roomName.setFont(new Font("돋움", Font.PLAIN, 12));
+		roomName.setBorder(new LineBorder(Color.BLACK, 3));
 
-  }
-    public void actionPerformed(ActionEvent e) {
-       
-    }
+		JLabel lb3 = new JLabel("비밀번호");
+		lb3.setHorizontalAlignment(SwingConstants.CENTER);
+		lb3.setBounds(20, 100, 80, 30);
+		lb3.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		lb3.setOpaque(true);
+		lb3.setBackground(Color.ORANGE);
+		lb3.setBorder(new LineBorder(Color.BLACK, 3));
+
+		roomPassword = new JPasswordField();
+		roomPassword.setBounds(110, 100, 200, 30);
+		roomPassword.setFont(new Font("돋움", Font.PLAIN, 12));
+		roomPassword.setOpaque(true);
+		roomPassword.setBorder(new LineBorder(Color.BLACK, 3));
+
+		pwCheckbox = new JCheckBox();
+		pwCheckbox.setBounds(320, 105, 20, 20);
+		pwCheckbox.setBorder(new LineBorder(Color.BLACK, 3));
+		pwCheckbox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED) {
+					roomPassword.setText("");
+					roomPassword.setEditable(false);
+				} else {
+					roomPassword.setEditable(true);
+				}
+			}
+		});
+
+		createButton = new JButton("생성");
+		createButton.setBounds(100, 150, 80, 30);
+		createButton.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		createButton.setOpaque(true);
+		createButton.setBackground(Color.WHITE);
+		createButton.setBorder(new LineBorder(Color.BLACK, 3));
+		createButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				createWaitingRoom();
+			}
+		});
+
+		cancelButton = new JButton("취소");
+		cancelButton.setBounds(200, 150, 80, 30);
+		cancelButton.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		cancelButton.setOpaque(true);
+		cancelButton.setBackground(Color.WHITE);
+		cancelButton.setBorder(new LineBorder(Color.BLACK, 3));
+		cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				win.setEnabled(true);
+				dispose();
+			}
+		});
+
+		getContentPane().add(label1);
+		getContentPane().add(roomPassword);
+		getContentPane().add(pwCheckbox);
+		getContentPane().add(label2);
+		getContentPane().add(roomName);
+		getContentPane().add(lb3);
+		getContentPane().add(createButton);
+		getContentPane().add(cancelButton);
+		setSize(370, 200);
+		setLocationRelativeTo(null);
+		getContentPane().setLayout(null);
+		setVisible(true);
+	}
+	
+	public void createWaitingRoom() {
+		WaitingRoom waitingRoom = new WaitingRoom(roomName.getText(), roomPassword.getText());
+		GameProtocol protocol = new GameProtocol(GameProtocol.PT_REQ_CREATE_WAIT_ROOM);
+		protocol.setData(waitingRoom);
+		try {
+			user.out.writeObject(protocol);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void showAlreadyCreateDialog(String message) {
+		// 확인 메시지 표시
+		JDialog info = new JDialog(win, true);
+		info.setSize(200, 110);
+		info.setLocationRelativeTo(null);
+		info.setLayout(new FlowLayout());
+		JButton ok = new JButton("확인");
+		info.add(new JLabel(message, JLabel.CENTER));
+		info.add(ok);
+		ok.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				info.setVisible(false);
+				info.dispose();
+			}
+		});
+		info.setVisible(true);
+	}
 }
-
-class Confirm extends JFrame{
-   Font f2;
-   Confirm(){
-       f2 = new Font("바탕",Font.BOLD,18);    
-      setTitle("방 생성 완료 창");
-        JPanel ConfirmWindow = new JPanel();
-        setContentPane(ConfirmWindow);
-        JLabel lb = new JLabel("방 생성을 완료하였습니다!");        
-        ConfirmWindow.add(lb);        
-        setSize(300,100);
-        setResizable(false);
-        setVisible(true);
-   }
-}
-
-class Cancel extends JFrame{
-   Font f2;
-   Cancel(){
-       f2 = new Font("바탕",Font.BOLD,18);    
-      setTitle("방 생성 취소 창");
-        JPanel CancelWindow = new JPanel();
-        setContentPane(CancelWindow);
-        JLabel lb = new JLabel("방 생성을 취소합니다.");        
-        CancelWindow.add(lb);        
-        setSize(300,100);
-        setResizable(false);
-        setVisible(true);
-   }
-}
-

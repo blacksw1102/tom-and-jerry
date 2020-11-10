@@ -51,7 +51,7 @@ public class GameServer extends Thread {
 				case GameProtocol.PT_REQ_SIGN_UP:
 					// 회원가입 요청처리후 결과 응답
 					user = (User) gameProtocol.getData();
-					gameProtocol = new GameProtocol(GameProtocol.PT_RES_SIGN_UP);
+					gameProtocol = new GameProtocol(GameProtocol.PT_REQ_SIGN_UP);
 					gameProtocol.setData(DBManager.signUp(user));
 					out.writeObject(gameProtocol);
 					break;

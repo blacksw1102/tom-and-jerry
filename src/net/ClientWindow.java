@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import gui.LoginScreen;
 import gui.MakeRoomScreen;
 import gui.SignUpScreen;
-import gui.WaitingRoom;
+import gui.WaitingRoomScreen;
 import gui.WaitingRoomListScreen;
 
 public class ClientWindow extends JFrame{
@@ -21,15 +21,15 @@ public class ClientWindow extends JFrame{
 	public SignUpScreen signUpScreen = null;
     public MakeRoomScreen makeRoomScreen = null;
     public WaitingRoomListScreen waitingRoomListScreen = null;
-    public WaitingRoom waitingRoom = null;
+    public WaitingRoomScreen waitingRoom = null;
     private CardLayout cards = new CardLayout();
     
     public ClientWindow() {
     	loginScreen = new LoginScreen(ClientWindow.this);
         signUpScreen = new SignUpScreen(ClientWindow.this);
-        makeRoomScreen = new MakeRoomScreen(ClientWindow.this);
+        // makeRoomScreen = new MakeRoomScreen(ClientWindow.this);
         // waitingRoomListScreen = new WaitingRoomListScreen();
-        waitingRoom = new WaitingRoom();
+        // waitingRoom = new WaitingRoomScreen();
         
         mainPanel = new JPanel();
         mainPanel.setLayout(cards);
@@ -37,9 +37,9 @@ public class ClientWindow extends JFrame{
        
         mainPanel.add("loginScreen", loginScreen);
         mainPanel.add("signUpScreen", signUpScreen);
-        mainPanel.add("makeRoomScreen", makeRoomScreen);
+        // mainPanel.add("makeRoomScreen", makeRoomScreen);
         // mainPanel.add("waitingRoomListScreen", waitingRoomListScreen);
-        mainPanel.add("waitingRoom", waitingRoom);
+        // mainPanel.add("waitingRoom", waitingRoom);
         change("loginScreen");
 
         this.setTitle("frame test");
@@ -71,7 +71,7 @@ public class ClientWindow extends JFrame{
     			this.setSize(1280, 720);
     			break;
     		case "makeRoomScreen":
-    			this.setSize(400, 250);
+    			this.setSize(370, 200);
     			break;
     		case "waitingRoomListScreen":
     			this.setSize(1280, 720);        	
