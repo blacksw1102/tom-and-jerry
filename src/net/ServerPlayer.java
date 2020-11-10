@@ -39,6 +39,11 @@ public class ServerPlayer {
 		this.nickname = user.getNickname();
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("[ServerPlayer] 아이디:%s, 닉네임:%s", id, nickname);
+	}
+	
 	public String getId() {
 		return id;
 	}

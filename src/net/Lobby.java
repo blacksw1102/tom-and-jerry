@@ -8,11 +8,12 @@ import java.util.Hashtable;
 import java.util.List;
 
 import entity.WaitingRoom;
+import entity.WaitingRoomListRow;
 import util.GameProtocol;
 
 public class Lobby extends Thread {
 	private Hashtable<String, ServerPlayer> chatList = null;	// 로비 내에 있는 클라이언트 리스트 (플레이어 아이디, ServerPlayer 객체)
-	private Hashtable<String, WaitingRoom> roomList = null;		// 게설된 룸 리스트 (룸아이디, GRoom 객체)
+	private Hashtable<Integer, WaitingRoom> roomList = null;		// 게설된 룸 리스트 (룸아이디, GRoom 객체)
 	
 	private static int currentRoomId;
 	
@@ -53,22 +54,21 @@ public class Lobby extends Thread {
 							break;
 						case GameProtocol.PT_REQ_CREATE_WAIT_ROOM:
 							// 대기방 생성 
-							WaitingRoom waitingRoom = (WaitingRoom) protocol.getData();
 							int result = -1;
+							WaitingRoom waitingRoom = (WaitingRoom) protocol.getData();
 							
 							chatList.remove(player.getId());
 							waitingRoom.addPlayer(player);
 							waitingRoom.setRoomId(currentRoomId++);
-							roomList.put(waitingRoom.getRoomName(), waitingRoom);
-
-							System.out.println("current : " + currentRoomId);
+							waitingRoom.start(); // 대기방 스레드 시작
+							roomList.put(waitingRoom.getRoomId(), waitingRoom);
 							
 							result = 1;
 							protocol = new GameProtocol(GameProtocol.PT_RES_CREATE_WAIT_ROOM, result);
 							player.out.writeObject(protocol);
 							
 							broadcastUserList(); // 유저 리스트 브로드캐스팅
-							
+							broadcastRoomList(); // 대기방 리스트 브로드캐스팅
 							break;
 					}
 					
@@ -140,8 +140,29 @@ public class Lobby extends Thread {
 
 	// 로비 내에 있는 전체에게 룸 리스트를 전달한다.
 	public void broadcastRoomList() {
-		// TODO Auto-generated method stub
+		// 대기방 리스트를 만든다.
+		Enumeration<WaitingRoom> roomElements = roomList.elements();
+		List<WaitingRoomListRow> rowList = new ArrayList<>();
+		while(roomElements.hasMoreElements()) {
+			WaitingRoom room = roomElements.nextElement();
+			WaitingRoomListRow row = new WaitingRoomListRow(room.getRoomId(), room.getRoomName(), 
+					room.getCurrentPlayerCount(), room.getMaxPlayerCount(), room.getRoomState());
+			rowList.add(row);
+			System.out.println(row);
+		}
 		
+		// 대기방 리스트를 모든 유저들에게 보낸다.
+		Enumeration elements = chatList.elements();
+		while(elements.hasMoreElements()) {
+			ServerPlayer player = (ServerPlayer) elements.nextElement();
+			System.out.println(player);
+			GameProtocol protocol = new GameProtocol(GameProtocol.PT_BROADCAST_ROOM_LIST, rowList);
+			try {
+				player.out.writeObject(protocol);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	// 로비 내에 있는 전체에게 주어진 룸 내에 있는 사용자 리스트를 보낸다.

@@ -14,7 +14,8 @@ public class GameProtocol implements Serializable {
 	public static final int PT_SEND_MESSAGE = 6;		// 채팅 메시지 전송
 	public static final int PT_ID_DUPLICATE_CHECK = 7;	// 아이디 중복 체크 요청
 	public static final int PT_REQ_CREATE_WAIT_ROOM = 8;	// 대기방 생성
-	public static final int PT_RES_CREATE_WAIT_ROOM = 9;// 대기 방 생성 응답
+	public static final int PT_RES_CREATE_WAIT_ROOM = 9;	// 대기 방 생성 응답
+	public static final int PT_BROADCAST_ROOM_LIST = 10;	// 대기방 리스트 브로드캐스트
 	
 	protected int protocolType;
 	private Object data;	// 프로토콜과 데이터의 저장공간이 객체

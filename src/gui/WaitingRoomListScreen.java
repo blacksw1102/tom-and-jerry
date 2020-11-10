@@ -109,6 +109,10 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
 							
 						}
 						break;
+					case GameProtocol.PT_BROADCAST_ROOM_LIST:
+						List<WaitingRoom> roomList = (ArrayList) protocol.getData();
+						System.out.println(roomList);
+						break;
 				}
 				
 			} catch (ClassNotFoundException e) {
