@@ -4,16 +4,16 @@ import java.io.Serializable;
 
 public class WaitingRoomRow implements Serializable  {
 	private String nickname;
-	private int playerSatete;
+	private int playerState;
 	
 	public WaitingRoomRow(String nickname, int playerSatete) {
 		this.nickname = nickname;
-		this.playerSatete = playerSatete;
+		this.playerState = playerSatete;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("[WaitingRoowRow] 닉네임:%s, 상태:%d", nickname, playerSatete);
+		return String.format("[WaitingRoowRow] 닉네임:%s, 상태:%d", nickname, playerState);
 	}
 
 	public String getNickname() {
@@ -25,11 +25,11 @@ public class WaitingRoomRow implements Serializable  {
 	}
 
 	public int getPlayerSatete() {
-		return playerSatete;
+		return playerState;
 	}
 
 	public void setPlayerSatete(int playerSatete) {
-		this.playerSatete = playerSatete;
+		this.playerState = playerSatete;
 	}
 	
 }

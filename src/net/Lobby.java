@@ -60,6 +60,7 @@ public class Lobby extends Thread {
 							waitingRoom = (WaitingRoom) protocol.getData();
 							
 							chatList.remove(player.getId());
+							player.setPlayerState(2);
 							waitingRoom.addPlayer(player);
 							waitingRoom.setRoomId(currentRoomId++);
 							waitingRoom.start(); // 대기방 스레드 시작
