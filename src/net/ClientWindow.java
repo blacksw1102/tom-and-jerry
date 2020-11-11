@@ -21,7 +21,7 @@ public class ClientWindow extends JFrame{
 	public SignUpScreen signUpScreen = null;
     public MakeRoomScreen makeRoomScreen = null;
     public WaitingRoomListScreen waitingRoomListScreen = null;
-    public WaitingRoomScreen waitingRoom = null;
+    public WaitingRoomScreen waitingRoomScreen = null;
     private CardLayout cards = new CardLayout();
     
     public ClientWindow() {
@@ -29,7 +29,7 @@ public class ClientWindow extends JFrame{
         signUpScreen = new SignUpScreen(ClientWindow.this);
         // makeRoomScreen = new MakeRoomScreen(ClientWindow.this);
         // waitingRoomListScreen = new WaitingRoomListScreen();
-        // waitingRoom = new WaitingRoomScreen();
+        //waitingRoomScreen = new WaitingRoomScreen(null, null);
         
         mainPanel = new JPanel();
         mainPanel.setLayout(cards);
@@ -39,7 +39,7 @@ public class ClientWindow extends JFrame{
         mainPanel.add("signUpScreen", signUpScreen);
         // mainPanel.add("makeRoomScreen", makeRoomScreen);
         // mainPanel.add("waitingRoomListScreen", waitingRoomListScreen);
-        // mainPanel.add("waitingRoom", waitingRoom);
+        //mainPanel.add("waitingRoomScreen", waitingRoomScreen);
         change("loginScreen");
 
         this.setTitle("frame test");
@@ -76,7 +76,7 @@ public class ClientWindow extends JFrame{
     		case "waitingRoomListScreen":
     			this.setSize(1280, 720);        	
     			break;
-    		case "waitingRoom":
+    		case "waitingRoomScreen":
     			this.setSize(1280, 750);    
     			break;
     	}

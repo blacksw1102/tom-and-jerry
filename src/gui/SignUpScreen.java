@@ -263,7 +263,7 @@ public class SignUpScreen extends JPanel {
 			// 아이디 중복체크 결과를 유저에게 알림
 			if(isSuccess) {
 				verifiedId = id;
-				showDialog("사용가능한 아이디입니다.");
+				showDialog("사용 가능한 아이디 입니다.");
 			} else 
 				showDialog("이미 존재하는 아이디입니다.");
 		} catch (IOException ex) {

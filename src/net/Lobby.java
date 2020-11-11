@@ -37,6 +37,9 @@ public class Lobby extends Thread {
 			Enumeration<ServerPlayer> e = chatList.elements();
 			while(e.hasMoreElements()) {
 				ServerPlayer player = e.nextElement();
+				WaitingRoom waitingRoom = null;
+				int result = 0;
+				
 				try {
 					GameProtocol protocol = (GameProtocol) player.in.readObject();
 					if(protocol == null)
@@ -52,10 +55,9 @@ public class Lobby extends Thread {
 								toPlayer.out.writeObject(toProtocol);
 							}
 							break;
-						case GameProtocol.PT_REQ_CREATE_WAIT_ROOM:
+						case GameProtocol.PT_REQ_CREATE_WAITING_ROOM:
 							// 대기방 생성 
-							int result = -1;
-							WaitingRoom waitingRoom = (WaitingRoom) protocol.getData();
+							waitingRoom = (WaitingRoom) protocol.getData();
 							
 							chatList.remove(player.getId());
 							waitingRoom.addPlayer(player);
@@ -64,11 +66,31 @@ public class Lobby extends Thread {
 							roomList.put(waitingRoom.getRoomId(), waitingRoom);
 							
 							result = 1;
-							protocol = new GameProtocol(GameProtocol.PT_RES_CREATE_WAIT_ROOM, result);
+							protocol = new GameProtocol(GameProtocol.PT_RES_CREATE_WAITING_ROOM, result);
 							player.out.writeObject(protocol);
 							
 							broadcastUserList(); // 유저 리스트 브로드캐스팅
 							broadcastRoomList(); // 대기방 리스트 브로드캐스팅
+							waitingRoom.broadcastUserList();
+							break;
+						case GameProtocol.PT_REQ_ENTER_WAITING_ROOM:
+							// 입장할 대기방 번호를 클라이언트로부터 받는다.
+							int roomId = (int) protocol.getData();
+							
+							// 플레이어를 로비에서 없애고, 대기방에 추가한다.
+							waitingRoom = roomList.get(roomId);
+							result = waitingRoom.addPlayer(player);
+							
+							if(result == 1) {
+								// 대기방 유저 리스트를 대기방에 있는 클라이언트들에게 알려준다
+								chatList.remove(player.getId());
+								waitingRoom.broadcastUserList();
+							} else {
+								// 이미 방에 인원이 다찼음을 로비에 있는 클라이언트들에게 알려준다.
+								protocol = new GameProtocol(GameProtocol.PT_RES_ENTER_WAITING_ROOM, result);
+								broadcastUserList();
+								broadcastRoomList();
+							}
 							break;
 					}
 					
@@ -148,15 +170,13 @@ public class Lobby extends Thread {
 			WaitingRoomListRow row = new WaitingRoomListRow(room.getRoomId(), room.getRoomName(), 
 					room.getCurrentPlayerCount(), room.getMaxPlayerCount(), room.getRoomState());
 			rowList.add(row);
-			System.out.println(row);
 		}
 		
 		// 대기방 리스트를 모든 유저들에게 보낸다.
 		Enumeration elements = chatList.elements();
 		while(elements.hasMoreElements()) {
 			ServerPlayer player = (ServerPlayer) elements.nextElement();
-			System.out.println(player);
-			GameProtocol protocol = new GameProtocol(GameProtocol.PT_BROADCAST_ROOM_LIST, rowList);
+			GameProtocol protocol = new GameProtocol(GameProtocol.PT_BROADCAST_WAITING_ROOM_LIST, rowList);
 			try {
 				player.out.writeObject(protocol);
 			} catch (IOException e) {
@@ -187,7 +207,6 @@ public class Lobby extends Thread {
 				e.printStackTrace();
 			}
 		}
-
 	}
 	
 	// 주어진 이름의 게임 룸을 생성한다.

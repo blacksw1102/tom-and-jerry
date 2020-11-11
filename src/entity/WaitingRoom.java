@@ -1,10 +1,14 @@
 package entity;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 import net.ServerPlayer;
+import util.GameProtocol;
 
 public class WaitingRoom extends Thread implements Serializable {
 	int roomId;				// 룸 아이디
@@ -82,6 +86,26 @@ public class WaitingRoom extends Thread implements Serializable {
 
 	public void setRoomState(int roomState) {
 		this.roomState = roomState;
+	}
+
+	// 대기방에 있는 유저 리스트를 클라이언트에게 보낸다.
+	public void broadcastUserList() {
+		// 유저 리스트를 만든다.
+		List<WaitingRoomRow> rowList = new ArrayList<>();
+		for(ServerPlayer player : playerList) {
+			WaitingRoomRow row = new WaitingRoomRow(player.getNickname(), player.getPlayerState());
+			rowList.add(row);
+		}
+		
+		// 유저 리스트를 모든 유저들에게 보낸다.
+		for(ServerPlayer player : playerList) {
+			GameProtocol protocol = new GameProtocol(GameProtocol.PT_BROADCAST_USER_LIST_IN_WAITING_ROOM, rowList);
+			try {
+				player.out.writeObject(protocol);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
+		}
 	}
 	
 }

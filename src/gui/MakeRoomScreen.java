@@ -130,7 +130,7 @@ public class MakeRoomScreen extends JDialog {
 	
 	public void createWaitingRoom() {
 		WaitingRoom waitingRoom = new WaitingRoom(roomName.getText(), roomPassword.getText());
-		GameProtocol protocol = new GameProtocol(GameProtocol.PT_REQ_CREATE_WAIT_ROOM);
+		GameProtocol protocol = new GameProtocol(GameProtocol.PT_REQ_CREATE_WAITING_ROOM);
 		protocol.setData(waitingRoom);
 		try {
 			user.out.writeObject(protocol);

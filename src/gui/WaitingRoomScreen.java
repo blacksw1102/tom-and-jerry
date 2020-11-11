@@ -1,26 +1,36 @@
 package gui;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import java.awt.Font;
-import java.awt.BorderLayout;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import entity.User;
+import entity.WaitingRoomRow;
 import net.ClientWindow;
-
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
+import util.GameProtocol;
 
 public class WaitingRoomScreen extends JPanel implements Runnable {
 	ClientWindow win;
 	User user;
-	
+    private ArrayList users = new ArrayList();
+
 	private JTextField textField;
 
 	/**
@@ -30,185 +40,414 @@ public class WaitingRoomScreen extends JPanel implements Runnable {
     	this.win = win;
     	this.user = user;
 		
-		this.setLayout(null);
 		this.setSize(1280, 780);
-		
-		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel.setBackground(Color.WHITE);
-		panel.setBounds(128, 50, 1000, 60);
-		add(panel);
-		panel.setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("041");
-		lblNewLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		lblNewLabel.setBounds(14, 12, 74, 36);
-		panel.add(lblNewLabel);
-		
-		JLabel label = new JLabel("\uD14C\uC2A4\uD2B8 \uBC29 \uC81C\uBAA9");
-		label.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		label.setBounds(76, 12, 397, 36);
-		panel.add(label);
-		
-		JButton btnNewButton_1 = new JButton("\uBC29 \uC81C\uBAA9\uBCC0\uACBD");
-		btnNewButton_1.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		btnNewButton_1.setBounds(851, 12, 135, 35);
-		btnNewButton_1.setBackground(new Color(0xf2f2f2));
-		panel.add(btnNewButton_1);
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_1.setBackground(Color.WHITE);
-		panel_1.setBounds(128, 130, 590, 350);
-		add(panel_1);
-		panel_1.setLayout(null);
-		
-		JLabel label_1 = new JLabel("\uD14C\uC2A4\uD2B8 \uBC29 \uC81C\uBAA9");
-		label_1.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		label_1.setBounds(14, 12, 397, 36);
-		panel_1.add(label_1);
-		
-		JLabel label_2 = new JLabel("\uD14C\uC2A4\uD2B8 \uBC29 \uC81C\uBAA9");
-		label_2.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		label_2.setBounds(14, 60, 397, 36);
-		panel_1.add(label_2);
-		
-		JLabel label_3 = new JLabel("\uD14C\uC2A4\uD2B8 \uBC29 \uC81C\uBAA9");
-		label_3.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		label_3.setBounds(14, 111, 397, 36);
-		panel_1.add(label_3);
-		
-		JLabel label_4 = new JLabel("\uD14C\uC2A4\uD2B8 \uBC29 \uC81C\uBAA9");
-		label_4.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		label_4.setBounds(14, 159, 397, 36);
-		panel_1.add(label_4);
-		
-		JLabel label_5 = new JLabel("\uD14C\uC2A4\uD2B8 \uBC29 \uC81C\uBAA9");
-		label_5.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		label_5.setBounds(14, 208, 397, 36);
-		panel_1.add(label_5);
-		
-		JLabel label_6 = new JLabel("\uD14C\uC2A4\uD2B8 \uBC29 \uC81C\uBAA9");
-		label_6.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		label_6.setBounds(14, 256, 397, 36);
-		panel_1.add(label_6);
-		
-		JLabel label_7 = new JLabel("\uD14C\uC2A4\uD2B8 \uBC29 \uC81C\uBAA9");
-		label_7.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		label_7.setBounds(14, 304, 397, 36);
-		panel_1.add(label_7);
-		
-		JLabel readyLabel1 = new JLabel("\uBC29\uC7A5");
-		readyLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-		readyLabel1.setFont(new Font("HY견고딕", Font.PLAIN, 15));
-		readyLabel1.setBounds(511, 20, 65, 25);
-		readyLabel1.setOpaque(true);
-		readyLabel1.setBackground(new Color(0xffc000));
-		readyLabel1.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_1.add(readyLabel1);
-		
-		JLabel label_8 = new JLabel("\uC900\uBE44");
-		label_8.setOpaque(true);
-		label_8.setHorizontalAlignment(SwingConstants.CENTER);
-		label_8.setFont(new Font("HY견고딕", Font.PLAIN, 15));
-		label_8.setBorder(new LineBorder(new Color(0, 0, 0)));
-		label_8.setBackground(new Color(242, 242, 242));
-		label_8.setBounds(511, 119, 65, 25);
-		panel_1.add(label_8);
-		
-		JLabel label_9 = new JLabel("\uC900\uBE44");
-		label_9.setOpaque(true);
-		label_9.setHorizontalAlignment(SwingConstants.CENTER);
-		label_9.setFont(new Font("HY견고딕", Font.PLAIN, 15));
-		label_9.setBorder(new LineBorder(new Color(0, 0, 0)));
-		label_9.setBackground(new Color(242, 242, 242));
-		label_9.setBounds(511, 170, 65, 25);
-		panel_1.add(label_9);
-		
-		JLabel label_10 = new JLabel("\uC900\uBE44");
-		label_10.setOpaque(true);
-		label_10.setHorizontalAlignment(SwingConstants.CENTER);
-		label_10.setFont(new Font("HY견고딕", Font.PLAIN, 15));
-		label_10.setBorder(new LineBorder(new Color(0, 0, 0)));
-		label_10.setBackground(new Color(242, 242, 242));
-		label_10.setBounds(511, 71, 65, 25);
-		panel_1.add(label_10);
-		
-		JLabel label_11 = new JLabel("\uC900\uBE44");
-		label_11.setOpaque(true);
-		label_11.setHorizontalAlignment(SwingConstants.CENTER);
-		label_11.setFont(new Font("HY견고딕", Font.PLAIN, 15));
-		label_11.setBorder(new LineBorder(new Color(0, 0, 0)));
-		label_11.setBackground(new Color(242, 242, 242));
-		label_11.setBounds(511, 219, 65, 25);
-		panel_1.add(label_11);
-		
-		JLabel label_12 = new JLabel("\uC900\uBE44");
-		label_12.setOpaque(true);
-		label_12.setHorizontalAlignment(SwingConstants.CENTER);
-		label_12.setFont(new Font("HY견고딕", Font.PLAIN, 15));
-		label_12.setBorder(new LineBorder(new Color(0, 0, 0)));
-		label_12.setBackground(new Color(242, 242, 242));
-		label_12.setBounds(511, 267, 65, 25);
-		panel_1.add(label_12);
-		
-		JLabel label_13 = new JLabel("\uC900\uBE44");
-		label_13.setOpaque(true);
-		label_13.setHorizontalAlignment(SwingConstants.CENTER);
-		label_13.setFont(new Font("HY견고딕", Font.PLAIN, 15));
-		label_13.setBorder(new LineBorder(new Color(0, 0, 0)));
-		label_13.setBackground(new Color(242, 242, 242));
-		label_13.setBounds(511, 315, 65, 25);
-		panel_1.add(label_13);
-		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_2.setBackground(Color.WHITE);
-		panel_2.setBounds(738, 130, 390, 233);
-		add(panel_2);
-		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_3.setBackground(Color.WHITE);
-		panel_3.setBounds(128, 500, 590, 133);
-		add(panel_3);
-		panel_3.setLayout(new BorderLayout(0, 0));
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		JTextArea textArea = new JTextArea();
-		textArea.setFont(new Font("돋움", Font.PLAIN, 15));
-		scrollPane.setViewportView(textArea);
-		panel_3.add(scrollPane, BorderLayout.CENTER);
-		
-		JButton btnNewButton = new JButton("\uAC8C\uC784 \uC2DC\uC791");
-		btnNewButton.setForeground(Color.WHITE);
-		btnNewButton.setBackground(new Color(0x4472c4));
-		btnNewButton.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		btnNewButton.setBounds(738, 528, 390, 70);
-		add(btnNewButton);
-		
-		JButton button = new JButton("\uB098\uAC00\uAE30");
-		button.setBackground(Color.WHITE);
-		button.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		button.setBounds(738, 610, 390, 70);
-		add(button);
-		
-		textField = new JTextField();
-		textField.setFont(new Font("돋움", Font.PLAIN, 15));
-		textField.setBounds(128, 645, 500, 35);
-		add(textField);
-		textField.setColumns(10);
-		
-		JButton btnNewButton_2 = new JButton("\uC785\uB825");
-		btnNewButton_2.setFont(new Font("HY견고딕", Font.PLAIN, 15));
-		btnNewButton_2.setBounds(638, 645, 80, 35);
-		btnNewButton_2.setBackground(new Color(0xf2f2f2));
-		add(btnNewButton_2);
-	}
+        this.setLayout(new GridBagLayout());
+        this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 5), new EmptyBorder(40, 200, 40, 200)));
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.weightx = 1.0;
+        c.gridwidth = 2;
+
+        c.gridy = 0;
+        this.add(new TopArea(), c);
+
+//        c.insets = new Insets(5, 0, 0, 0);
+//        c.gridy = 1;
+//        this.add(new MiddleArea(), c);
+//
+//        c.gridy = 2;
+//        this.add(new BottomArea(), c);
+
+        c.insets = new Insets(5, 0, 0, 0);
+        c.weightx = 0.7;
+        c.gridwidth = 1;
+        c.gridy = 1;
+        c.gridx = 0;
+        this.add(new LeftArea(), c);
+
+        c.gridx = 1;
+        c.weightx = 0.3;
+        c.weighty = 1.0;
+        c.insets = new Insets(5, 10, 0, 0);
+        this.add(new RightArea(), c);
+
+//        c.weightx = 1;
+//        c.gridy = 0;
+//        c.gridwidth = 2;
+//        this.add(new TopArea(), c);
+//
+//        c.gridwidth = 1;
+//
+//        c.weightx = 0.8;
+//        c.gridy = 1;
+//        this.add(new RoomUserList(), c);
+//
+//        c.weightx = 0.2;
+//        c.gridx = 1;
+//        this.add(new MapInfo(), c);
+//
+//        c.gridy = 2;
+//
+//        c.weightx = 0.8;
+//        c.gridx = 0;
+//        this.add(new ChatArea(), c);
+//
+//        c.weightx = 0.2;
+//        c.gridx = 2;
+//        this.add(new Buttons(), c);
+
+        this.setVisible(true);
+    }
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		while(true) {
+			System.out.println("대기방 스레드 동작중...");
+			// CPU 과부하 방지
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			try {
+				GameProtocol protocol = (GameProtocol) user.in.readObject();
+				if(protocol == null)
+					throw new IOException("Null pointer received...");
+				
+				switch(protocol.getProtocol()) {
+					case GameProtocol.PT_BROADCAST_USER_LIST_IN_WAITING_ROOM:	// 유저 리스트 조회
+						List<WaitingRoomRow> row = (ArrayList) protocol.getData();
+						System.out.println(row);
+						break;
+				}
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (EOFException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
+}
+
+/**
+ * 상단 영역
+ */
+class TopArea extends JPanel {
+    TopArea() {
+        this.setLayout(new GridLayout());
+
+        this.add(new RoomTitle());
+        //this.setBorder(gui.Borders.debugBorder);
+
+        this.setVisible(true);
+    }
+}
+
+class LeftArea extends JPanel {
+    LeftArea() {
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1.0;
+        c.gridy = 0;
+        c.gridx = 0;
+        this.add(new RoomUserList(), c);
+
+        c.insets = new Insets(5, 0, 0, 0);
+        c.weighty = 1.0;
+        c.gridy = 1;
+        this.add(new ChatArea(), c);
+
+        this.setVisible(true);
+    }
+}
+
+class RightArea extends JPanel {
+    RightArea() {
+//        this.setLayout(new GridBagLayout());
+        this.setLayout(new BorderLayout());
+//        this.setBorder(gui.Borders.debugBorder);
+
+//        GridBagConstraints c = new GridBagConstraints();
+//
+//        c.fill = GridBagConstraints.HORIZONTAL;
+//        c.weightx = 1.0;
+//        c.gridx = 0;
+//
+//        c.anchor = GridBagConstraints.NORTH;
+//        c.gridy = 0;
+//        this.add(new MapInfo(), c);
+//
+//        c.insets = new Insets(5, 0, 0, 0);
+//        c.anchor = GridBagConstraints.SOUTH;
+//        c.gridy = 1;
+//        this.add(new Buttons(), c);
+
+        this.add(new MapInfo(), BorderLayout.PAGE_START);
+        this.add(new Buttons(), BorderLayout.PAGE_END);
+
+        this.setVisible(true);
+    }
+}
+
+/**
+ * 중앙 영역
+ */
+class MiddleArea extends JPanel {
+    MiddleArea() {
+        this.setLayout(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.gridy = 0;
+
+        c.gridx = 0;
+        c.weightx = 0.8;
+        this.add(new RoomUserList(), c);
+
+        c.insets = new Insets(0, 10, 0, 0);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.PAGE_START;
+        c.gridx = 5;
+        c.weightx = 0.2;
+        this.add(new MapInfo(), c);
+
+        this.setVisible(true);
+    }
+}
+
+/**
+ * 하단 영역
+ */
+class BottomArea extends JPanel {
+    BottomArea() {
+        this.setLayout(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.gridy = 0;
+
+        c.gridx = 0;
+        c.weightx = 0.8;
+        this.add(new ChatArea(), c);
+
+        c.insets = new Insets(0, 10, 0, 0);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.PAGE_END;
+        c.gridx = 5;
+        c.weightx = 0.2;
+        this.add(new Buttons(), c);
+
+        this.setVisible(true);
+    }
+}
+
+/**
+ * WaitingRoom의 방 제목
+ */
+class RoomTitle extends JPanel {
+	private JLabel labelTitle;		// 타이틀
+    private JButton btnRoomSetting;	// 방 정보 변경 버튼
+    private int roomNum;
+
+    RoomTitle() {
+        this.setLayout(new GridBagLayout());
+        this.setBorder(new CompoundBorder(gui.Borders.normalBorder, new EmptyBorder(3, 5, 3, 5)));
+        this.setBackground(Color.WHITE);
+
+        // 방 제목
+        this.labelTitle = new JLabel();
+        this.roomNum = 41;
+        this.setRoomTitle("ABC");
+        this.labelTitle.setFont(gui.Fonts.defaultFont);
+
+        // 방 정보 변경 버튼
+        this.btnRoomSetting = new JButton("방 정보변경");
+        this.btnRoomSetting.setBackground(new Color(0xD9D9D9));
+        this.btnRoomSetting.setBorder(new CompoundBorder(gui.Borders.normalBorder, new EmptyBorder(3, 7, 3, 7)));
+        this.btnRoomSetting.setFont(gui.Fonts.font16);
+        this.btnRoomSetting.setFocusPainted(false);
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.weightx = 1;
+
+        c.gridy = 0;
+        this.add(this.labelTitle, c);
+
+        c.gridy = 1;
+        this.add(this.btnRoomSetting);
+
+        this.setVisible(true);
+    }
+
+    public void setRoomTitle(String str) {
+        if(this.labelTitle != null) {
+            this.labelTitle.setText(String.format("%03d %s", this.roomNum, str));
+        }
+    }
+}
+
+/**
+ * WaitingRoom의 유저 목록
+ */
+class RoomUserList extends JPanel {
+    RoomUserList() {
+        this.setLayout(new GridLayout(7, 1));
+        this.setBorder(gui.Borders.normalBorder);
+        this.setBackground(Color.WHITE);
+
+        this.add(new RoomUserListRow());
+    }
+}
+
+class RoomUserListRow extends JPanel {
+    private JButton btnState;
+    private JLabel labelNickname;
+
+    private int STATE_NONE = 0;
+    private int STATE_READY = 1;
+    private int STATE_OWNER = 2;
+
+    RoomUserListRow() {
+        this.setLayout(new GridBagLayout());
+        this.setBorder(Borders.listRowBorder);
+        this.setBorder(
+        new CompoundBorder(Borders.listRowBorder, Borders.listRowPadding));
+        this.setBackground(Color.WHITE);
+
+        labelNickname = new JLabel();
+        labelNickname.setFont(gui.Fonts.defaultFont);
+        btnState = new JButton();
+        btnState.setFont(gui.Fonts.defaultFont);
+        btnState.setFocusPainted(false);
+        btnState.setBorder(new CompoundBorder(Borders.normalBorder, new EmptyBorder(0, 7, 0, 7)));
+
+        this.setState(STATE_READY);
+        this.labelNickname.setText("테스트");
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.gridy = 0;
+        c.weightx = 1;
+
+        c.gridx = 0;
+        this.add(this.labelNickname, c);
+
+        c.gridx = 1;
+        c.weightx = 0;
+        this.add(this.btnState, c);
+    }
+
+    public void setState(int state) {
+        this.btnState.setVisible(true);
+        switch (state) {
+            case 0:
+                this.btnState.setVisible(false);
+                break;
+            case 1:
+                this.btnState.setVisible(true);
+                this.btnState.setBackground(new Color(0xFFC000));
+                this.btnState.setText("준비");
+                break;
+            case 2:
+                this.btnState.setVisible(true);
+                this.btnState.setBackground(new Color(0xFF5369));
+                this.btnState.setText("방장");
+                break;
+        }
+    }
+
+    public void setNickname(String name) {
+        this.labelNickname.setText(name);
+    }
+}
+
+class MapInfo extends JPanel {
+    MapInfo() {
+        this.setLayout(new GridBagLayout());
+//        this.setBorder(new EmptyBorder(0, 10, 0, 0));
+        this.setBorder(gui.Borders.normalBorder);
+        this.setBackground(Color.WHITE);
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.PAGE_START;
+
+        c.gridy = 0;
+        JLabel labelLoading = new JLabel("로딩중...");
+
+        this.add(labelLoading, c);
+    }
+}
+
+/**
+ * WaitingRoom의 채팅 영역
+ */
+class ChatArea extends JPanel {
+    private JTextArea txtChatArea;
+
+    ChatArea() {
+        this.setLayout(new GridLayout());
+        this.txtChatArea = new JTextArea();
+        txtChatArea.setFont(gui.Fonts.defaultFont);
+        JScrollPane scrollChatArea = new JScrollPane(this.txtChatArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollChatArea.setBorder(Borders.normalBorder);
+
+        // 샘플 데이터
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+        txtChatArea.append("[도움말] : 테스트 채팅 내용..\n");
+
+        this.add(scrollChatArea);
+    }
+
+    public void clearChat() {
+    }
+}
+
+/**
+ * 우측 하단 버튼 묶음
+ */
+class Buttons extends JPanel {
+    private JButton btnGameStart;
+    private JButton btnExit;
+
+    Buttons() {
+        this.setLayout(new GridLayout(2, 1, 0, 10));
+//        this.setBorder(new EmptyBorder(0, 10, 0, 0));
+
+        this.btnGameStart = new gui.component.Button("게임 시작");
+        this.btnGameStart.setFont(gui.Fonts.defaultFont);
+        this.btnGameStart.setBackground(new Color(0x4472C4));
+        this.btnGameStart.setForeground(Color.WHITE);
+
+        btnExit = new gui.component.Button("나가기");
+        this.btnExit.setFont(gui.Fonts.defaultFont);
+        this.btnExit.setBackground(Color.WHITE);
+
+        this.add(btnGameStart);
+        this.add(btnExit);
+    }
 }

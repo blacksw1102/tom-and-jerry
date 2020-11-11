@@ -25,6 +25,7 @@ public class ServerPlayer {
 	// 플레이어 정보 저장
 	String id;
 	String nickname;
+	private int playerState; //	(0:준비 안됨, 1:준비)
 	
 	// GameServer의 run()에서 생성된다.
 	// GServerPlayer 객체 생성 시, 룸 서버 정보느 null이다.
@@ -37,6 +38,7 @@ public class ServerPlayer {
 		// 유저 정보 저장
 		this.id = user.getId();
 		this.nickname = user.getNickname();
+		this.playerState = 0;
 	}
 	
 	@Override
@@ -60,6 +62,14 @@ public class ServerPlayer {
 		this.nickname = nickname;
 	}
 	
+	public int getPlayerState() {
+		return playerState;
+	}
+
+	public void setPlayerState(int playerState) {
+		this.playerState = playerState;
+	}
+
 	public Socket getSocket() {
 		return socket;
 	}

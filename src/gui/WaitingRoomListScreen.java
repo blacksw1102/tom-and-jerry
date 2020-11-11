@@ -95,21 +95,21 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
 						chatArea.append(message);
 						chatArea.setCaretPosition(chatArea.getDocument().getLength());  // 맨아래로 스크롤
 						break;
-					case GameProtocol.PT_RES_CREATE_WAIT_ROOM:
+					case GameProtocol.PT_RES_CREATE_WAITING_ROOM:
 						if((int) protocol.getData() == 1) {
 							win.setEnabled(true);
 							makeRoomScreen.dispose();
 
 							// 유저 데이터를 가지고 대기방 화면으로 이동한다.
 							WaitingRoomScreen waitingRoomScreen = new WaitingRoomScreen(win, user);
-							win.waitingRoom = waitingRoomScreen;
-							win.addScreen("waitingRoom", waitingRoomScreen);
+							win.waitingRoomScreen = waitingRoomScreen;
+							win.addScreen("waitingRoomScreen", waitingRoomScreen);
 							new Thread(waitingRoomScreen).start();
-							win.change("waitingRoom");
+							win.change("waitingRoomScreen");
 							
 						}
 						break;
-					case GameProtocol.PT_BROADCAST_ROOM_LIST:
+					case GameProtocol.PT_BROADCAST_WAITING_ROOM_LIST:
 						List<WaitingRoom> roomList = (ArrayList) protocol.getData();
 						System.out.println(roomList);
 						break;
@@ -184,7 +184,7 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
         c.weightx = 1;
 
         roomList.add(new RoomListHeaderRow(), c);
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 2; i++) {
             c.gridy = i;
             roomList.add(new RoomListBodyRow(i, "제목 테스트" + (i + 1), new Random().nextInt(7),  new Random().nextInt(2)), c);
         }
