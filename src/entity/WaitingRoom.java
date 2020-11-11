@@ -7,16 +7,16 @@ import java.util.Vector;
 import net.ServerPlayer;
 
 public class WaitingRoom extends Thread implements Serializable {
-	int roomId;				// ·ë ¾ÆÀÌµğ
-	String roomName;		// ¹æ ÀÌ¸§
-	String roomPassword;	// ¹æ ºñ¹Ğ¹øÈ£
-	int maxPlayerCount;		// ¹æ ÃÖ´ë¼ö¿ëÀÎ¿ø
-	int roomState;			// ¹æ »óÅÂ (0:´ë±âÁß, 1:°ÔÀÓÁß)
+	int roomId;				// ë£¸ ì•„ì´ë””
+	String roomName;		// ë°© ì´ë¦„
+	String roomPassword;	// ë°© ë¹„ë°€ë²ˆí˜¸
+	int maxPlayerCount;		// ë°© ìµœëŒ€ìˆ˜ìš©ì¸ì›
+	int roomState;			// ë°© ìƒíƒœ (0:ëŒ€ê¸°ì¤‘, 1:ê²Œì„ì¤‘)
 	
-	ArrayList<ServerPlayer> playerList = null;		// °ÔÀÓ ÁøÇà ÁßÀÎ ÇÃ·¹ÀÌ¾î ¸®½ºÆ®
-	ArrayList participantList = null;					// ÇöÀç ¹æ¿¡ ÀÖ´Â ÇÃ·¹ÀÌ¾î ¸®½ºÆ®
-	ArrayList sessionManList = null;					// °ÔÀÓ ÁøÇà ÁßÀÎ ÇÃ·¹ÀÌ¾î ¸®½ºÆ®
-	int sessionManScore[] = null;					// ÇÃ·¹ÀÌ¾îÀÇ Á¡¼ö
+	ArrayList<ServerPlayer> playerList = null;		// ê²Œì„ ì§„í–‰ ì¤‘ì¸ í”Œë ˆì´ì–´ ë¦¬ìŠ¤íŠ¸
+	ArrayList participantList = null;					// í˜„ì¬ ë°©ì— ìˆëŠ” í”Œë ˆì´ì–´ ë¦¬ìŠ¤íŠ¸
+	ArrayList sessionManList = null;					// ê²Œì„ ì§„í–‰ ì¤‘ì¸ í”Œë ˆì´ì–´ ë¦¬ìŠ¤íŠ¸
+	int sessionManScore[] = null;					// í”Œë ˆì´ì–´ì˜ ì ìˆ˜
 	
 	public WaitingRoom(String roomName, String roomPassword) {
 		this.roomName = roomName;

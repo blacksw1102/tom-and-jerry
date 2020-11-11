@@ -41,34 +41,34 @@ public class MakeRoomScreen extends JDialog {
 		this.getRootPane().setBorder(new LineBorder(Color.BLACK, 3));
 		this.setUndecorated(true);
 		
-		JLabel label1 = new JLabel("πÊ ∏∏µÈ±‚");
+		JLabel label1 = new JLabel("Î∞© ÎßåÎì§Í∏∞");
 		label1.setBounds(20, 10, 150, 40);
-		label1.setFont(new Font("HY∞ﬂ∞ÌµÒ", Font.BOLD, 18));
+		label1.setFont(new Font("HYÍ≤¨Í≥†Îîï", Font.BOLD, 18));
 		
-		JLabel label2 = new JLabel("πÊ ¡¶∏Ò");
+		JLabel label2 = new JLabel("Î∞© Ï†úÎ™©");
 		label2.setHorizontalAlignment(SwingConstants.CENTER);
 		label2.setBounds(20, 50, 80, 30);
-		label2.setFont(new Font("HY∞ﬂ∞ÌµÒ", Font.PLAIN, 18));
+		label2.setFont(new Font("HYÍ≤¨Í≥†Îîï", Font.PLAIN, 18));
 		label2.setOpaque(true);
 		label2.setBackground(Color.ORANGE);
 		label2.setBorder(new LineBorder(Color.BLACK, 3));
 
 		roomName = new JTextField();
 		roomName.setBounds(110, 50, 200, 30);
-		roomName.setFont(new Font("µ∏øÚ", Font.PLAIN, 12));
+		roomName.setFont(new Font("ÎèãÏõÄ", Font.PLAIN, 12));
 		roomName.setBorder(new LineBorder(Color.BLACK, 3));
 
-		JLabel lb3 = new JLabel("∫Òπ–π¯»£");
+		JLabel lb3 = new JLabel("ÎπÑÎ∞ÄÎ≤àÌò∏");
 		lb3.setHorizontalAlignment(SwingConstants.CENTER);
 		lb3.setBounds(20, 100, 80, 30);
-		lb3.setFont(new Font("HY∞ﬂ∞ÌµÒ", Font.PLAIN, 18));
+		lb3.setFont(new Font("HYÍ≤¨Í≥†Îîï", Font.PLAIN, 18));
 		lb3.setOpaque(true);
 		lb3.setBackground(Color.ORANGE);
 		lb3.setBorder(new LineBorder(Color.BLACK, 3));
 
 		roomPassword = new JPasswordField();
 		roomPassword.setBounds(110, 100, 200, 30);
-		roomPassword.setFont(new Font("µ∏øÚ", Font.PLAIN, 12));
+		roomPassword.setFont(new Font("ÎèãÏõÄ", Font.PLAIN, 12));
 		roomPassword.setOpaque(true);
 		roomPassword.setBorder(new LineBorder(Color.BLACK, 3));
 
@@ -87,9 +87,9 @@ public class MakeRoomScreen extends JDialog {
 			}
 		});
 
-		createButton = new JButton("ª˝º∫");
+		createButton = new JButton("ÏÉùÏÑ±");
 		createButton.setBounds(100, 150, 80, 30);
-		createButton.setFont(new Font("HY∞ﬂ∞ÌµÒ", Font.PLAIN, 18));
+		createButton.setFont(new Font("HYÍ≤¨Í≥†Îîï", Font.PLAIN, 18));
 		createButton.setOpaque(true);
 		createButton.setBackground(Color.WHITE);
 		createButton.setBorder(new LineBorder(Color.BLACK, 3));
@@ -100,9 +100,9 @@ public class MakeRoomScreen extends JDialog {
 			}
 		});
 
-		cancelButton = new JButton("√Îº“");
+		cancelButton = new JButton("Ï∑®ÏÜå");
 		cancelButton.setBounds(200, 150, 80, 30);
-		cancelButton.setFont(new Font("HY∞ﬂ∞ÌµÒ", Font.PLAIN, 18));
+		cancelButton.setFont(new Font("HYÍ≤¨Í≥†Îîï", Font.PLAIN, 18));
 		cancelButton.setOpaque(true);
 		cancelButton.setBackground(Color.WHITE);
 		cancelButton.setBorder(new LineBorder(Color.BLACK, 3));
@@ -140,12 +140,12 @@ public class MakeRoomScreen extends JDialog {
 	}
 	
 	public void showAlreadyCreateDialog(String message) {
-		// »Æ¿Œ ∏ﬁΩ√¡ˆ «•Ω√
+		// ÌôïÏù∏ Î©îÏãúÏßÄ ÌëúÏãú
 		JDialog info = new JDialog(win, true);
 		info.setSize(200, 110);
 		info.setLocationRelativeTo(null);
 		info.setLayout(new FlowLayout());
-		JButton ok = new JButton("»Æ¿Œ");
+		JButton ok = new JButton("ÌôïÏù∏");
 		info.add(new JLabel(message, JLabel.CENTER));
 		info.add(ok);
 		ok.addActionListener(new ActionListener() {

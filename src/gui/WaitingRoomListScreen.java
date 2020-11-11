@@ -71,7 +71,7 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
     	String message = null;
 
     	while(isRun) {
-			// CPU µ¶½Ä ¹æÁö
+			// CPU ë…ì‹ ë°©ì§€
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {
@@ -84,23 +84,23 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
 					throw new IOException("Null pointer received...");
 				
 				switch(protocol.getProtocol()) {
-					case GameProtocol.PT_RES_USER_LIST:	// À¯Àú ¸®½ºÆ® Á¶È¸
+					case GameProtocol.PT_RES_USER_LIST:	// ìœ ì € ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ
 						List<String> userList = (ArrayList) protocol.getData();
 						initUserList(userList);
 						break;
-					case GameProtocol.PT_SEND_MESSAGE:	// Ã¤ÆÃ ¸Ş½ÃÁö ¼ö½Å
+					case GameProtocol.PT_SEND_MESSAGE:	// ì±„íŒ… ë©”ì‹œì§€ ìˆ˜ì‹ 
 						message = (String) protocol.getData();
 						if(!chatArea.getText().equals(""))
 							message = "\n" + message;
 						chatArea.append(message);
-						chatArea.setCaretPosition(chatArea.getDocument().getLength());  // ¸Ç¾Æ·¡·Î ½ºÅ©·Ñ
+						chatArea.setCaretPosition(chatArea.getDocument().getLength());  // ë§¨ì•„ë˜ë¡œ ìŠ¤í¬ë¡¤
 						break;
 					case GameProtocol.PT_RES_CREATE_WAIT_ROOM:
 						if((int) protocol.getData() == 1) {
 							win.setEnabled(true);
 							makeRoomScreen.dispose();
 
-							// À¯Àú µ¥ÀÌÅÍ¸¦ °¡Áö°í ´ë±â¹æ È­¸éÀ¸·Î ÀÌµ¿ÇÑ´Ù.
+							// ìœ ì € ë°ì´í„°ë¥¼ ê°€ì§€ê³  ëŒ€ê¸°ë°© í™”ë©´ìœ¼ë¡œ ì´ë™í•œë‹¤.
 							WaitingRoomScreen waitingRoomScreen = new WaitingRoomScreen(win, user);
 							win.waitingRoom = waitingRoomScreen;
 							win.addScreen("waitingRoom", waitingRoomScreen);
@@ -123,7 +123,7 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		// ·ë ¸®½ºÆ® Á¶È¸
+		// ë£¸ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ
     }
 
     private void initUserList(List<String> userList) {
@@ -136,26 +136,26 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
         JPanel topArea = new JPanel();
         topArea.setLayout(new GridLayout(1, 2));
 
-        /* Ã¹¹øÂ° »ó´Ü ¹öÆ° ±×·ì */
+        /* ì²«ë²ˆì§¸ ìƒë‹¨ ë²„íŠ¼ ê·¸ë£¹ */
         JPanel buttonsPanel1 = new JPanel();
         buttonsPanel1.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        /* ¹æ¸¸µé±â ¹öÆ° */
+        /* ë°©ë§Œë“¤ê¸° ë²„íŠ¼ */
         btnMakeRoom = new MakeRoomButton();
 
-        /* ´ë±â ¹æ ¹öÆ° */
+        /* ëŒ€ê¸° ë°© ë²„íŠ¼ */
         btnWaitRoom = new WaitRoomButton();
 
         buttonsPanel1.add(btnMakeRoom);
         buttonsPanel1.add(btnWaitRoom);
 
-        /* µÎ¹øÂ° »ó´Ü ¹öÆ° ±×·ì */
+        /* ë‘ë²ˆì§¸ ìƒë‹¨ ë²„íŠ¼ ê·¸ë£¹ */
         JPanel buttonsPanel2 = new JPanel();
         buttonsPanel2.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-        /* ·Î±×¾Æ¿ô */
+        /* ë¡œê·¸ì•„ì›ƒ */
         btnLogout = new LogoutButton();
-        /* ¼³Á¤ */
+        /* ì„¤ì • */
         btnSetting = new SettingButton();
 
         buttonsPanel2.add(btnLogout);
@@ -186,7 +186,7 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
         roomList.add(new RoomListHeaderRow(), c);
         for (int i = 0; i < 20; i++) {
             c.gridy = i;
-            roomList.add(new RoomListBodyRow(i, "Á¦¸ñ Å×½ºÆ®" + (i + 1), new Random().nextInt(7),  new Random().nextInt(2)), c);
+            roomList.add(new RoomListBodyRow(i, "ì œëª© í…ŒìŠ¤íŠ¸" + (i + 1), new Random().nextInt(7),  new Random().nextInt(2)), c);
         }
 
         JScrollPane scrollArea = new JScrollPane(roomList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -204,8 +204,8 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
         bottomArea.setLayout(gbl);
         bottomArea.setPreferredSize(new Dimension(0, 200));
         
-        chatLabel = new JLabel("Ã¤ÆÃÃ¢");
-        chatLabel.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 18));
+        chatLabel = new JLabel("ì±„íŒ…ì°½");
+        chatLabel.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 18));
         gbc.insets = new Insets(5, 0, 0, 0);
     	gbc.gridx = 0;
     	gbc.gridy = 0;
@@ -216,8 +216,8 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
     	gbl.setConstraints(chatLabel, gbc);
     	bottomArea.add(chatLabel);
     	
-        playerLabel = new JLabel("Á¢¼ÓÀÚ ¸ñ·Ï");
-        playerLabel.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 18));
+        playerLabel = new JLabel("ì ‘ì†ì ëª©ë¡");
+        playerLabel.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 18));
         gbc.insets = new Insets(5, 0, 0, 0);
     	gbc.gridx = 1;
     	gbc.gridy = 0;
@@ -229,7 +229,7 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
     	bottomArea.add(playerLabel);
         
         chatArea = new JTextArea();
-        chatArea.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 18));
+        chatArea.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN, 18));
         chatArea.setEditable(false);
         scrollChatArea = new JScrollPane(chatArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollChatArea.setBorder(new LineBorder(Color.BLACK, 3));
@@ -244,7 +244,7 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
     	bottomArea.add(scrollChatArea);
     	
         userArea = new JTextArea();
-        userArea.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 18));
+        userArea.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN, 18));
         userArea.setEditable(false);
         scrolPlayArea= new JScrollPane(userArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrolPlayArea.setBorder(new LineBorder(Color.BLACK, 3));
@@ -259,7 +259,7 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
     	bottomArea.add(scrolPlayArea);
         
         chatField = new JTextField();
-        chatField.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 18));
+        chatField.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN, 18));
         chatField.setBorder(new LineBorder(Color.BLACK, 3));
         chatField.addKeyListener(new KeyAdapter() {
         	@Override
@@ -278,9 +278,9 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
     	gbl.setConstraints(chatField, gbc);
         bottomArea.add(chatField);
         
-        sendButton = new JButton("Àü¼Û");
+        sendButton = new JButton("ì „ì†¡");
         sendButton.setBackground(Color.LIGHT_GRAY);
-        sendButton.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 18));
+        sendButton.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 18));
         sendButton.setBorder(new LineBorder(Color.BLACK, 3));
         gbc.insets = new Insets(0, 5, 5, 0);
     	gbc.gridx = 1;
@@ -301,7 +301,7 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
         this.add(bottomArea, BorderLayout.SOUTH);
     }
     
-    // ¼­¹ö·Î Ã¤ÆÃ ¸Ş½ÃÁö¸¦ Àü´ŞÇÑ´Ù
+    // ì„œë²„ë¡œ ì±„íŒ… ë©”ì‹œì§€ë¥¼ ì „ë‹¬í•œë‹¤
     public void sendMessage(String message) {
 		GameProtocol protocol = new GameProtocol(GameProtocol.PT_SEND_MESSAGE);
 		try {
@@ -317,9 +317,9 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
     }
     
     class MakeRoomButton extends WaitRoomListButton {
-        /* ¹æ ¸¸µé±â ¹öÆ° */
+        /* ë°© ë§Œë“¤ê¸° ë²„íŠ¼ */
         MakeRoomButton() {
-            super("¹æ ¸¸µé±â");
+            super("ë°© ë§Œë“¤ê¸°");
             this.setBackground(new Color(0xFFC000));
             this.addActionListener(new ActionListener() {
     			@Override
@@ -334,7 +334,7 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
 
 abstract class RoomListRow extends JPanel {
     /*
-     ´ë±â½Ç ¸ñ·ÏÀ» Ç¥±âÇÏ±â Ç¥ÀÇ °¢ Çà
+     ëŒ€ê¸°ì‹¤ ëª©ë¡ì„ í‘œê¸°í•˜ê¸° í‘œì˜ ê° í–‰
      */
     protected GridBagConstraints numberGbc;
     protected GridBagConstraints titleGbc;
@@ -383,15 +383,15 @@ abstract class RoomListRow extends JPanel {
 
 class RoomListHeaderRow extends RoomListRow {
     /*
-    ´ë±â½Ç ¸ñ·ÏÀ» Ç¥±âÇÏ±â À§ÇÑ Ç¥ÀÇ Çà Çì´õ
+    ëŒ€ê¸°ì‹¤ ëª©ë¡ì„ í‘œê¸°í•˜ê¸° ìœ„í•œ í‘œì˜ í–‰ í—¤ë”
      */
     public RoomListHeaderRow() {
         super();
 
         this.add(new RoomListTableData("No"), this.numberGbc);
-        this.add(new RoomListTableData("¹æ Á¦¸ñ"), this.titleGbc);
-        this.add(new RoomListTableData("¹æ ÀÎ¿ø"), this.userCntGbc);
-        this.add(new RoomListTableData("¹æ »óÅÂ"), this.roomStateGbc);
+        this.add(new RoomListTableData("ë°© ì œëª©"), this.titleGbc);
+        this.add(new RoomListTableData("ë°© ì¸ì›"), this.userCntGbc);
+        this.add(new RoomListTableData("ë°© ìƒíƒœ"), this.roomStateGbc);
 
         this.setBackground(new Color(0xD9D9D9));
     }
@@ -399,7 +399,7 @@ class RoomListHeaderRow extends RoomListRow {
 
 class RoomListBodyRow extends RoomListRow {
     /*
-    ´ë±â½Ç ¸ñ·ÏÀ» Ç¥±âÇÏ±â À§ÇÑ Ç¥ÀÇ ¾ÆÀÌÅÛ
+    ëŒ€ê¸°ì‹¤ ëª©ë¡ì„ í‘œê¸°í•˜ê¸° ìœ„í•œ í‘œì˜ ì•„ì´í…œ
      */
     public RoomListBodyRow(int number, String roomTitle, int roomUserCount, int roomState) {
         super();
@@ -410,18 +410,18 @@ class RoomListBodyRow extends RoomListRow {
         this.add(new RoomListTableData(String.format("%3d", number)), this.numberGbc);
         this.add(new RoomListTableData(roomTitle), this.titleGbc);
         this.add(new RoomListTableData(String.format("%d / 7", roomUserCount)), this.userCntGbc);
-        // ¾Æ·¡ ºÎºĞÀº ÃßÈÄ¿¡ °¢ »ó¼ö¸¦ Á¤ÀÇÈÄ¿¡ ±³Ã¼ÇÒ °Í
+        // ì•„ë˜ ë¶€ë¶„ì€ ì¶”í›„ì— ê° ìƒìˆ˜ë¥¼ ì •ì˜í›„ì— êµì²´í•  ê²ƒ
         switch (roomState) {
             case 0:
-                roomStateString = "´ë±âÁß";
+                roomStateString = "ëŒ€ê¸°ì¤‘";
                 fontColor = Color.BLACK;
                 break;
             case 1:
-                roomStateString = "°ÔÀÓÁß";
+                roomStateString = "ê²Œì„ì¤‘";
                 fontColor = Color.RED;
                 break;
             default:
-                roomStateString = "¿À·ù";
+                roomStateString = "ì˜¤ë¥˜";
                 fontColor = Color.RED;
                 break;
         }
@@ -430,11 +430,11 @@ class RoomListBodyRow extends RoomListRow {
 }
 
 class RoomListTableData extends JLabel {
-    /* °¢ Ç¥ÀÇ Ä­ */
+    /* ê° í‘œì˜ ì¹¸ */
     RoomListTableData(String text) {
         super(text);
 
-        this.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 18));
+        this.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD, 18));
         this.setBorder(new EmptyBorder(5, 10, 5, 10));
     }
 
@@ -445,24 +445,24 @@ class RoomListTableData extends JLabel {
     }
 }
 
-/* ¹öÆ° ÄÄÆ÷³ÍÆ® */
+/* ë²„íŠ¼ ì»´í¬ë„ŒíŠ¸ */
 
 class WaitRoomListButton extends JButton {
-    /* ¹öÆ°µé Á¶»ó */
+    /* ë²„íŠ¼ë“¤ ì¡°ìƒ */
     WaitRoomListButton(String text) {
         super(text);
 
         this.setBackground(Color.WHITE);
         this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 3), new EmptyBorder(5, 5, 5, 5)));
-        this.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 18));
+        this.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD, 18));
         this.setFocusPainted(false);
     }
 }
 
 class WaitRoomButton extends WaitRoomListButton {
-    /* ´ë±â¹æ ¹öÆ° */
+    /* ëŒ€ê¸°ë°© ë²„íŠ¼ */
     WaitRoomButton() {
-        super("´ë±â ¹æ");
+        super("ëŒ€ê¸° ë°©");
 
         this.setBackground(new Color(0x4472C4));
         this.setForeground(Color.WHITE);
@@ -470,18 +470,18 @@ class WaitRoomButton extends WaitRoomListButton {
 }
 
 class LogoutButton extends WaitRoomListButton {
-    /* ·Î±×¾Æ¿ô ¹öÆ° */
+    /* ë¡œê·¸ì•„ì›ƒ ë²„íŠ¼ */
     LogoutButton() {
-        super("·Î±×¾Æ¿ô");
+        super("ë¡œê·¸ì•„ì›ƒ");
 
         this.setBackground(Color.WHITE);
     }
 }
 
 class SettingButton extends WaitRoomListButton {
-    /* ¼³Á¤ ¹öÆ° */
+    /* ì„¤ì • ë²„íŠ¼ */
     SettingButton() {
-        super("¼³Á¤");
+        super("ì„¤ì •");
 
         this.setBackground(Color.WHITE);
     }

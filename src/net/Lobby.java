@@ -12,8 +12,8 @@ import entity.WaitingRoomListRow;
 import util.GameProtocol;
 
 public class Lobby extends Thread {
-	private Hashtable<String, ServerPlayer> chatList = null;	// ·Îºñ ³»¿¡ ÀÖ´Â Å¬¶óÀÌ¾ğÆ® ¸®½ºÆ® (ÇÃ·¹ÀÌ¾î ¾ÆÀÌµğ, ServerPlayer °´Ã¼)
-	private Hashtable<Integer, WaitingRoom> roomList = null;		// °Ô¼³µÈ ·ë ¸®½ºÆ® (·ë¾ÆÀÌµğ, GRoom °´Ã¼)
+	private Hashtable<String, ServerPlayer> chatList = null;	// ë¡œë¹„ ë‚´ì— ìˆëŠ” í´ë¼ì´ì–¸íŠ¸ ë¦¬ìŠ¤íŠ¸ (í”Œë ˆì´ì–´ ì•„ì´ë””, ServerPlayer ê°ì²´)
+	private Hashtable<Integer, WaitingRoom> roomList = null;		// ê²Œì„¤ëœ ë£¸ ë¦¬ìŠ¤íŠ¸ (ë£¸ì•„ì´ë””, GRoom ê°ì²´)
 	
 	private static int currentRoomId;
 	
@@ -27,7 +27,7 @@ public class Lobby extends Thread {
 	public void run() {
 		System.out.println("Lobby run start");
 		while(true) {
-			// CPU µ¶½Ä ¹æÁö
+			// CPU ë…ì‹ ë°©ì§€
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -43,7 +43,7 @@ public class Lobby extends Thread {
 						throw new IOException("Null pointer received...");
 					switch(protocol.getProtocol()) {
 						case GameProtocol.PT_SEND_MESSAGE:
-							// ·Îºñ Ã¤ÆÃ¸Ş½ÃÁö ºê·ÎµåÄ³½ºÆÃ
+							// ë¡œë¹„ ì±„íŒ…ë©”ì‹œì§€ ë¸Œë¡œë“œìºìŠ¤íŒ…
 							String message = (String) protocol.getData();
 							Enumeration<ServerPlayer> elements = chatList.elements();
 							while(elements.hasMoreElements()) {
@@ -53,22 +53,22 @@ public class Lobby extends Thread {
 							}
 							break;
 						case GameProtocol.PT_REQ_CREATE_WAIT_ROOM:
-							// ´ë±â¹æ »ı¼º 
+							// ëŒ€ê¸°ë°© ìƒì„± 
 							int result = -1;
 							WaitingRoom waitingRoom = (WaitingRoom) protocol.getData();
 							
 							chatList.remove(player.getId());
 							waitingRoom.addPlayer(player);
 							waitingRoom.setRoomId(currentRoomId++);
-							waitingRoom.start(); // ´ë±â¹æ ½º·¹µå ½ÃÀÛ
+							waitingRoom.start(); // ëŒ€ê¸°ë°© ìŠ¤ë ˆë“œ ì‹œì‘
 							roomList.put(waitingRoom.getRoomId(), waitingRoom);
 							
 							result = 1;
 							protocol = new GameProtocol(GameProtocol.PT_RES_CREATE_WAIT_ROOM, result);
 							player.out.writeObject(protocol);
 							
-							broadcastUserList(); // À¯Àú ¸®½ºÆ® ºê·ÎµåÄ³½ºÆÃ
-							broadcastRoomList(); // ´ë±â¹æ ¸®½ºÆ® ºê·ÎµåÄ³½ºÆÃ
+							broadcastUserList(); // ìœ ì € ë¦¬ìŠ¤íŠ¸ ë¸Œë¡œë“œìºìŠ¤íŒ…
+							broadcastRoomList(); // ëŒ€ê¸°ë°© ë¦¬ìŠ¤íŠ¸ ë¸Œë¡œë“œìºìŠ¤íŒ…
 							break;
 					}
 					
@@ -84,63 +84,63 @@ public class Lobby extends Thread {
 		}
 	}
 	
-	// ¹æ±İ Á¢¼ÓÇÑ Å¬¶óÀÌ¾ğÆ®¸¦ ·Îºñ¿¡ Ãß°¡ÇÑ´Ù.
+	// ë°©ê¸ˆ ì ‘ì†í•œ í´ë¼ì´ì–¸íŠ¸ë¥¼ ë¡œë¹„ì— ì¶”ê°€í•œë‹¤.
 	public void addPlayer(ServerPlayer player) {
 		if(chatList.get(player.id) == null) {
 			int i = 0;
 			String message = null;
 			
-			// ¹æ±İ Á¢¼ÓÇÑ Å¬¶óÀÌ¾ğÆ®¿¡°Ô È¯¿µ ¸Ş½ÃÁö¸¦ º¸³½´Ù.
-			message = "[" + player.id + "]´Ô È¯¿µÇÕ´Ï´Ù ^^";
+			// ë°©ê¸ˆ ì ‘ì†í•œ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ í™˜ì˜ ë©”ì‹œì§€ë¥¼ ë³´ë‚¸ë‹¤.
+			message = "[" + player.id + "]ë‹˜ í™˜ì˜í•©ë‹ˆë‹¤ ^^";
 			player.sendMessage(message);
 			
-			// ¹æ±İ Á¢¼ÓÇÑ Å¬¶óÀÌ¾ğÆ®°¡ µé¾î¿ÔÀ½À» ·Îºñ ³»ÀÇ ¸ğµÎ¿¡°Ô ¾Ë¸°´Ù.
-			message = "[" + player.id + "]´ÔÀÌ ÀÔÀåÇÏ¿´½À´Ï´Ù.";
+			// ë°©ê¸ˆ ì ‘ì†í•œ í´ë¼ì´ì–¸íŠ¸ê°€ ë“¤ì–´ì™”ìŒì„ ë¡œë¹„ ë‚´ì˜ ëª¨ë‘ì—ê²Œ ì•Œë¦°ë‹¤.
+			message = "[" + player.id + "]ë‹˜ì´ ì…ì¥í•˜ì˜€ìŠµë‹ˆë‹¤.";
 			broadcastMessage(message);
 			
-			// ¹æ±İ Á¢¼ÓÇÑ Å¬¶óÀÌ¾ğÆ®¸¦ Å¬¶óÀÌ¾ğÆ® ¸®½ºÆ®¿¡ Ãß°¡ÇÑ´Ù.
+			// ë°©ê¸ˆ ì ‘ì†í•œ í´ë¼ì´ì–¸íŠ¸ë¥¼ í´ë¼ì´ì–¸íŠ¸ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€í•œë‹¤.
 			chatList.put(player.id, player);
 			
-			// ·Îºñ³»ÀÇ ¸ğµÎ¿¡°Ô °»½ÅµÈ »ç¿ëÀÚ ¸®½ºÆ®¸¦ º¸³½´Ù.
+			// ë¡œë¹„ë‚´ì˜ ëª¨ë‘ì—ê²Œ ê°±ì‹ ëœ ì‚¬ìš©ì ë¦¬ìŠ¤íŠ¸ë¥¼ ë³´ë‚¸ë‹¤.
 			broadcastUserList();
 		}
 		
 	}
 	
-	// Á¢¼ÓÀÌ ²÷±ä Å¬¶óÀÌ¾ğÆ®¸¦ ·Îºñ¿¡¼­ »èÁ¦ÇÑ´Ù.
+	// ì ‘ì†ì´ ëŠê¸´ í´ë¼ì´ì–¸íŠ¸ë¥¼ ë¡œë¹„ì—ì„œ ì‚­ì œí•œë‹¤.
 	public void removePlayer(ServerPlayer player) {
 		chatList.remove(player.id);
 		broadcastUserList();
 	}
 	
-	// ÁÖ¾îÁø ¾ÆÀÌµğÀÇ Å¬¶óÀÌ¾ğÆ®¿¡°Ô ¸Ş½ÃÁö¸¦ º¸³½´Ù.
+	// ì£¼ì–´ì§„ ì•„ì´ë””ì˜ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë©”ì‹œì§€ë¥¼ ë³´ë‚¸ë‹¤.
 	public void sendMessage(String playerId, String message) {
 		// TODO Auto-generated method stub
 	}
 
-	// ·Îºñ ³»ÀÇ ¸ğµÎ¿¡°Ô ÁÖ¾îÁø ¸Ş½ÃÁö¸¦ º¸³½´Ù.
+	// ë¡œë¹„ ë‚´ì˜ ëª¨ë‘ì—ê²Œ ì£¼ì–´ì§„ ë©”ì‹œì§€ë¥¼ ë³´ë‚¸ë‹¤.
 	public void broadcastMessage(String message) {
 		// TODO Auto-generated method stub
 	}
 	
-	// toIds ³»¿¡ ÀÖ´Â ¾ÆÀÌµğ¸¦ °®´Â ÇÃ·¹ÀÌ¾î¿¡°Ô ¸Ş½ÃÁö¸¦ º¸³½´Ù.
-	// toIds¿¡´Â °¢ ÇÃ·¹ÀÌ¾îÀÇ ¾ÆÀÌµğ¸¦ ','¸¦ ÀÌ¿ëÇÏ¿© ±¸ºĞÇÏ°í ÀÖ´Ù.
+	// toIds ë‚´ì— ìˆëŠ” ì•„ì´ë””ë¥¼ ê°–ëŠ” í”Œë ˆì´ì–´ì—ê²Œ ë©”ì‹œì§€ë¥¼ ë³´ë‚¸ë‹¤.
+	// toIdsì—ëŠ” ê° í”Œë ˆì´ì–´ì˜ ì•„ì´ë””ë¥¼ ','ë¥¼ ì´ìš©í•˜ì—¬ êµ¬ë¶„í•˜ê³  ìˆë‹¤.
 	public void multicastMessage(String tolds, String fromId, String charStr) {
 		// TODO Auto-generated method stub
 	}
 	
-	// ÁÖ¾îÁø ¾ÆÀÌµğÀÇ ÇÃ·¹ÀÌ¾î¿¡°Ô ÇØ´ç ·ë¿¡ ÀÖ´Â »ç¿ëÀÚ ¸®½ºÆ®¸¦ º¸³½´Ù.
+	// ì£¼ì–´ì§„ ì•„ì´ë””ì˜ í”Œë ˆì´ì–´ì—ê²Œ í•´ë‹¹ ë£¸ì— ìˆëŠ” ì‚¬ìš©ì ë¦¬ìŠ¤íŠ¸ë¥¼ ë³´ë‚¸ë‹¤.
 	public void sendUserList(String playerId, String roomId) {
 		// TODO Auto-generated method stub
 	}
 
-	// ÁÖ¾îÁø ¾ÆÀÌµğÀÇ ÇÃ·¹ÀÌ¾î¿¡°Ô ·ë ¸®½ºÆ®¸¦ º¸³½´Ù.
+	// ì£¼ì–´ì§„ ì•„ì´ë””ì˜ í”Œë ˆì´ì–´ì—ê²Œ ë£¸ ë¦¬ìŠ¤íŠ¸ë¥¼ ë³´ë‚¸ë‹¤.
 	public void sendRoomList(ServerPlayer player) {
 	}
 
-	// ·Îºñ ³»¿¡ ÀÖ´Â ÀüÃ¼¿¡°Ô ·ë ¸®½ºÆ®¸¦ Àü´ŞÇÑ´Ù.
+	// ë¡œë¹„ ë‚´ì— ìˆëŠ” ì „ì²´ì—ê²Œ ë£¸ ë¦¬ìŠ¤íŠ¸ë¥¼ ì „ë‹¬í•œë‹¤.
 	public void broadcastRoomList() {
-		// ´ë±â¹æ ¸®½ºÆ®¸¦ ¸¸µç´Ù.
+		// ëŒ€ê¸°ë°© ë¦¬ìŠ¤íŠ¸ë¥¼ ë§Œë“ ë‹¤.
 		Enumeration<WaitingRoom> roomElements = roomList.elements();
 		List<WaitingRoomListRow> rowList = new ArrayList<>();
 		while(roomElements.hasMoreElements()) {
@@ -151,7 +151,7 @@ public class Lobby extends Thread {
 			System.out.println(row);
 		}
 		
-		// ´ë±â¹æ ¸®½ºÆ®¸¦ ¸ğµç À¯Àúµé¿¡°Ô º¸³½´Ù.
+		// ëŒ€ê¸°ë°© ë¦¬ìŠ¤íŠ¸ë¥¼ ëª¨ë“  ìœ ì €ë“¤ì—ê²Œ ë³´ë‚¸ë‹¤.
 		Enumeration elements = chatList.elements();
 		while(elements.hasMoreElements()) {
 			ServerPlayer player = (ServerPlayer) elements.nextElement();
@@ -165,18 +165,18 @@ public class Lobby extends Thread {
 		}
 	}
 	
-	// ·Îºñ ³»¿¡ ÀÖ´Â ÀüÃ¼¿¡°Ô ÁÖ¾îÁø ·ë ³»¿¡ ÀÖ´Â »ç¿ëÀÚ ¸®½ºÆ®¸¦ º¸³½´Ù.
+	// ë¡œë¹„ ë‚´ì— ìˆëŠ” ì „ì²´ì—ê²Œ ì£¼ì–´ì§„ ë£¸ ë‚´ì— ìˆëŠ” ì‚¬ìš©ì ë¦¬ìŠ¤íŠ¸ë¥¼ ë³´ë‚¸ë‹¤.
 	public void broadcastUserList() {
 		Enumeration elements = chatList.elements();
 		List<String> userList = new ArrayList<>();
 		
-		// À¯Àú ¸®½ºÆ®¸¦ ¸¸µç´Ù.
+		// ìœ ì € ë¦¬ìŠ¤íŠ¸ë¥¼ ë§Œë“ ë‹¤.
 		while(elements.hasMoreElements()) {
 			ServerPlayer player = (ServerPlayer) elements.nextElement();
 			userList.add(player.getNickname());
 		}
 		
-		// À¯Àú ¸®½ºÆ®¸¦ ¸ğµç À¯Àúµé¿¡°Ô º¸³½´Ù.
+		// ìœ ì € ë¦¬ìŠ¤íŠ¸ë¥¼ ëª¨ë“  ìœ ì €ë“¤ì—ê²Œ ë³´ë‚¸ë‹¤.
 		elements = chatList.elements();
 		while(elements.hasMoreElements()) {
 			ServerPlayer player = (ServerPlayer) elements.nextElement();
@@ -190,47 +190,47 @@ public class Lobby extends Thread {
 
 	}
 	
-	// ÁÖ¾îÁø ÀÌ¸§ÀÇ °ÔÀÓ ·ëÀ» »ı¼ºÇÑ´Ù.
+	// ì£¼ì–´ì§„ ì´ë¦„ì˜ ê²Œì„ ë£¸ì„ ìƒì„±í•œë‹¤.
 	public void makeRoom(String playerId, String roomId) {
 		// TODO Auto-generated method stub
 	}
 	
-	// ÁÖ¾îÁøÇÃ·¹ÀÌ¾î°¡ ·Îºñ¿¡¼­ ·ëÀ» ¼±ÅÃÇÏ¿© ·ëÀ¸·Î µé¾î°¡´Â °ÍÀ» Ã³¸®ÇÑ´Ù.
+	// ì£¼ì–´ì§„í”Œë ˆì´ì–´ê°€ ë¡œë¹„ì—ì„œ ë£¸ì„ ì„ íƒí•˜ì—¬ ë£¸ìœ¼ë¡œ ë“¤ì–´ê°€ëŠ” ê²ƒì„ ì²˜ë¦¬í•œë‹¤.
 	public void enterRoom(String playerId, String roomId) {
 		// TODO Auto-generated method stub
 	}
 	
-	// ÁÖ¾îÁø ¾ÆÀÌµğÀÇ ·ëÀ» ·Îºñ °´Ã¼ÀÇ ·ë ¸®½ºÆ®¿¡¼­ Á¦°ÅÇÑ´Ù.
+	// ì£¼ì–´ì§„ ì•„ì´ë””ì˜ ë£¸ì„ ë¡œë¹„ ê°ì²´ì˜ ë£¸ ë¦¬ìŠ¤íŠ¸ì—ì„œ ì œê±°í•œë‹¤.
 	public void removeRoom(String roomId) {
 		// TODO Auto-generated method stub
 	}
 	
-	// ÁÖ¾îÁø ¾ÆÀÌµğ¿¡ ÇØ´çÇÏ´Â Å¬¶óÀÌ¾ğÆ®ÀÇ ÇÁ·ÎÆÄÀÏ Á¤º¸¸¦ ¼³Á¤ÇÑ´Ù.
-	// ÇÁ·ÎÆÄÀÏ Á¤º¸(profile) : "sex, age, win, lose, total, position"
+	// ì£¼ì–´ì§„ ì•„ì´ë””ì— í•´ë‹¹í•˜ëŠ” í´ë¼ì´ì–¸íŠ¸ì˜ í”„ë¡œíŒŒì¼ ì •ë³´ë¥¼ ì„¤ì •í•œë‹¤.
+	// í”„ë¡œíŒŒì¼ ì •ë³´(profile) : "sex, age, win, lose, total, position"
 	public void setProfile(String playerId, String profile) {
 		// TODO Auto-generated method stub
 	}
 	
-	// ÁÖ¾îÁø ¾ÆÀÌµğÀÇ Å¬¶óÀÌ¾ğÆ®¿¡ ´ëÇÑ ServerPlayer °´Ã¼¸¦ ¾ò´Â´Ù.
+	// ì£¼ì–´ì§„ ì•„ì´ë””ì˜ í´ë¼ì´ì–¸íŠ¸ì— ëŒ€í•œ ServerPlayer ê°ì²´ë¥¼ ì–»ëŠ”ë‹¤.
 	public ServerPlayer getPlayer(String playerid) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	// ÁÖ¾îÁø ¾ÆÀÌµğ(who)ÀÇ Å¬¶ó¾ğÆ®¿¡ ´ëÇÑ ÇÁ·ÎÆÄÀÏ Á¤º¸¸¦
-	// ÁÖ¾îÁø ¾ÆÀÌµğ¸¦ °®´Â Å¬¶óÀÌ¾ğÆ®(to)³»ÀÇ ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô º¸³½´Ù.
+	// ì£¼ì–´ì§„ ì•„ì´ë””(who)ì˜ í´ë¼ì–¸íŠ¸ì— ëŒ€í•œ í”„ë¡œíŒŒì¼ ì •ë³´ë¥¼
+	// ì£¼ì–´ì§„ ì•„ì´ë””ë¥¼ ê°–ëŠ” í´ë¼ì´ì–¸íŠ¸(to)ë‚´ì˜ ëª¨ë“  í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë³´ë‚¸ë‹¤.
 	public void sendProfile(String to, String who) {
 		// TODO Auto-generated method stub
 	}
 	
-	// ÁÖ¾îÁø ¾ÆÀÌµğ(who)ÀÇ Å¬¶ó¾ğÆ®¿¡ ´ëÇÑ Á¤º¸¸¦
-	// ÁÖ¾îÁø ¾ÆÀÌµğ¸¦ °®´Â Å¬¶óÀÌ¾ğÆ®(to)³»ÀÇ ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô º¸³½´Ù.
+	// ì£¼ì–´ì§„ ì•„ì´ë””(who)ì˜ í´ë¼ì–¸íŠ¸ì— ëŒ€í•œ ì •ë³´ë¥¼
+	// ì£¼ì–´ì§„ ì•„ì´ë””ë¥¼ ê°–ëŠ” í´ë¼ì´ì–¸íŠ¸(to)ë‚´ì˜ ëª¨ë“  í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë³´ë‚¸ë‹¤.
 	public void sendProfileInfo(String to, String who) {
 		// TODO Auto-generated method stub
 	}
 	
-	// ·ë¿¡ ÀÖ´ø Å¬¶óÀÌ¾ğÆ®°¡ ´Ù½Ã ´ë±â½Ç·Î µ¹¾Æ¿À·Á ÇÒ °æ¿ì,
-	// ´ë±â½ÇÀÇ Å¬¶óÀÌ¾ğÆ® ¸®½ºÆ®¿¡ ÇØ´ç Å¬¶óÀÌ¾ğÆ®¸¦ ´Ù½Ã Ãß°¡ÇÑ´Ù.
+	// ë£¸ì— ìˆë˜ í´ë¼ì´ì–¸íŠ¸ê°€ ë‹¤ì‹œ ëŒ€ê¸°ì‹¤ë¡œ ëŒì•„ì˜¤ë ¤ í•  ê²½ìš°,
+	// ëŒ€ê¸°ì‹¤ì˜ í´ë¼ì´ì–¸íŠ¸ ë¦¬ìŠ¤íŠ¸ì— í•´ë‹¹ í´ë¼ì´ì–¸íŠ¸ë¥¼ ë‹¤ì‹œ ì¶”ê°€í•œë‹¤.
 	public void takePlayer(ServerPlayer player) {
 		// TODO Auto-generated method stub
 	}

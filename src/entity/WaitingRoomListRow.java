@@ -20,7 +20,7 @@ public class WaitingRoomListRow implements Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("[WaitingRoomListRow] ¹æ¹øÈ£:%d, ¹æÀÌ¸§:%s, ¹æÀÎ¿ø:%d/%d, ¹æ»óÅÂ:%d", 
+		return String.format("[WaitingRoomListRow] ë°©ë²ˆí˜¸:%d, ë°©ì´ë¦„:%s, ë°©ì¸ì›:%d/%d, ë°©ìƒíƒœ:%d", 
 				roomId, roomName, currentPlayerCount, maxPlayerCount, roomState);
 	}
 

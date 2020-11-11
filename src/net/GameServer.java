@@ -27,8 +27,8 @@ public class GameServer extends Thread {
 			System.out.println("Couldn't access port " + SERVER_PORT + " PORT");
 			System.exit(1);
 		}
-		lobby = new Lobby();	// ·Îºñ¿¡¼­ÀÇ ³×Æ®¿öÅ·À» ´ã´çÇÏ´Â ¼­¹ö·Î¼­ µ¿ÀÛÇÑ´Ù.
-		lobby.start();			// ·Îºñ ½º·¹µå ½ÇÇà
+		lobby = new Lobby();	// ë¡œë¹„ì—ì„œì˜ ë„¤íŠ¸ì›Œí‚¹ì„ ë‹´ë‹¹í•˜ëŠ” ì„œë²„ë¡œì„œ ë™ì‘í•œë‹¤.
+		lobby.start();			// ë¡œë¹„ ìŠ¤ë ˆë“œ ì‹¤í–‰
 	}
 	
 	@Override
@@ -39,7 +39,7 @@ public class GameServer extends Thread {
 		System.out.println("Lobby thread is  started...");
 		while(true) {
 			try {
-				// SERVER_PORT(=4001)¿¡¼­ Å¬¶óÀÌ¾ğÆ® Á¢¼Ó ´ë±â
+				// SERVER_PORT(=4001)ì—ì„œ í´ë¼ì´ì–¸íŠ¸ ì ‘ì† ëŒ€ê¸°
 				socket = serverSocket.accept();
 
 				ObjectOutputStream out  = new ObjectOutputStream(socket.getOutputStream());
@@ -49,46 +49,46 @@ public class GameServer extends Thread {
 				
 				switch(gameProtocol.getProtocol()) {
 				case GameProtocol.PT_REQ_SIGN_UP:
-					// È¸¿ø°¡ÀÔ ¿äÃ»Ã³¸®ÈÄ °á°ú ÀÀ´ä
+					// íšŒì›ê°€ì… ìš”ì²­ì²˜ë¦¬í›„ ê²°ê³¼ ì‘ë‹µ
 					user = (User) gameProtocol.getData();
 					gameProtocol = new GameProtocol(GameProtocol.PT_REQ_SIGN_UP);
 					gameProtocol.setData(DBManager.signUp(user));
 					out.writeObject(gameProtocol);
 					break;
 				case GameProtocol.PT_ID_DUPLICATE_CHECK:
-					// È¸¿ø°¡ÀÔ ¾ÆÀÌµğ Áßº¹ Ã¼Å©
+					// íšŒì›ê°€ì… ì•„ì´ë”” ì¤‘ë³µ ì²´í¬
 					String id = (String) gameProtocol.getData();
 					gameProtocol = new GameProtocol(GameProtocol.PT_ID_DUPLICATE_CHECK);
 					gameProtocol.setData(DBManager.checkIdDuplicate(id));
 					out.writeObject(gameProtocol);
 					break;
 				case GameProtocol.PT_RES_LOGIN:
-					// °¡ÀÔµÇ¾îÀÖ´Â Å¬¶óÀÌ¾ğÆ®°¡ ¸Â´ÂÁö Ã¼Å©
+					// ê°€ì…ë˜ì–´ìˆëŠ” í´ë¼ì´ì–¸íŠ¸ê°€ ë§ëŠ”ì§€ ì²´í¬
 					Login login = (Login) gameProtocol.getData();
 					user = loginValidate(login);
 					if(user == null) {
-						System.out.println("·Î±×ÀÎ ½ÇÆĞ");
+						System.out.println("ë¡œê·¸ì¸ ì‹¤íŒ¨");
 						continue;
 					}
-					// ·Î±×ÀÎÀ» ¼º°øÇÏ°í ¹Ş¾Æ¿Â À¯Àú Á¤º¸¸¦ Å¬¶óÀÌ¾ğÆ®¿¡°Ô Àü´ŞÇØÁÜ
-					System.out.println("·Î±×ÀÎ ¼º°ø!");
+					// ë¡œê·¸ì¸ì„ ì„±ê³µí•˜ê³  ë°›ì•„ì˜¨ ìœ ì € ì •ë³´ë¥¼ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì „ë‹¬í•´ì¤Œ
+					System.out.println("ë¡œê·¸ì¸ ì„±ê³µ!");
 					out.writeObject(user);
 					
-					// ³×Æ®¿öÅ·À» Àü´ãÇÏ´Â ServerPlayer °´Ã¼ »ı¼º
+					// ë„¤íŠ¸ì›Œí‚¹ì„ ì „ë‹´í•˜ëŠ” ServerPlayer ê°ì²´ ìƒì„±
 					player = new ServerPlayer(socket, lobby, null, user);
 					player.out = out;
 					player.in = in;
 					
-					// Á¢¼ÓÇÑ Å¬¶óÀÌ¾ğÆ®¿¡°Ô ·ë ¸®½ºÆ®¸¦ º¸³½´Ù.
+					// ì ‘ì†í•œ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë£¸ ë¦¬ìŠ¤íŠ¸ë¥¼ ë³´ë‚¸ë‹¤.
 					// lobby.sendRoomList(player);
 					
-					// Á¢¼ÓÇÑ Å¬¶óÀÌ¾ğÆ®¸¦ ·ÎºñÀÇ ÇÃ·¹ÀÌ¾î ¸®½ºÆ®¿¡ Ãß°¡ÇÑ´Ù.
+					// ì ‘ì†í•œ í´ë¼ì´ì–¸íŠ¸ë¥¼ ë¡œë¹„ì˜ í”Œë ˆì´ì–´ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€í•œë‹¤.
 					lobby.addPlayer(player);
 					
-					// ·Îºñ¿¡ ·ë ¸®½ºÆ®¸¦ ÀüÃ¼¿¡°Ô ´Ù½Ã º¸³½´Ù.
+					// ë¡œë¹„ì— ë£¸ ë¦¬ìŠ¤íŠ¸ë¥¼ ì „ì²´ì—ê²Œ ë‹¤ì‹œ ë³´ë‚¸ë‹¤.
 					// lobby.broadcastRoomList();
 					
-					// ÇÃ·¹ÀÌ¾îÀÇ ¼ÒÄÏ Å¸ÀÓ¾Æ¿ôÀ» 10msec·Î ¼³Á¤ÇÑ´Ù.
+					// í”Œë ˆì´ì–´ì˜ ì†Œì¼“ íƒ€ì„ì•„ì›ƒì„ 10msecë¡œ ì„¤ì •í•œë‹¤.
 					player.socket.setSoTimeout(10);
 					break;
 				}
@@ -98,7 +98,7 @@ public class GameServer extends Thread {
 		}
 	}
 	
-	// ·Î±×ÀÎ °ËÁõ
+	// ë¡œê·¸ì¸ ê²€ì¦
 	public User loginValidate(Login loginInfo) {
 		return DBManager.login(loginInfo);
 	}

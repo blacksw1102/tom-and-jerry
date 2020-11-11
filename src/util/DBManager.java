@@ -13,17 +13,17 @@ import entity.Login;
 import entity.User;
 
 public class DBManager {
-	/* ¿ø‚u DB Àü¿ë */
+	/* ì›êµ‘ DB ì „ìš© */
 //	private static String url = "jdbc:mysql://cloud1.igkim.com:30306/tomnjerry_db";
 //	private static String uid = "tomnjerry";
 //	private static String pwd = "tnj6jo!";
 
-	/* ·ÎÄÃ DB Àü¿ë */
+	/* ë¡œì»¬ DB ì „ìš© */
 	private static String url = "jdbc:mysql://localhost/tom_n_jerry";
 	private static String uid = "admin";
 	private static String pwd = "admin";
 
-	// DB ¿¬°á
+	// DB ì—°ê²°
 	public static Connection getConnection() {
 		Connection conn = null;
 		try {
@@ -35,7 +35,7 @@ public class DBManager {
 		return conn;
 	}
 	
-	// È¸¿ø°¡ÀÔ
+	// íšŒì›ê°€ì…
 	public static boolean signUp(User user) {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
@@ -65,7 +65,7 @@ public class DBManager {
 		return isSuccess;
 	}
 
-	// DB ¿¬°á Á¾·á1
+	// DB ì—°ê²° ì¢…ë£Œ1
 	public static void close(Connection conn, PreparedStatement pstmt,
 			ResultSet rset) {
 		if (rset != null) {
@@ -88,7 +88,7 @@ public class DBManager {
 		}
 	}
 
-	// DB ¿¬°á Á¾·á2
+	// DB ì—°ê²° ì¢…ë£Œ2
 	public static void close(Connection conn, PreparedStatement pstmt) {
 
 		if (pstmt != null) {

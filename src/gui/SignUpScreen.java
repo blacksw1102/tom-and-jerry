@@ -32,7 +32,7 @@ public class SignUpScreen extends JPanel {
 	private Choice birthField1, birthField2, telField1;
 	private JButton idCheckBtn, submitBtn, cancelBtn;
 
-	private String verifiedId;	// Áßº¹Ã¼Å©¸¦ Åë°úÇÑ ¾ÆÀÌµğ
+	private String verifiedId;	// ì¤‘ë³µì²´í¬ë¥¼ í†µê³¼í•œ ì•„ì´ë””
 	
 	public SignUpScreen(ClientWindow win) {
 		this.win = win;
@@ -43,7 +43,7 @@ public class SignUpScreen extends JPanel {
 		
 		JLabel signUpTitle = new JLabel("\uD68C\uC6D0 \uAC00\uC785");
 		signUpTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		signUpTitle.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 36));
+		signUpTitle.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 36));
 		add(signUpTitle, BorderLayout.NORTH);
 		
 		JPanel inputForm = new JPanel();
@@ -52,12 +52,12 @@ public class SignUpScreen extends JPanel {
 		
 		idLabel = new JLabel("\uC544\uC774\uB514 : ");
 		idLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		idLabel.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		idLabel.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		idLabel.setBounds(409, 75, 125, 18);
 		inputForm.add(idLabel);
 		
 		idField = new JTextField();
-		idField.setFont(new Font("µ¸¿ò", Font.PLAIN, 18));
+		idField.setFont(new Font("ë‹ì›€", Font.PLAIN, 18));
 		idField.setBounds(545, 70, 200, 30);
 		inputForm.add(idField);
 		idField.setColumns(20);
@@ -69,56 +69,56 @@ public class SignUpScreen extends JPanel {
 				checkIdDuplicate();
 			}
 		});
-		idCheckBtn.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 14));
+		idCheckBtn.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 14));
 		idCheckBtn.setBackground(Color.LIGHT_GRAY);
 		idCheckBtn.setBounds(759, 65, 90, 40);
 		inputForm.add(idCheckBtn);
 		
 		pwLabel = new JLabel("\uBE44\uBC00\uBC88\uD638 : ");
 		pwLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		pwLabel.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		pwLabel.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		pwLabel.setBounds(410, 125, 125, 18);
 		inputForm.add(pwLabel);
 		
 		nicknameLable = new JLabel("\uB2C9\uB124\uC784 : ");
 		nicknameLable.setHorizontalAlignment(SwingConstants.RIGHT);
-		nicknameLable.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		nicknameLable.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		nicknameLable.setBounds(409, 225, 125, 18);
 		inputForm.add(nicknameLable);
 		
 		emailLabel = new JLabel("\uC774\uBA54\uC77C : ");
 		emailLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		emailLabel.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		emailLabel.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		emailLabel.setBounds(409, 275, 125, 18);
 		inputForm.add(emailLabel);
 		
 		pwField = new JPasswordField();
-		pwField.setFont(new Font("µ¸¿ò", Font.PLAIN, 18));
+		pwField.setFont(new Font("ë‹ì›€", Font.PLAIN, 18));
 		pwField.setBounds(545, 120, 200, 30);
 		pwField.setText("1234");
 		inputForm.add(pwField);
 		
 		pwConfirmLabel = new JLabel("\uBE44\uBC00\uBC88\uD638 \uD655\uC778 : ");
 		pwConfirmLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		pwConfirmLabel.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		pwConfirmLabel.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		pwConfirmLabel.setBounds(345, 175, 188, 18);
 		inputForm.add(pwConfirmLabel);
 		
 		pwConfirmField = new JPasswordField();
-		pwConfirmField.setFont(new Font("µ¸¿ò", Font.PLAIN, 18));
+		pwConfirmField.setFont(new Font("ë‹ì›€", Font.PLAIN, 18));
 		pwConfirmField.setBounds(545, 170, 200, 30);
 		pwConfirmField.setText("1234");
 		inputForm.add(pwConfirmField);
 		
 		nicknameField = new JTextField();
-		nicknameField.setFont(new Font("µ¸¿ò", Font.PLAIN, 18));
+		nicknameField.setFont(new Font("ë‹ì›€", Font.PLAIN, 18));
 		nicknameField.setColumns(20);
 		nicknameField.setBounds(545, 220, 200, 30);
 		nicknameField.setText("testUser");
 		inputForm.add(nicknameField);
 		
 		emailField = new JTextField();
-		emailField.setFont(new Font("µ¸¿ò", Font.PLAIN, 18));
+		emailField.setFont(new Font("ë‹ì›€", Font.PLAIN, 18));
 		emailField.setColumns(20);
 		emailField.setBounds(545, 270, 200, 30);
 		emailField.setText("testUser@gmail.com");
@@ -126,25 +126,25 @@ public class SignUpScreen extends JPanel {
 		
 		birthLabel = new JLabel("\uC0DD\uB144\uC6D4\uC77C : ");
 		birthLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		birthLabel.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		birthLabel.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		birthLabel.setBounds(409, 325, 125, 18);
 		inputForm.add(birthLabel);
 		
 		birthLabel1 = new JLabel("\uB144");
 		birthLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-		birthLabel1.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		birthLabel1.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		birthLabel1.setBounds(635, 325, 30, 18);
 		inputForm.add(birthLabel1);
 		
 		birthLabel2 = new JLabel("\uC6D4");
 		birthLabel2.setHorizontalAlignment(SwingConstants.CENTER);
-		birthLabel2.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		birthLabel2.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		birthLabel2.setBounds(745, 325, 30, 18);
 		inputForm.add(birthLabel2);
 		
 		birthLabel3 = new JLabel("\uC77C");
 		birthLabel3.setHorizontalAlignment(SwingConstants.CENTER);
-		birthLabel3.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		birthLabel3.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		birthLabel3.setBounds(855, 325, 28, 18);
 		inputForm.add(birthLabel3);
 		
@@ -165,7 +165,7 @@ public class SignUpScreen extends JPanel {
 
 		birthField3 = new JTextField();
 		birthField3.setHorizontalAlignment(SwingConstants.CENTER);
-		birthField3.setFont(new Font("µ¸¿ò", Font.PLAIN, 18));
+		birthField3.setFont(new Font("ë‹ì›€", Font.PLAIN, 18));
 		birthField3.setColumns(2);
 		birthField3.setBounds(785, 320, 60, 32);
 		birthField3.setText("24");
@@ -173,7 +173,7 @@ public class SignUpScreen extends JPanel {
 		
 		JLabel telLabel = new JLabel("\uC804\uD654\uBC88\uD638 : ");
 		telLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		telLabel.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		telLabel.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		telLabel.setBounds(409, 375, 125, 18);
 		inputForm.add(telLabel);
 
@@ -187,13 +187,13 @@ public class SignUpScreen extends JPanel {
 		
 		lineLabel1 = new JLabel("-");
 		lineLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-		lineLabel1.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		lineLabel1.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		lineLabel1.setBounds(635, 375, 30, 18);
 		inputForm.add(lineLabel1);
 
 		telField2 = new JTextField();
 		telField2.setHorizontalAlignment(SwingConstants.CENTER);
-		telField2.setFont(new Font("µ¸¿ò", Font.PLAIN, 18));
+		telField2.setFont(new Font("ë‹ì›€", Font.PLAIN, 18));
 		telField2.setColumns(4);
 		telField2.setBounds(675, 370, 60, 32);
 		telField2.setText("1234");
@@ -201,13 +201,13 @@ public class SignUpScreen extends JPanel {
 
 		lineLabel2 = new JLabel("-");
 		lineLabel2.setHorizontalAlignment(SwingConstants.CENTER);
-		lineLabel2.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		lineLabel2.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		lineLabel2.setBounds(745, 375, 30, 18);
 		inputForm.add(lineLabel2);
 		
 		telField3 = new JTextField();
 		telField3.setHorizontalAlignment(SwingConstants.CENTER);
-		telField3.setFont(new Font("µ¸¿ò", Font.PLAIN, 18));
+		telField3.setFont(new Font("ë‹ì›€", Font.PLAIN, 18));
 		telField3.setColumns(4);
 		telField3.setBounds(785, 370, 60, 32);
 		telField3.setText("1234");
@@ -215,7 +215,7 @@ public class SignUpScreen extends JPanel {
 		
 		submitBtn = new JButton("\uAC00\uC785");
 		submitBtn.setBackground(Color.ORANGE);
-		submitBtn.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		submitBtn.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		submitBtn.setBounds(492, 471, 150, 50);
 		submitBtn.addActionListener(new ActionListener() {
 			@Override
@@ -228,7 +228,7 @@ public class SignUpScreen extends JPanel {
 		
 		cancelBtn = new JButton("\uCDE8\uC18C");
 		cancelBtn.setBackground(Color.WHITE);
-		cancelBtn.setFont(new Font("HY°ß°íµñ", Font.PLAIN, 20));
+		cancelBtn.setFont(new Font("HYê²¬ê³ ë”•", Font.PLAIN, 20));
 		cancelBtn.setBounds(656, 471, 150, 50);
 		cancelBtn.addActionListener(new ActionListener() {
 			@Override
@@ -239,7 +239,7 @@ public class SignUpScreen extends JPanel {
 		inputForm.add(cancelBtn);
 	}
 	
-	// ¾ÆÀÌµğ Áßº¹ Ã¼Å©
+	// ì•„ì´ë”” ì¤‘ë³µ ì²´í¬
 	private void checkIdDuplicate() {
 		String id = idField.getText();
 
@@ -256,16 +256,16 @@ public class SignUpScreen extends JPanel {
 			protocol.setData(id);
 			output.writeObject(protocol);
 			
-			// ¾ÆÀÌµğ Áßº¹Ã¼Å© °á°ú ±â´Ù¸²
+			// ì•„ì´ë”” ì¤‘ë³µì²´í¬ ê²°ê³¼ ê¸°ë‹¤ë¦¼
 			protocol = (GameProtocol) input.readObject();
 			boolean isSuccess = (boolean) protocol.getData();
 			
-			// ¾ÆÀÌµğ Áßº¹Ã¼Å© °á°ú¸¦ À¯Àú¿¡°Ô ¾Ë¸²
+			// ì•„ì´ë”” ì¤‘ë³µì²´í¬ ê²°ê³¼ë¥¼ ìœ ì €ì—ê²Œ ì•Œë¦¼
 			if(isSuccess) {
 				verifiedId = id;
-				showDialog("»ç¿ë°¡´ÉÇÑ ¾ÆÀÌµğÀÔ´Ï´Ù.");
+				showDialog("ì‚¬ìš©ê°€ëŠ¥í•œ ì•„ì´ë””ì…ë‹ˆë‹¤.");
 			} else 
-				showDialog("ÀÌ¹Ì Á¸ÀçÇÏ´Â ¾ÆÀÌµğÀÔ´Ï´Ù.");
+				showDialog("ì´ë¯¸ ì¡´ì¬í•˜ëŠ” ì•„ì´ë””ì…ë‹ˆë‹¤.");
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} catch (ClassNotFoundException e1) {
@@ -279,18 +279,18 @@ public class SignUpScreen extends JPanel {
 		}
 	}
 	
-	// È¸¿ø°¡ÀÔ À¯È¿¼º Ã¼Å©
+	// íšŒì›ê°€ì… ìœ íš¨ì„± ì²´í¬
 	private boolean isValidate() {
 
-		// ¾ÆÀÌµğ Áßº¹ Ã¼Å©
+		// ì•„ì´ë”” ì¤‘ë³µ ì²´í¬
 		if(verifiedId.isEmpty() || !verifiedId.equals(idField.getText())) {
-			showDialog("¾ÆÀÌµğ Áßº¹À» Ã¼Å©ÇØÁÖ¼¼¿ä.");
+			showDialog("ì•„ì´ë”” ì¤‘ë³µì„ ì²´í¬í•´ì£¼ì„¸ìš”.");
 			return false;
 		}
 		
-		// ºñ¹Ğ¹øÈ£ È®ÀÎ Ã¼Å©
+		// ë¹„ë°€ë²ˆí˜¸ í™•ì¸ ì²´í¬
 		if(!pwField.getText().equals(pwConfirmField.getText())) {
-			showDialog("ºñ¹Ğ¹øÈ£¸¦ Á¤È®È÷ ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+			showDialog("ë¹„ë°€ë²ˆí˜¸ë¥¼ ì •í™•íˆ ì…ë ¥í•´ì£¼ì„¸ìš”.");
 			return false;
 		}
 		
@@ -310,12 +310,12 @@ public class SignUpScreen extends JPanel {
 		ObjectOutputStream output = null;
 		ObjectInputStream input = null;
 		
-		// È¸¿ø°¡ÀÔ Á¤º¸¿¡ ´ëÇÑ À¯È¿¼º °Ë»ç
+		// íšŒì›ê°€ì… ì •ë³´ì— ëŒ€í•œ ìœ íš¨ì„± ê²€ì‚¬
 		if(!isValidate())
 			return; 
 		
 		try {
-			// È¸¿ø°¡ÀÔ Á¤º¸ ¼­¹ö¿¡ Àü¼Û
+			// íšŒì›ê°€ì… ì •ë³´ ì„œë²„ì— ì „ì†¡
 			socket = new Socket("localhost", 4001);
 			output = new ObjectOutputStream(socket.getOutputStream());
 			input = new ObjectInputStream(socket.getInputStream());
@@ -324,11 +324,11 @@ public class SignUpScreen extends JPanel {
 			protocol.setData(user);
 			output.writeObject(protocol);
 			
-			// È¸¿ø°¡ÀÔ Ã³¸®°á°ú ±â´Ù¸²
+			// íšŒì›ê°€ì… ì²˜ë¦¬ê²°ê³¼ ê¸°ë‹¤ë¦¼
 			protocol = (GameProtocol) input.readObject();
 			boolean isSuccess = (boolean) protocol.getData();
 			
-			// È¸¿ø°¡ÀÔ °á°ú¸¦ À¯Àú¿¡°Ô ¾Ë¸²
+			// íšŒì›ê°€ì… ê²°ê³¼ë¥¼ ìœ ì €ì—ê²Œ ì•Œë¦¼
 			if(isSuccess) {
 				showSignUpSuccessDialog();
 			}
@@ -350,7 +350,7 @@ public class SignUpScreen extends JPanel {
 		info.setSize(200, 110);
 		info.setLocationRelativeTo(null);
 		info.setLayout(new FlowLayout());
-		JButton ok = new JButton("È®ÀÎ");
+		JButton ok = new JButton("í™•ì¸");
 		info.add(new JLabel(message, JLabel.CENTER));
 		info.add(ok);
 		ok.addActionListener(new ActionListener() {
@@ -363,14 +363,14 @@ public class SignUpScreen extends JPanel {
 		info.setVisible(true);
 	}
 	
-	// È¸¿ø°¡ÀÔ¿¡ ¼º°øÇßÀ» ¶§ ³ªÅ¸³ª´Â Dialog
+	// íšŒì›ê°€ì…ì— ì„±ê³µí–ˆì„ ë•Œ ë‚˜íƒ€ë‚˜ëŠ” Dialog
 	public void showSignUpSuccessDialog() {
 		JDialog info = new JDialog(win, true);
 		info.setSize(200, 110);
 		info.setLocationRelativeTo(null);
 		info.setLayout(new FlowLayout());
-		JButton ok = new JButton("È®ÀÎ");
-		info.add(new JLabel("È¸¿ø°¡ÀÔÀÌ µÇ¾ú½À´Ï´Ù.", JLabel.CENTER));
+		JButton ok = new JButton("í™•ì¸");
+		info.add(new JLabel("íšŒì›ê°€ì…ì´ ë˜ì—ˆìŠµë‹ˆë‹¤.", JLabel.CENTER));
 		info.add(ok);
 		ok.addActionListener(new ActionListener() {
 			@Override

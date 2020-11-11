@@ -4,20 +4,20 @@ import java.util.Vector;
 
 public class GRoom {
 
-	Vector playerList = null;		// °ÔÀÓ ÁøÇà ÁßÀÎ ÇÃ·¹ÀÌ¾î ¸®½ºÆ®
-	Vector participantList = null;	// ÇöÀç ¹æ¿¡ ÀÖ´Â ÇÃ·¹ÀÌ¾î ¸®½ºÆ®
-	Vector sessionManList = null;	// °ÔÀÓ ÁøÇà ÁßÀÎ ÇÃ·¹ÀÌ¾î ¸®½ºÆ®
-	int sessionManScore[] = null;	// ÇÃ·¹ÀÌ¾îÀÇ Á¡¼ö
+	Vector playerList = null;		// ê²Œì„ ì§„í–‰ ì¤‘ì¸ í”Œë ˆì´ì–´ ë¦¬ìŠ¤íŠ¸
+	Vector participantList = null;	// í˜„ì¬ ë°©ì— ìˆëŠ” í”Œë ˆì´ì–´ ë¦¬ìŠ¤íŠ¸
+	Vector sessionManList = null;	// ê²Œì„ ì§„í–‰ ì¤‘ì¸ í”Œë ˆì´ì–´ ë¦¬ìŠ¤íŠ¸
+	int sessionManScore[] = null;	// í”Œë ˆì´ì–´ì˜ ì ìˆ˜
 	
-	public String roomId = null;	// ·ë ¾ÆÀÌµğ
+	public String roomId = null;	// ë£¸ ì•„ì´ë””
 
-	// ÇÃ·¹ÀÌ¾î°¡ °ÔÀÓ ÁßÀÎÁö ¿©ºÎ¸¦ ¸®ÅÏ
+	// í”Œë ˆì´ì–´ê°€ ê²Œì„ ì¤‘ì¸ì§€ ì—¬ë¶€ë¥¼ ë¦¬í„´
 	public boolean inSession(ServerPlayer player) {
 		if((sessionManList.size() == 0) && (playerList.size() == 0)) {
 			return false;
 		}
 		if(sessionManList.contains(player)) {
-			// ÇÃ·¹ÀÌ¾î°¡ sessionManList ³»¿¡ ÀÖÀ» °æ¿ì¿¡´Â °íµµ¸®¸¦ Ä¡°í ÀÖ´Â Áß
+			// í”Œë ˆì´ì–´ê°€ sessionManList ë‚´ì— ìˆì„ ê²½ìš°ì—ëŠ” ê³ ë„ë¦¬ë¥¼ ì¹˜ê³  ìˆëŠ” ì¤‘
 			return true;
 		}
 		return false;
