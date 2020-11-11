@@ -130,6 +130,14 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
 							System.out.println(rows);
 						}
 						break;
+					case GameProtocol.PT_RES_ENTER_WAITING_ROOM:
+						// 유저 데이터를 가지고 대기방 화면으로 이동한다.
+						WaitingRoomScreen waitingRoomScreen = new WaitingRoomScreen(win, user);
+						win.waitingRoomScreen = waitingRoomScreen;
+						win.addScreen("waitingRoomScreen", waitingRoomScreen);
+						new Thread(waitingRoomScreen).start();
+						win.change("waitingRoomScreen");
+						break;
 				}
 				
 			} catch (ClassNotFoundException e) {
@@ -449,7 +457,13 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
             	@Override
             	public void mouseClicked(MouseEvent e) {
                 	if (e.getClickCount() == 2 && !e.isConsumed()) {
-                		System.out.println("roomtitle : " + roomTitle);
+                		GameProtocol protocol = new GameProtocol(GameProtocol.PT_REQ_ENTER_WAITING_ROOM);
+                		protocol.setData(number);
+                		try {
+							user.out.writeObject(protocol);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
                 	}
             	}
             });

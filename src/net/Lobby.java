@@ -62,7 +62,7 @@ public class Lobby extends Thread {
 							chatList.remove(player.getId());
 							player.setPlayerState(2);
 							waitingRoom.addPlayer(player);
-							waitingRoom.setRoomId(currentRoomId++);
+							waitingRoom.setRoomId(++currentRoomId);
 							waitingRoom.start(); // 대기방 스레드 시작
 							roomList.put(waitingRoom.getRoomId(), waitingRoom);
 							
@@ -85,7 +85,11 @@ public class Lobby extends Thread {
 							if(result == 1) {
 								// 대기방 유저 리스트를 대기방에 있는 클라이언트들에게 알려준다
 								chatList.remove(player.getId());
+								player.setPlayerState(1);
 								waitingRoom.broadcastUserList();
+//								protocol = new GameProtocol(GameProtocol.PT_RES_ENTER_WAITING_ROOM, result);
+//								broadcastUserList(); // 유저 리스트 브로드캐스팅
+//								broadcastRoomList(); // 대기방 리스트 브로드캐스팅
 							} else {
 								// 이미 방에 인원이 다찼음을 로비에 있는 클라이언트들에게 알려준다.
 								protocol = new GameProtocol(GameProtocol.PT_RES_ENTER_WAITING_ROOM, result);

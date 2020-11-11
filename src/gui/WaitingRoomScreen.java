@@ -122,6 +122,7 @@ public class WaitingRoomScreen extends JPanel implements Runnable {
 				
 				switch(protocol.getProtocol()) {
 					case GameProtocol.PT_BROADCAST_USER_LIST_IN_WAITING_ROOM:	// 유저 리스트 조회
+						System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@");
 						roomUserList.removeAll();
 						List<WaitingRoomRow> row = (ArrayList) protocol.getData();
 						for(WaitingRoomRow value : row) {
