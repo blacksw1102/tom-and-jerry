@@ -123,7 +123,7 @@ public class MakeRoomScreen extends JDialog {
 		getContentPane().add(createButton);
 		getContentPane().add(cancelButton);
 		setSize(370, 200);
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(win);
 		getContentPane().setLayout(null);
 		setVisible(true);
 	}
@@ -143,7 +143,7 @@ public class MakeRoomScreen extends JDialog {
 		// 확인 메시지 표시
 		JDialog info = new JDialog(win, true);
 		info.setSize(200, 110);
-		info.setLocationRelativeTo(null);
+		info.setLocationRelativeTo(win);
 		info.setLayout(new FlowLayout());
 		JButton ok = new JButton("확인");
 		info.add(new JLabel(message, JLabel.CENTER));

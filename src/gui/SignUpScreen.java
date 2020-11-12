@@ -348,7 +348,7 @@ public class SignUpScreen extends JPanel {
 	public void showDialog(String message) {
 		JDialog info = new JDialog(win, true);
 		info.setSize(200, 110);
-		info.setLocationRelativeTo(null);
+		info.setLocationRelativeTo(win);
 		info.setLayout(new FlowLayout());
 		JButton ok = new JButton("확인");
 		info.add(new JLabel(message, JLabel.CENTER));
@@ -367,7 +367,7 @@ public class SignUpScreen extends JPanel {
 	public void showSignUpSuccessDialog() {
 		JDialog info = new JDialog(win, true);
 		info.setSize(200, 110);
-		info.setLocationRelativeTo(null);
+		info.setLocationRelativeTo(win);
 		info.setLayout(new FlowLayout());
 		JButton ok = new JButton("확인");
 		info.add(new JLabel("회원가입이 되었습니다.", JLabel.CENTER));
