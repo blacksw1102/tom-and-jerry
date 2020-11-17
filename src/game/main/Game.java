@@ -14,10 +14,8 @@ import game.manager.KeyInput;
 import game.manager.MouseInput;
 import game.manager.SpriteSheet;
 import game.object.Block;
-import game.object.Crate;
-import game.object.Enemy;
 import game.object.ID;
-import game.object.Wizard;
+import game.object.Tom;
 
 /* 게임이 진행되는 가장 외각 클라스 */
 public class Game extends Canvas implements Runnable {
@@ -34,11 +32,8 @@ public class Game extends Canvas implements Runnable {
 	private BufferedImage sprite_sheet = null;
 	private BufferedImage floor = null;
 	
-	public int ammo = 20;
-	public int hp = 100;
-	
 	public Game() {
-		new Window(1000, 563, "Wizard Game", this);
+		new Window(1000, 563, "Tom and Jerry", this);
 		start();
 		
 		handler = new Handler();
@@ -47,16 +42,12 @@ public class Game extends Canvas implements Runnable {
 		
 		// 이미지 로드 때문에 딜레이가 약간 걸림
 		BufferedImageLoader loader = new BufferedImageLoader();
-		level = loader.loadImage("/textures/wizard_level.png");
+		level = loader.loadImage("/textures/tom_n_jerry_level.png");
 		sprite_sheet = loader.loadImage("/textures/sprite_sheet.png");
 		
 		ss = new SpriteSheet(sprite_sheet);
-
 		floor = ss.grabImage(4, 2, 32, 32);
 		
-		this.addMouseListener(new MouseInput(handler, camera, this, ss));
-		
-		// handler.addObject(new Wizard(100, 100, ID.Player, handler));
 		loadLevel(level);
 	}
 	
@@ -130,8 +121,8 @@ public class Game extends Canvas implements Runnable {
 		
 		g2d.translate(-camera.getX(), -camera.getY());
 		
-		for(int xx = 0; xx < 30*72; xx+=32) {
-			for(int yy = 0; yy < 30*72; yy+=32) {
+		for(int xx = 0; xx < 37*32; xx+=32) {
+			for(int yy = 0; yy < 37*32; yy+=32) {
 				g.drawImage(floor,  xx,  yy , null);
 			}
 		}
@@ -139,16 +130,6 @@ public class Game extends Canvas implements Runnable {
 		handler.render(g);
 		
 		g2d.translate(camera.getX(), camera.getY());
-		
-		g.setColor(Color.gray);
-		g.fillRect(5, 5, 200, 32);
-		g.setColor(Color.green);
-		g.fillRect(5, 5, hp*2, 32);
-		g.setColor(Color.black);
-		g.drawRect(5, 5, 200, 32);
-		
-		g.setColor(Color.white);
-		g.drawString("Ammo: " + ammo, 5, 50);
 		
 		/////////////////////////////////
 		g.dispose();
@@ -169,6 +150,13 @@ public class Game extends Canvas implements Runnable {
 				int green = (pixel >> 8) & 0xff;
 				int blue = (pixel) & 0xff;
 				
+				if(red==0 && green==0 && blue==0) {
+					handler.addObject(new Block(xx*32, yy*32, ID.Block, ss));
+				} else if(red==0 && green==0 && blue==255) {
+					handler.addObject(new Tom(xx*32, yy*32, ID.Tom, handler, this, ss));
+				}
+				
+				/*
 				if(red==255 && green==0 && blue==0) {
 					handler.addObject(new Block(xx*32, yy*32, ID.Block, ss));
 				} else if(red==0 && green==0 && blue==255) {
@@ -178,6 +166,7 @@ public class Game extends Canvas implements Runnable {
 				} else if(red==0 && green==255 && blue==255) {
 					handler.addObject(new Crate(xx*32, yy*32, ID.Crate, ss));
 				}
+				*/
 			}
 		}
 		
