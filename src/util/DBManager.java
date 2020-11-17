@@ -19,10 +19,6 @@ import entity.Login;
 import entity.User;
 
 public class DBManager {
-	/* 원굑 DB 전용 */
-	// private static String url = "jdbc:mysql://cloud1.igkim.com:30306/tomnjerry_db";
-	//private static String uid = "tomnjerry";
-	// private static String pwd = "tnj6jo!";
 
 	private static Connection conn;
 	
