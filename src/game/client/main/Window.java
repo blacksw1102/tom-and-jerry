@@ -1,4 +1,4 @@
-package game.main;
+package game.client.main;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
