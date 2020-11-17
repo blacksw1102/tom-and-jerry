@@ -5,8 +5,8 @@ public class GameServer implements Runnable {
 	@Override
 	public void run() {
 		while(true) {
-			// Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍ GameProtocol¸¦ Àü´Ş¹ŞÀ½
-			// if GameProtocol == GAME_START¸é 
+			// í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„° GameProtocolë¥¼ ì „ë‹¬ë°›ìŒ
+			// if GameProtocol == GAME_STARTë©´ 
 			// 
 		}
 	}

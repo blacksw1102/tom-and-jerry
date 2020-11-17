@@ -8,13 +8,13 @@ import java.net.Socket;
 import java.util.Arrays;
 
 public class User implements Serializable {
-	private String id;			// ¾ÆÀÌµğ
-	private String pw;			// ºñ¹Ğ¹øÈ£
-	private String confirmPw;	// ºñ¹Ğ¹øÈ£ È®ÀÎ
-	private String nickname;	// ´Ğ³×ÀÓ
-	private String email;		// ÀÌ¸ŞÀÏ
-	private String birth; 		// »ı³â¿ùÀÏ
-	private String tel; 		// ÀüÈ­¹øÈ£
+	private String id;			// ì•„ì´ë””
+	private String pw;			// ë¹„ë°€ë²ˆí˜¸
+	private String confirmPw;		// ë¹„ë°€ë²ˆí˜¸ í™•ì¸
+	private String nickname;		// ë‹‰ë„¤ì„
+	private String email;		// ì´ë©”ì¼
+	private String birth; 		// ìƒë…„ì›”ì¼
+	private String tel; 			// ì „í™”ë²ˆí˜¸
 	
 	public Socket socket;
 	public ObjectInputStream in = null;

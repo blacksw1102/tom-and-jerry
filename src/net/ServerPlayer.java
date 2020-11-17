@@ -10,7 +10,7 @@ import java.net.SocketException;
 import entity.User;
 
 /*
- * -Å¬¶óÀÌ¾ğÆ®¿Í µ¥ÀÌÅÍÁÖ°í¹Ş±âÀ§ÇÑ ¼­¹öÃø ³×Æ®¿öÅ© ¸ğµâ
+ * -í´ë¼ì´ì–¸íŠ¸ì™€ ë°ì´í„°ì£¼ê³ ë°›ê¸°ìœ„í•œ ì„œë²„ì¸¡ ë„¤íŠ¸ì›Œí¬ ëª¨ë“ˆ
  * -
  */
 
@@ -22,19 +22,19 @@ public class ServerPlayer {
 	Lobby lobby = null;
 	GRoom room = null;
 	
-	// ÇÃ·¹ÀÌ¾î Á¤º¸ ÀúÀå
+	// í”Œë ˆì´ì–´ ì •ë³´ ì €ì¥
 	String id;
 	String nickname;
 	
-	// GameServerÀÇ run()¿¡¼­ »ı¼ºµÈ´Ù.
-	// GServerPlayer °´Ã¼ »ı¼º ½Ã, ·ë ¼­¹ö Á¤º¸´À nullÀÌ´Ù.
+	// GameServerì˜ run()ì—ì„œ ìƒì„±ëœë‹¤.
+	// GServerPlayer ê°ì²´ ìƒì„± ì‹œ, ë£¸ ì„œë²„ ì •ë³´ëŠ nullì´ë‹¤.
 	public ServerPlayer(Socket socket, Lobby lobby, GRoom room, User user) {
-		// ¼ÒÄÏ, ·Îºñ ¼­¹ö, ·ë ¼­¹ö µîÀÇ Á¤º¸¸¦ ÀúÀå
+		// ì†Œì¼“, ë¡œë¹„ ì„œë²„, ë£¸ ì„œë²„ ë“±ì˜ ì •ë³´ë¥¼ ì €ì¥
 		this.socket = socket;
 		this.lobby = lobby;
 		this.room = room;
 		
-		// À¯Àú Á¤º¸ ÀúÀå
+		// ìœ ì € ì •ë³´ ì €ì¥
 		this.id = user.getId();
 		this.nickname = user.getNickname();
 	}
@@ -55,12 +55,12 @@ public class ServerPlayer {
 		this.socket = socket;
 	}
 
-	// ¿¬°áµÇ¾î ÀÖ´Â Å¬¶óÀÌ¾ğÆ®¿¡°Ô ÁÖ¾îÁø µ¥ÀÌÅÍ¸¦ Àü¼ÛÇÑ´Ù.
+	// ì—°ê²°ë˜ì–´ ìˆëŠ” í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì£¼ì–´ì§„ ë°ì´í„°ë¥¼ ì „ì†¡í•œë‹¤.
 	public void sendMessage(String message) {
 
 	}
 	
-	// ¿¬°áµÇ¾î ÀÖ´Â Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍ ¿Â µ¥ÀÌÅÍ¸¦ ÀĞ¾îµéÀÎ´Ù.
+	// ì—°ê²°ë˜ì–´ ìˆëŠ” í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„° ì˜¨ ë°ì´í„°ë¥¼ ì½ì–´ë“¤ì¸ë‹¤.
 	public String receiveMessage() throws SocketException, IOException {
 		String message = null;
 		try {
@@ -77,7 +77,7 @@ public class ServerPlayer {
 		return message;
 	}
 
-	// ³×Æ®¿öÅ© ¿¬°á ÇØÁ¦
+	// ë„¤íŠ¸ì›Œí¬ ì—°ê²° í•´ì œ
 	protected void clear() {
 		try {
 			if(in != null) {
@@ -115,12 +115,12 @@ public class ServerPlayer {
 		String playerInfoMessage = "null,null";
 		
 		if(room == null)
-			playerInfoMessage = "´ë±â½Ç,´ë±âÁß";
+			playerInfoMessage = "ëŒ€ê¸°ì‹¤,ëŒ€ê¸°ì¤‘";
 		else {
 			if(room.inSession(this))
-				playerInfoMessage = room.roomId + ",Âü°¡Áß";
+				playerInfoMessage = room.roomId + ",ì°¸ê°€ì¤‘";
 			else
-				playerInfoMessage = room.roomId + ",°üÀüÁß";
+				playerInfoMessage = room.roomId + ",ê´€ì „ì¤‘";
 		}
 		return playerInfoMessage;
 	}

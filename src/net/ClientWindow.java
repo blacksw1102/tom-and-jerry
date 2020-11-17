@@ -61,7 +61,7 @@ public class ClientWindow extends JFrame{
     	mainPanel.add(screenName, panel);
     }
     
-    // ÆĞ³ÎÀ» º¯°æÇÕ´Ï´Ù.
+    // íŒ¨ë„ì„ ë³€ê²½í•©ë‹ˆë‹¤.
     public void change(String panelName) {
     	switch(panelName) {
     		case "loginScreen":

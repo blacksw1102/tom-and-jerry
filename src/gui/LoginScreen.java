@@ -39,12 +39,12 @@ public class LoginScreen extends JPanel {
 		
 		JLabel titleLabel = new JLabel("\uD1B0\uACFC \uC81C\uB9AC \uAC8C\uC784");
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		titleLabel.setFont(new Font("HY∞ﬂ∞ÌµÒ", Font.PLAIN, 36));
+		titleLabel.setFont(new Font("HYÍ≤¨Í≥†Îîï", Font.PLAIN, 36));
 		titleLabel.setBounds((getSize().width - 310) / 2, 75, 310, 86);
 		add(titleLabel);
 		
 		JButton loginBtn = new JButton("\uB85C\uADF8\uC778");
-		loginBtn.setFont(new Font("HY∞ﬂ∞ÌµÒ", Font.PLAIN, 18));
+		loginBtn.setFont(new Font("HYÍ≤¨Í≥†Îîï", Font.PLAIN, 18));
 		loginBtn.setBounds((getSize().width - 310) / 2, 315, 150, 50);
 		loginBtn.setBackground(new Color(0xffc000));
 		loginBtn.addActionListener(new ActionListener() {
@@ -55,18 +55,18 @@ public class LoginScreen extends JPanel {
 					ObjectOutputStream out  = new ObjectOutputStream(socket.getOutputStream());
 					ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-					// º≠πˆø°∞‘ ∑Œ±◊¿Œ ø‰√ª √≥∏Æ
+					// ÏÑúÎ≤ÑÏóêÍ≤å Î°úÍ∑∏Ïù∏ ÏöîÏ≤≠ Ï≤òÎ¶¨
 					GameProtocol protocol = new GameProtocol(GameProtocol.PT_RES_LOGIN);
 					protocol.setData(new Login(idField.getText() ,pwField.getText()));
 					out.writeObject(protocol);
 
-					// ∑Œ±◊¿Œ ¿¿¥‰ ∞·∞˙ √≥∏Æ
+					// Î°úÍ∑∏Ïù∏ ÏùëÎãµ Í≤∞Í≥º Ï≤òÎ¶¨
 					User user = (User) in.readObject();
 					user.setSocket(socket);
 					user.out = out;
 					user.in = in;
 					if(user != null) {
-						// ¿Ø¿˙ µ•¿Ã≈Õ∏¶ ∞°¡ˆ∞Ì ∑Œ∫Ò »≠∏È¿∏∑Œ ¿Ãµø«—¥Ÿ.
+						// Ïú†Ï†Ä Îç∞Ïù¥ÌÑ∞Î•º Í∞ÄÏßÄÍ≥† Î°úÎπÑ ÌôîÎ©¥ÏúºÎ°ú Ïù¥ÎèôÌïúÎã§.
 						WaitingRoomListScreen waitingRoomListScreen = new WaitingRoomListScreen(win, user);
 						win.waitingRoomListScreen = waitingRoomListScreen;
 						win.addScreen("waitingRoomListScreen", waitingRoomListScreen);
@@ -86,7 +86,7 @@ public class LoginScreen extends JPanel {
 		
 		JButton joinBtn = new JButton("\uD68C\uC6D0\uAC00\uC785");
 		joinBtn.setBackground(Color.WHITE);
-		joinBtn.setFont(new Font("HY∞ﬂ∞ÌµÒ", Font.PLAIN, 18));
+		joinBtn.setFont(new Font("HYÍ≤¨Í≥†Îîï", Font.PLAIN, 18));
 		joinBtn.setBounds((getSize().width - 310) / 2 + 150 + 10, 315, 150, 50);
         joinBtn.addActionListener(new ActionListener() {
 			@Override
@@ -104,13 +104,13 @@ public class LoginScreen extends JPanel {
 		idPanel.setLayout(null);
 		
 		JLabel idLabel = new JLabel("ID : ");
-		idLabel.setFont(new Font("HY∞ﬂ∞ÌµÒ", Font.PLAIN, 18));
+		idLabel.setFont(new Font("HYÍ≤¨Í≥†Îîï", Font.PLAIN, 18));
 		idLabel.setBounds(14, 12, 62, 26);
 		idPanel.add(idLabel);
 		
 		idField = new JTextField();
 		idField.setBorder(BorderFactory.createEmptyBorder());
-		idField.setFont(new Font("HY∞ﬂ∞ÌµÒ", Font.PLAIN, 18));
+		idField.setFont(new Font("HYÍ≤¨Í≥†Îîï", Font.PLAIN, 18));
 		idField.setBounds(66, 12, 230, 26);
 		idField.setColumns(10);
 		idField.setText("admin");
@@ -124,12 +124,12 @@ public class LoginScreen extends JPanel {
 		add(pwPanel);
 		
 		JLabel pwLabel = new JLabel("PW : ");
-		pwLabel.setFont(new Font("HY∞ﬂ∞ÌµÒ", Font.PLAIN, 18));
+		pwLabel.setFont(new Font("HYÍ≤¨Í≥†Îîï", Font.PLAIN, 18));
 		pwLabel.setBounds(14, 12, 62, 26);
 		pwPanel.add(pwLabel);
 		
 		pwField = new JPasswordField();
-		pwField.setFont(new Font("µ∏øÚ", Font.PLAIN, 18));
+		pwField.setFont(new Font("ÎèãÏõÄ", Font.PLAIN, 18));
 		pwField.setColumns(10);
 		pwField.setBorder(BorderFactory.createEmptyBorder());
 		pwField.setBounds(66, 12, 230, 26);

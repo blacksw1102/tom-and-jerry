@@ -1,2 +1,6 @@
-/textures/
+/config/
+/entity/
 /game/
+/gui/
+/net/
+/util/

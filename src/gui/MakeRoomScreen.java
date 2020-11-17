@@ -24,12 +24,12 @@ public class MakeRoomScreen extends JPanel implements ActionListener {
 		this.win = win;
 		setBackground(Color.WHITE); 
        
-		f1 = new Font("¹ÙÅÁ",Font.BOLD,18);       
-		JLabel label1 = new JLabel("¹æ ¸¸µé±â");
+		f1 = new Font("ë°”íƒ•",Font.BOLD,18);       
+		JLabel label1 = new JLabel("ë°© ë§Œë“¤ê¸°");
 		label1.setBounds(20,10, 150,40);
 		label1.setFont(f1);
        
-       JLabel label2=new JLabel("¹æ Á¦¸ñ");
+       JLabel label2=new JLabel("ë°© ì œëª©");
        label2.setBounds(20,50, 80,30);
        label2.setFont(f1);
        label2.setOpaque(true);
@@ -40,7 +40,7 @@ public class MakeRoomScreen extends JPanel implements ActionListener {
        roomname.setBounds(110,50, 200,30);
        roomname.setFont(f1);
        
-       JLabel lb3=new JLabel("ºñ¹Ğ¹øÈ£");
+       JLabel lb3=new JLabel("ë¹„ë°€ë²ˆí˜¸");
        lb3.setBounds(20,100, 80,30);
        lb3.setFont(f1);
        lb3.setOpaque(true);
@@ -70,7 +70,7 @@ public class MakeRoomScreen extends JPanel implements ActionListener {
        });
 
        
-       JButton bt1 = new JButton("»ı¼º");
+       JButton bt1 = new JButton("ìƒì„±");
        bt1.setBounds(100,150, 80,30);
        bt1.setFont(f1);
        bt1.setOpaque(true);
@@ -82,7 +82,7 @@ public class MakeRoomScreen extends JPanel implements ActionListener {
             }
         });
        
-       JButton bt2 = new JButton("Ãë¼Ò");
+       JButton bt2 = new JButton("ì·¨ì†Œ");
        bt2.setBounds(200,150, 80,30);
        bt2.setFont(f1);
        bt2.setOpaque(true);
@@ -115,11 +115,11 @@ public class MakeRoomScreen extends JPanel implements ActionListener {
 class Confirm extends JFrame{
    Font f2;
    Confirm(){
-       f2 = new Font("¹ÙÅÁ",Font.BOLD,18);    
-      setTitle("¹æ »ı¼º ¿Ï·á Ã¢");
+       f2 = new Font("ë°”íƒ•",Font.BOLD,18);    
+      setTitle("ë°© ìƒì„± ì™„ë£Œ ì°½");
         JPanel ConfirmWindow = new JPanel();
         setContentPane(ConfirmWindow);
-        JLabel lb = new JLabel("¹æ »ı¼ºÀ» ¿Ï·áÇÏ¿´½À´Ï´Ù!");        
+        JLabel lb = new JLabel("ë°© ìƒì„±ì„ ì™„ë£Œí•˜ì˜€ìŠµë‹ˆë‹¤!");        
         ConfirmWindow.add(lb);        
         setSize(300,100);
         setResizable(false);
@@ -130,11 +130,11 @@ class Confirm extends JFrame{
 class Cancel extends JFrame{
    Font f2;
    Cancel(){
-       f2 = new Font("¹ÙÅÁ",Font.BOLD,18);    
-      setTitle("¹æ »ı¼º Ãë¼Ò Ã¢");
+       f2 = new Font("ë°”íƒ•",Font.BOLD,18);    
+      setTitle("ë°© ìƒì„± ì·¨ì†Œ ì°½");
         JPanel CancelWindow = new JPanel();
         setContentPane(CancelWindow);
-        JLabel lb = new JLabel("¹æ »ı¼ºÀ» Ãë¼ÒÇÕ´Ï´Ù.");        
+        JLabel lb = new JLabel("ë°© ìƒì„±ì„ ì·¨ì†Œí•©ë‹ˆë‹¤.");        
         CancelWindow.add(lb);        
         setSize(300,100);
         setResizable(false);

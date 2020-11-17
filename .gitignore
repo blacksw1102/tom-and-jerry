@@ -1,5 +1,5 @@
 # DB #
-DBManager.java
+*.properties
 *.sql
 
 # class #

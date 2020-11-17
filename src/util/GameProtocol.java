@@ -4,19 +4,19 @@ import java.io.Serializable;
 
 public class GameProtocol implements Serializable {
 	
-	// ÇÁ·ÎÅäÄİ Å¸ÀÔ¿¡ °üÇÑ º¯¼ö
-	public static final int PT_UNDEFIEND = -1;			// ÇÁ·ÎÅäÄİÀÌ ÁöÁ¤µÇÁö ¾ÊÀº »óÅÂ
-	public static final int PT_REQ_SIGN_UP = 1;			// È¸¿ø°¡ÀÔ ¿äÃ»
-	public static final int PT_RES_SIGN_UP = 1;			// È¸¿ø°¡ÀÔ ÀÀ´ä
-	public static final int PT_REQ_LOGIN = 2;			// ·Î±×ÀÎ ¿äÃ»
-	public static final int PT_RES_LOGIN = 3;			// ·Î±×ÀÎ ÀÀ´ä
-	public static final int PT_LOGIN_RESULT = 4;		// ÀÎÁõ °á°ú
-	public static final int PT_RES_USER_LIST = 5;		// À¯Àú¸®½ºÆ® ÀÀ´ä
-	public static final int PT_SEND_MESSAGE = 6;		// Ã¤ÆÃ ¸Ş½ÃÁö Àü¼Û
-	public static final int PT_ID_DUPLICATE_CHECK = 7;		// ¾ÆÀÌµğ Áßº¹ Ã¼Å© ¿äÃ»
+	// í”„ë¡œí† ì½œ íƒ€ì…ì— ê´€í•œ ë³€ìˆ˜
+	public static final int PT_UNDEFIEND = -1;			// í”„ë¡œí† ì½œì´ ì§€ì •ë˜ì§€ ì•Šì€ ìƒíƒœ
+	public static final int PT_REQ_SIGN_UP = 1;			// íšŒì›ê°€ì… ìš”ì²­
+	public static final int PT_RES_SIGN_UP = 1;			// íšŒì›ê°€ì… ì‘ë‹µ
+	public static final int PT_REQ_LOGIN = 2;			// ë¡œê·¸ì¸ ìš”ì²­
+	public static final int PT_RES_LOGIN = 3;			// ë¡œê·¸ì¸ ì‘ë‹µ
+	public static final int PT_LOGIN_RESULT = 4;		// ì¸ì¦ ê²°ê³¼
+	public static final int PT_RES_USER_LIST = 5;		// ìœ ì €ë¦¬ìŠ¤íŠ¸ ì‘ë‹µ
+	public static final int PT_SEND_MESSAGE = 6;		// ì±„íŒ… ë©”ì‹œì§€ ì „ì†¡
+	public static final int PT_ID_DUPLICATE_CHECK = 7;		// ì•„ì´ë”” ì¤‘ë³µ ì²´í¬ ìš”ì²­
 	
 	protected int protocolType;
-	private Object data;	// ÇÁ·ÎÅäÄİ°ú µ¥ÀÌÅÍÀÇ ÀúÀå°ø°£ÀÌ °´Ã¼
+	private Object data;	// í”„ë¡œí† ì½œê³¼ ë°ì´í„°ì˜ ì €ì¥ê³µê°„ì´ ê°ì²´
 	
 	public GameProtocol() {
 		this(PT_UNDEFIEND);
