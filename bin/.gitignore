@@ -1,6 +1,5 @@
-/config/
-/entity/
 /game/
+/entity/
 /gui/
 /net/
 /util/
