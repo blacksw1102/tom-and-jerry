@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import client.entity.User;
-import client.net.GRoom;
 import server.net.Lobby;
 
 /*
@@ -22,7 +21,6 @@ public class ServerPlayer {
 	public ObjectOutputStream out = null;
 	
 	Lobby lobby = null;
-	GRoom room = null;
 	
 	// 플레이어 정보 저장
 	String id;
@@ -31,11 +29,10 @@ public class ServerPlayer {
 	
 	// GameServer의 run()에서 생성된다.
 	// GServerPlayer 객체 생성 시, 룸 서버 정보느 null이다.
-	public ServerPlayer(Socket socket, Lobby lobby, GRoom room, User user) {
+	public ServerPlayer(Socket socket, Lobby lobby, User user) {
 		// 소켓, 로비 서버, 룸 서버 등의 정보를 저장
 		this.socket = socket;
 		this.lobby = lobby;
-		this.room = room;
 		
 		// 유저 정보 저장
 		this.id = user.getId();
@@ -133,21 +130,6 @@ public class ServerPlayer {
 			System.out.println(e);
 			e.printStackTrace();
 		}
-	}
-	
-	
-	String getPlayerInfoMessage() {
-		String playerInfoMessage = "null,null";
-		
-		if(room == null)
-			playerInfoMessage = "대기실,대기중";
-		else {
-			if(room.inSession(this))
-				playerInfoMessage = room.roomId + ",참가중";
-			else
-				playerInfoMessage = room.roomId + ",관전중";
-		}
-		return playerInfoMessage;
 	}
 
 }

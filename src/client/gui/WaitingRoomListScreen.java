@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -38,7 +40,7 @@ import client.gui.component.WaitingRoomListRow;
 import client.net.ClientWindow;
 import server.util.GameProtocol;
 
-public class WaitingRoomListScreen extends JPanel implements Runnable {
+public class WaitingRoomListScreen extends JFrame implements Runnable {
 	ClientWindow win;
 	User user;
 	
@@ -50,22 +52,33 @@ public class WaitingRoomListScreen extends JPanel implements Runnable {
     private JButton sendButton;
     JButton btnMakeRoom, btnWaitRoom, btnLogout, btnSetting;
 
-    
+    private Thread t;
     
     MakeRoomScreen makeRoomScreen;
     
-    public WaitingRoomListScreen() {
-        this.setSize(1280, 720);
+    public WaitingRoomListScreen(User user) {
+       this.user = user;
+    	
+    	this.setSize(1280, 720);
         this.setLayout(new BorderLayout());
-        this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 5), new EmptyBorder(40, 300, 40, 300)));
+        // this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 5), new EmptyBorder(40, 300, 40, 300)));
 
         this.initTopArea();
         this.initMiddleArea();
         this.initBottomArea();
+        
+    	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (screenSize.width - getWidth()) / 2;
+		int y = (screenSize.height - getHeight()) / 2;
+		this.setLocation(x, y);
+		
+        t = new Thread(this);
+        t.start();
+        
+        this.setVisible(true);
     }
     
     public WaitingRoomListScreen(ClientWindow win, User user) {
-    	this();
     	this.win = win;
     	this.user = user;
     }

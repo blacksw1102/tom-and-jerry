@@ -40,7 +40,6 @@ public class GameServer extends Thread {
 		System.out.println("Lobby thread is  started...");
 		while(true) {
 			try {
-				// SERVER_PORT(=4001)에서 클라이언트 접속 대기
 				socket = serverSocket.accept();
 
 				ObjectOutputStream out  = new ObjectOutputStream(socket.getOutputStream());
@@ -76,7 +75,7 @@ public class GameServer extends Thread {
 					out.writeObject(user);
 					
 					// 네트워킹을 전담하는 ServerPlayer 객체 생성
-					player = new ServerPlayer(socket, lobby, null, user);
+					player = new ServerPlayer(socket, lobby, user);
 					player.out = out;
 					player.in = in;
 					

@@ -1,10 +1,11 @@
 package client.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Choice;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -14,8 +15,8 @@ import java.net.Socket;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -24,7 +25,7 @@ import client.entity.User;
 import client.net.ClientWindow;
 import server.util.GameProtocol;
 
-public class SignUpScreen extends JPanel {
+public class SignUpScreen extends JFrame {
 	private ClientWindow win;
 	private JPasswordField pwField, pwConfirmField;
 	private JTextField idField, nicknameField, emailField, birthField3, telField2, telField3;
@@ -32,191 +33,189 @@ public class SignUpScreen extends JPanel {
 	private Choice birthField1, birthField2, telField1;
 	private JButton idCheckBtn, submitBtn, cancelBtn;
 
+	private static final int FRAME_WIDTH = 1280;
+	private static final int FRAME_HEIGHT = 720;
+	
 	private String verifiedId;	// 중복체크를 통과한 아이디
 	
-	public SignUpScreen(ClientWindow win) {
-		this.win = win;
-		this.setLayout(new BorderLayout());
-		this.setSize(1280, 720);
-		
-		verifiedId = null;
-		
-		JLabel signUpTitle = new JLabel("\uD68C\uC6D0 \uAC00\uC785");
+	public SignUpScreen() {
+		this.setTitle("회원가입 창");
+		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		this.setLayout(null);
+
+		JLabel signUpTitle = new JLabel("회원 가입");
 		signUpTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		signUpTitle.setFont(new Font("HY견고딕", Font.PLAIN, 36));
-		add(signUpTitle, BorderLayout.NORTH);
+		signUpTitle.setBounds(540, 50, 200, 70);
+		this.add(signUpTitle);
 		
-		JPanel inputForm = new JPanel();
-		inputForm.setLayout(null);
-		add(inputForm, BorderLayout.CENTER);
-		
-		idLabel = new JLabel("\uC544\uC774\uB514 : ");
+		idLabel = new JLabel("아이디 : ");
 		idLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		idLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		idLabel.setBounds(409, 75, 125, 18);
-		inputForm.add(idLabel);
+		idLabel.setBounds(409, 155, 125, 18);
+		this.add(idLabel);
 		
 		idField = new JTextField();
 		idField.setFont(new Font("돋움", Font.PLAIN, 18));
-		idField.setBounds(545, 70, 200, 30);
-		inputForm.add(idField);
+		idField.setBounds(545, 150, 200, 30);
 		idField.setColumns(20);
 		idField.setText("testUser1");
+		this.add(idField);
 		
-		idCheckBtn = new JButton("\uC911\uBCF5\uD655\uC778");
+		idCheckBtn = new JButton("중복 확인");
+		idCheckBtn.setFont(new Font("HY견고딕", Font.PLAIN, 14));
+		idCheckBtn.setBackground(Color.LIGHT_GRAY);
+		idCheckBtn.setBounds(759, 150, 100, 30);
 		idCheckBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				checkIdDuplicate();
 			}
 		});
-		idCheckBtn.setFont(new Font("HY견고딕", Font.PLAIN, 14));
-		idCheckBtn.setBackground(Color.LIGHT_GRAY);
-		idCheckBtn.setBounds(759, 65, 90, 40);
-		inputForm.add(idCheckBtn);
+		this.add(idCheckBtn);
 		
-		pwLabel = new JLabel("\uBE44\uBC00\uBC88\uD638 : ");
+		pwLabel = new JLabel("비밀번호 : ");
 		pwLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		pwLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		pwLabel.setBounds(410, 125, 125, 18);
-		inputForm.add(pwLabel);
-		
-		nicknameLable = new JLabel("\uB2C9\uB124\uC784 : ");
-		nicknameLable.setHorizontalAlignment(SwingConstants.RIGHT);
-		nicknameLable.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		nicknameLable.setBounds(409, 225, 125, 18);
-		inputForm.add(nicknameLable);
-		
-		emailLabel = new JLabel("\uC774\uBA54\uC77C : ");
-		emailLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		emailLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		emailLabel.setBounds(409, 275, 125, 18);
-		inputForm.add(emailLabel);
+		pwLabel.setBounds(410, 205, 125, 18);
+		this.add(pwLabel);
 		
 		pwField = new JPasswordField();
 		pwField.setFont(new Font("돋움", Font.PLAIN, 18));
-		pwField.setBounds(545, 120, 200, 30);
+		pwField.setBounds(545, 200, 200, 30);
 		pwField.setText("1234");
-		inputForm.add(pwField);
-		
-		pwConfirmLabel = new JLabel("\uBE44\uBC00\uBC88\uD638 \uD655\uC778 : ");
-		pwConfirmLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		pwConfirmLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		pwConfirmLabel.setBounds(345, 175, 188, 18);
-		inputForm.add(pwConfirmLabel);
+		this.add(pwField);
 		
 		pwConfirmField = new JPasswordField();
 		pwConfirmField.setFont(new Font("돋움", Font.PLAIN, 18));
-		pwConfirmField.setBounds(545, 170, 200, 30);
+		pwConfirmField.setBounds(545, 250, 200, 30);
 		pwConfirmField.setText("1234");
-		inputForm.add(pwConfirmField);
+		this.add(pwConfirmField);
+		
+		pwConfirmLabel = new JLabel("비밀번호 확인 : ");
+		pwConfirmLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		pwConfirmLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		pwConfirmLabel.setBounds(345, 255, 188, 18);
+		this.add(pwConfirmLabel);
+		
+		nicknameLable = new JLabel("닉네임 : ");
+		nicknameLable.setHorizontalAlignment(SwingConstants.RIGHT);
+		nicknameLable.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		nicknameLable.setBounds(409, 305, 125, 18);
+		this.add(nicknameLable);
 		
 		nicknameField = new JTextField();
 		nicknameField.setFont(new Font("돋움", Font.PLAIN, 18));
 		nicknameField.setColumns(20);
-		nicknameField.setBounds(545, 220, 200, 30);
+		nicknameField.setBounds(545, 300, 200, 30);
 		nicknameField.setText("testUser");
-		inputForm.add(nicknameField);
+		this.add(nicknameField);
+		
+		emailLabel = new JLabel("이메일 : ");
+		emailLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		emailLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		emailLabel.setBounds(409, 355, 125, 18);
+		this.add(emailLabel);
 		
 		emailField = new JTextField();
 		emailField.setFont(new Font("돋움", Font.PLAIN, 18));
 		emailField.setColumns(20);
-		emailField.setBounds(545, 270, 200, 30);
+		emailField.setBounds(545, 350, 200, 30);
 		emailField.setText("testUser@gmail.com");
-		inputForm.add(emailField);
+		this.add(emailField);
 		
-		birthLabel = new JLabel("\uC0DD\uB144\uC6D4\uC77C : ");
+		birthLabel = new JLabel("생년월일 : ");
 		birthLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		birthLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		birthLabel.setBounds(409, 325, 125, 18);
-		inputForm.add(birthLabel);
-		
-		birthLabel1 = new JLabel("\uB144");
-		birthLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-		birthLabel1.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		birthLabel1.setBounds(635, 325, 30, 18);
-		inputForm.add(birthLabel1);
-		
-		birthLabel2 = new JLabel("\uC6D4");
-		birthLabel2.setHorizontalAlignment(SwingConstants.CENTER);
-		birthLabel2.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		birthLabel2.setBounds(745, 325, 30, 18);
-		inputForm.add(birthLabel2);
-		
-		birthLabel3 = new JLabel("\uC77C");
-		birthLabel3.setHorizontalAlignment(SwingConstants.CENTER);
-		birthLabel3.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		birthLabel3.setBounds(855, 325, 28, 18);
-		inputForm.add(birthLabel3);
+		birthLabel.setBounds(409, 405, 125, 18);
+		this.add(birthLabel);
 		
 		birthField1 = new Choice();
 		birthField1.setSize(80, 30);
 		birthField1.setFont(new Font("Dialog", Font.PLAIN, 18));
-		birthField1.setLocation(545, 320);
-		inputForm.add(birthField1);
 		for(int year=1960; year<=2020; year++)
 			birthField1.add(String.valueOf(year));
-
+		birthField1.setLocation(545, 400);
+		this.add(birthField1);
+		
+		birthLabel1 = new JLabel("년");
+		birthLabel1.setHorizontalAlignment(SwingConstants.CENTER);
+		birthLabel1.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		birthLabel1.setBounds(635, 405, 30, 18);
+		this.add(birthLabel1);
+		
 		birthField2 = new Choice();
 		birthField2.setFont(new Font("Dialog", Font.PLAIN, 18));
-		birthField2.setBounds(675, 320, 60, 32);
-		inputForm.add(birthField2);
+		birthField2.setBounds(675, 400, 60, 32);
 		for(int month=1; month<=12; month++)
 			birthField2.add(String.valueOf(month));
-
+		this.add(birthField2);
+		
+		birthLabel2 = new JLabel("월");
+		birthLabel2.setHorizontalAlignment(SwingConstants.CENTER);
+		birthLabel2.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		birthLabel2.setBounds(745, 405, 30, 18);
+		this.add(birthLabel2);
+		
 		birthField3 = new JTextField();
 		birthField3.setHorizontalAlignment(SwingConstants.CENTER);
 		birthField3.setFont(new Font("돋움", Font.PLAIN, 18));
 		birthField3.setColumns(2);
-		birthField3.setBounds(785, 320, 60, 32);
+		birthField3.setBounds(785, 400, 60, 32);
 		birthField3.setText("24");
-		inputForm.add(birthField3);
+		this.add(birthField3);
 		
-		JLabel telLabel = new JLabel("\uC804\uD654\uBC88\uD638 : ");
+		birthLabel3 = new JLabel("일");
+		birthLabel3.setHorizontalAlignment(SwingConstants.CENTER);
+		birthLabel3.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		birthLabel3.setBounds(855, 405, 28, 18);
+		this.add(birthLabel3);
+		
+		JLabel telLabel = new JLabel("전화번호 : ");
 		telLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		telLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		telLabel.setBounds(409, 375, 125, 18);
-		inputForm.add(telLabel);
+		telLabel.setBounds(409, 455, 125, 18);
+		this.add(telLabel);
 
 		telField1 = new Choice();
 		telField1.setFont(new Font("Dialog", Font.PLAIN, 18));
-		telField1.setBounds(545, 370, 80, 32);
-		inputForm.add(telField1);
+		telField1.setBounds(545, 450, 80, 32);
 		String[] telFirstList = {"010", "011", "016", "017", "019"};
 		for(String telFirst : telFirstList)
 			telField1.add(telFirst);
+		this.add(telField1);
 		
 		lineLabel1 = new JLabel("-");
 		lineLabel1.setHorizontalAlignment(SwingConstants.CENTER);
 		lineLabel1.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		lineLabel1.setBounds(635, 375, 30, 18);
-		inputForm.add(lineLabel1);
+		lineLabel1.setBounds(635, 455, 30, 18);
+		this.add(lineLabel1);
 
 		telField2 = new JTextField();
 		telField2.setHorizontalAlignment(SwingConstants.CENTER);
 		telField2.setFont(new Font("돋움", Font.PLAIN, 18));
 		telField2.setColumns(4);
-		telField2.setBounds(675, 370, 60, 32);
+		telField2.setBounds(675, 450, 60, 32);
 		telField2.setText("1234");
-		inputForm.add(telField2);
+		this.add(telField2);
 
 		lineLabel2 = new JLabel("-");
 		lineLabel2.setHorizontalAlignment(SwingConstants.CENTER);
 		lineLabel2.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		lineLabel2.setBounds(745, 375, 30, 18);
-		inputForm.add(lineLabel2);
+		lineLabel2.setBounds(745, 455, 30, 18);
+		this.add(lineLabel2);
 		
 		telField3 = new JTextField();
 		telField3.setHorizontalAlignment(SwingConstants.CENTER);
 		telField3.setFont(new Font("돋움", Font.PLAIN, 18));
 		telField3.setColumns(4);
-		telField3.setBounds(785, 370, 60, 32);
+		telField3.setBounds(785, 450, 60, 32);
 		telField3.setText("1234");
-		inputForm.add(telField3);
+		this.add(telField3);
 		
-		submitBtn = new JButton("\uAC00\uC785");
+		submitBtn = new JButton("회원가입");
 		submitBtn.setBackground(Color.ORANGE);
 		submitBtn.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		submitBtn.setBounds(492, 471, 150, 50);
+		submitBtn.setBounds(492, 530, 150, 50);
 		submitBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -224,19 +223,27 @@ public class SignUpScreen extends JPanel {
 					signUp();
 			}
 		});
-		inputForm.add(submitBtn);
+		this.add(submitBtn);
 		
-		cancelBtn = new JButton("\uCDE8\uC18C");
+		cancelBtn = new JButton("취소");
 		cancelBtn.setBackground(Color.WHITE);
 		cancelBtn.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		cancelBtn.setBounds(656, 471, 150, 50);
+		cancelBtn.setBounds(656, 530, 150, 50);
 		cancelBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				win.change("loginScreen");
+				setVisible(false);
+				new LoginScreen();
 			}
 		});
-		inputForm.add(cancelBtn);
+		this.add(cancelBtn);
+		
+    	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (screenSize.width - getWidth()) / 2;
+		int y = (screenSize.height - getHeight()) / 2;
+		this.setLocation(x, y);
+		
+		this.setVisible(true);
 	}
 	
 	// 아이디 중복 체크
@@ -264,8 +271,9 @@ public class SignUpScreen extends JPanel {
 			if(isSuccess) {
 				verifiedId = id;
 				showDialog("사용 가능한 아이디 입니다.");
-			} else 
+			} else {
 				showDialog("이미 존재하는 아이디입니다.");
+			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} catch (ClassNotFoundException e1) {
@@ -315,7 +323,6 @@ public class SignUpScreen extends JPanel {
 			return; 
 		
 		try {
-			// 회원가입 정보 서버에 전송
 			socket = new Socket("localhost", 4001);
 			output = new ObjectOutputStream(socket.getOutputStream());
 			input = new ObjectInputStream(socket.getInputStream());
@@ -347,39 +354,45 @@ public class SignUpScreen extends JPanel {
 	
 	public void showDialog(String message) {
 		JDialog info = new JDialog(win, true);
+		JButton ok = new JButton("확인");
+
+		ok.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				info.setVisible(false);
+				info.dispose();
+			}
+		});
+
 		info.setSize(200, 110);
 		info.setLocationRelativeTo(win);
 		info.setLayout(new FlowLayout());
-		JButton ok = new JButton("확인");
 		info.add(new JLabel(message, JLabel.CENTER));
 		info.add(ok);
+		info.setVisible(true);
+
+	}
+	
+	public void showSignUpSuccessDialog() {
+		JDialog info = new JDialog(win, true);
+		JButton ok = new JButton("확인");
+		
 		ok.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				info.setVisible(false);
 				info.dispose();
+				
+				setVisible(false);
+				new LoginScreen();
 			}
 		});
-		info.setVisible(true);
-	}
-	
-	// 회원가입에 성공했을 때 나타나는 Dialog
-	public void showSignUpSuccessDialog() {
-		JDialog info = new JDialog(win, true);
+
 		info.setSize(200, 110);
 		info.setLocationRelativeTo(win);
 		info.setLayout(new FlowLayout());
-		JButton ok = new JButton("확인");
 		info.add(new JLabel("회원가입이 되었습니다.", JLabel.CENTER));
 		info.add(ok);
-		ok.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				info.setVisible(false);
-				info.dispose();
-				win.change("loginScreen");							
-			}
-		});
 		info.setVisible(true);
 	}
 

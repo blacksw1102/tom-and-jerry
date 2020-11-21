@@ -17,16 +17,12 @@ import client.gui.WaitingRoomScreen;
 
 public class ClientWindow extends JFrame{
 	public JPanel mainPanel = null;
-	private LoginScreen loginScreen = null;
-	public SignUpScreen signUpScreen = null;
     public MakeRoomScreen makeRoomScreen = null;
     public WaitingRoomListScreen waitingRoomListScreen = null;
     public WaitingRoomScreen waitingRoomScreen = null;
     private CardLayout cards = new CardLayout();
     
     public ClientWindow() {
-    	loginScreen = new LoginScreen(ClientWindow.this);
-        signUpScreen = new SignUpScreen(ClientWindow.this);
         // makeRoomScreen = new MakeRoomScreen(ClientWindow.this);
         // waitingRoomListScreen = new WaitingRoomListScreen();
         //waitingRoomScreen = new WaitingRoomScreen(null, null);
@@ -35,8 +31,6 @@ public class ClientWindow extends JFrame{
         mainPanel.setLayout(cards);
         add(mainPanel);
        
-        mainPanel.add("loginScreen", loginScreen);
-        mainPanel.add("signUpScreen", signUpScreen);
         // mainPanel.add("makeRoomScreen", makeRoomScreen);
         // mainPanel.add("waitingRoomListScreen", waitingRoomListScreen);
         //mainPanel.add("waitingRoomScreen", waitingRoomScreen);
