@@ -9,7 +9,7 @@ public class Users {
 		users = new Vector<>();
 	}
 
-	public Vector getUsers() {
+	public Vector<User> getUsers() {
 		return users;
 	}
 	

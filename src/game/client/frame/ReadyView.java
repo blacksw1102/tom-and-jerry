@@ -14,14 +14,17 @@ import javax.swing.border.EmptyBorder;
 import game.client.connect.Connection;
 import game.client.object.User;
 import game.client.object.Users;
+import game.client.player.Player;
 
-public class ReadyView extends JFrame implements FrameView {
+public class ReadyView extends FrameView {
 
 	private Connection conn;
 	private Users users;
 	private JPanel contentPane;
 	private JButton readyButton;
 	private User me;
+	
+	private static final int REQUIRED_USER_NUM = 2;
 
 	public ReadyView(String nName) {
 		conn = new Connection(nName);
@@ -59,7 +62,7 @@ public class ReadyView extends JFrame implements FrameView {
 		contentPane.repaint();
 
 	}
-
+	
 	public void print_Component() {
 		Vector vUsers = users.getUsers();
 		
@@ -73,7 +76,15 @@ public class ReadyView extends JFrame implements FrameView {
 		for (int i = 0; i < users.getSize(); i++) {
 			User u = (User) vUsers.elementAt(i);
 			JLabel readyLabel = new JLabel();
-			if(u.isReady()) readyLabel.setText("준비"); else readyLabel.setText("대기");
+			if(u.isReady()) {
+				readyLabel.setOpaque(true);
+				readyLabel.setForeground(Color.red);
+				readyLabel.setText("준비"); 
+			} else {
+				readyLabel.setOpaque(true);
+				readyLabel.setForeground(Color.black);
+				readyLabel.setText("대기");
+			}
 			JLabel nickLabel = new JLabel(u.getnName());
 			readyLabel.setBounds(150, 30 * (i + 2), 100, 50);
 			nickLabel.setBounds(50, 30 * (i + 2), 100, 50);
@@ -88,7 +99,7 @@ public class ReadyView extends JFrame implements FrameView {
 			contentPane.add(readyButton);
 	}
 
-	public void StartGame() {
+	public void changeReadyState() {
 		if(me.isReady()) {
 			me.setReady(false);
 		} else {
@@ -101,11 +112,31 @@ public class ReadyView extends JFrame implements FrameView {
 		// setVisible(false);
 
 	}
+	
+	private boolean isGameAvailable() {
+		if(users.getSize() != REQUIRED_USER_NUM)
+			return false;
+		
+		for(User user : users.getUsers()) {
+			if(!user.isReady())
+				return false;
+		}
+		
+		return true;
+	}
 
 	class Action implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			StartGame();
+			changeReadyState();
+	
+			if(isGameAvailable()) {
+				// 서버로 모든 플레이어가 레디 했음을 알린다
+				conn.send_Message("", 3);
+				// 게임 화면으로 전환한다.
+				GameView gv = new GameView(conn);
+				setVisible(false);
+			}
 		}
 	}
 }

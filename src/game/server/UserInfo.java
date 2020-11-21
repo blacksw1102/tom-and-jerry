@@ -10,7 +10,7 @@ import javax.swing.JTextArea;
 
 public class UserInfo extends Thread {
 	private Socket s;
-	private Vector users;
+	private Vector<UserInfo> users;
 	private DataInputStream dis;
 	private DataOutputStream dos;
 	private ObjectOutputStream oos;
@@ -47,6 +47,7 @@ public class UserInfo extends Thread {
 			if (Thread.interrupted()) 
 				break; 
 			buff = recv_Message();
+
 			first_Byte_Check(buff);
 			/*if (key == 3) {
 				ta.append("<도망자가 키를 모두 모아 탈출 문이 생성>\n");
@@ -65,9 +66,9 @@ public class UserInfo extends Thread {
 	public void first_Byte_Check(byte[] b) { // 첫 바이트 = 명령(입장, 퇴장등..)
 		if (buff[0] == 1) {
 			nName = byteToString(buff);
-			ta.append(nName + "님 입장\n");
 			users.add(this);
-			
+			ta.append(nName + "님 입장\n");
+			ta.append(users.size() + " : 현재 사용자 수\n");
 			send_UsersInfo();
 			broadCast(buff);
 		} else if(buff[0] == 2) {
@@ -77,7 +78,6 @@ public class UserInfo extends Thread {
 
 			ta.append(nName + "님 게임 준비 - " + ready + "\n");
 			broadCast(buff);
-			
 		} else if (buff[0] == 4) {
 			String str = byteToString(buff);
 			str = str.trim();
@@ -127,7 +127,6 @@ public class UserInfo extends Thread {
 			dis.read(b);
 		} catch (IOException e) {
 			
-
 			try {
 				users.removeElement(this);
 				exit_User(nName);

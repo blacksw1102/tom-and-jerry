@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.util.Vector;
 
 import game.client.frame.FrameView;
+import game.client.frame.GameView;
 import game.client.object.User;
 import game.client.object.Users;
 
@@ -20,7 +21,6 @@ public class Connection {
 	
 	private DataInputStream dis;
 	private DataOutputStream dos;
-	private ObjectInputStream ois;
 	private Users users;
 	private byte[] buff;
 	private int comm;
@@ -146,6 +146,9 @@ public class Connection {
 					u.setReady(ready);
 				}
 			}
+		} else if(comm == 3) {
+			v.setVisible(false);
+			GameView gv = new GameView(this);
 		}
 		else if(comm == 11) {
 			users.removeUser(new String(buff));

@@ -1,5 +1,7 @@
 package game.client.frame;
 
-public interface FrameView {
-	public void view();
+import javax.swing.JFrame;
+
+public abstract class FrameView extends JFrame {
+	public abstract void view();
 }
