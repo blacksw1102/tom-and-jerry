@@ -65,27 +65,47 @@ public class UserInfo extends Thread {
 
 	public void first_Byte_Check(byte[] b) { // 첫 바이트 = 명령(입장, 퇴장등..)
 		if (buff[0] == 1) {
+
 			nName = byteToString(buff);
 			users.add(this);
 			ta.append(nName + "님 입장\n");
 			ta.append(users.size() + " : 현재 사용자 수\n");
-			send_UsersInfo();
+
+			String names = "";
+			for(UserInfo u : users) {
+				names += u.getnName() + ",";
+			}
+			names = names.substring(0, names.length()-1);
+
+			byte[] bData = names.getBytes();
+			byte[] sendData = new byte[names.length() + 1];
+			sendData[0] = buff[0];
+			System.arraycopy(bData, 0, sendData, 1, names.length());
+			buff = sendData;
+			
 			broadCast(buff);
-		} else if(buff[0] == 2) {
+		} 
+		
+		else if(buff[0] == 2) {
 			String[] values = byteToString(buff).split(" ");
 			nName = values[0];
 			ready = Boolean.valueOf(values[1]);
 
 			ta.append(nName + "님 게임 준비 - " + ready + "\n");
 			broadCast(buff);
-		} else if (buff[0] == 4) {
+	
+		} 
+		
+		else if (buff[0] == 4) {
 			String str = byteToString(buff);
 			str = str.trim();
 			ta.append(str + "님이 키를 발견하였다! \n");
 			broadCast(buff);
 			//key++;
 
-		} else if (buff[0] == 6) {
+		} 
+		
+		else if (buff[0] == 6) {
 			ta.append(byteToString(buff)+"님이 탈출\n");
 			send_Message(buff);
 			broadCast(buff);
@@ -97,11 +117,14 @@ public class UserInfo extends Thread {
 			send_Message(buff);
 			broadCast(buff);
 		}
+		
 		else if(buff[0] == 5) {
 			ta.append("<도망자가 키를 모두 모아 탈출 문이 생성>\n");
 		}
+		
 		else if(buff[0] == 20)
 			ta.append("게임종료 : 살인마 승리\n");
+		
 		else if(buff[0] == 10)
 			ta.append("게임종료 : 도망자 승리\n");
 
@@ -146,11 +169,22 @@ public class UserInfo extends Thread {
 		if (users.size() > 0) {
 			for (Object o : users) {
 				UserInfo oUser = (UserInfo) o;
+				oUser.send_Message(b);
+			}
+		}
+	}
+	
+	/*
+	public void broadCast(byte[] b) {
+		if (users.size() > 0) {
+			for (Object o : users) {
+				UserInfo oUser = (UserInfo) o;
 				if (!oUser.getnName().equals(this.getnName())) 
 					oUser.send_Message(b);
 			}
 		}
 	}
+	*/
 
 	public void send_Message(byte[] b) {
 		try {
@@ -161,6 +195,7 @@ public class UserInfo extends Thread {
 		}
 	}
 
+	/*
 	public void send_UsersInfo() { 
 		String userInfo = "";
 		for (int i = 0; i < users.size(); i++) {
@@ -172,11 +207,12 @@ public class UserInfo extends Thread {
 		}
 		byte[] b = userInfo.getBytes();
 		byte[] sendData = new byte[userInfo.length() + 1];
-		sendData[0] = 100;
+		sendData[0] = 1;
 		System.arraycopy(b, 0, sendData, 1, userInfo.length());
 		send_Message(sendData);
 
 	}
+	*/
 
 	public String byteToString(byte[] b) { 
 		String str = new String(b);

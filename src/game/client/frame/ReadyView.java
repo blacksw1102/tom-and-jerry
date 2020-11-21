@@ -64,7 +64,6 @@ public class ReadyView extends FrameView {
 	}
 	
 	public void print_Component() {
-		Vector vUsers = users.getUsers();
 		
 		JLabel ntLabel = new JLabel("닉네임");
 		JLabel rtLabel = new JLabel("게임 상태");
@@ -73,8 +72,9 @@ public class ReadyView extends FrameView {
 		contentPane.add(ntLabel);
 		contentPane.add(rtLabel);
 
+		Vector<User> vUsers = users.getUsers();
 		for (int i = 0; i < users.getSize(); i++) {
-			User u = (User) vUsers.elementAt(i);
+			User u = vUsers.elementAt(i);
 			JLabel readyLabel = new JLabel();
 			if(u.isReady()) {
 				readyLabel.setOpaque(true);
@@ -108,9 +108,6 @@ public class ReadyView extends FrameView {
 		String message = me.getnName() + " " + me.isReady();
 		conn.send_Message(message, 2);
 		view();
-		// GameView gv = new GameView(conn, users, new Player(me.getnName(), conn));
-		// setVisible(false);
-
 	}
 	
 	private boolean isGameAvailable() {
@@ -131,11 +128,7 @@ public class ReadyView extends FrameView {
 			changeReadyState();
 	
 			if(isGameAvailable()) {
-				// 서버로 모든 플레이어가 레디 했음을 알린다
 				conn.send_Message("", 3);
-				// 게임 화면으로 전환한다.
-				GameView gv = new GameView(conn);
-				setVisible(false);
 			}
 		}
 	}

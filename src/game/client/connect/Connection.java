@@ -62,18 +62,6 @@ public class Connection {
 		}
 	}
 	
-	public void init_User(byte[] b) {
-		
-		
-			String str = new String (b);
-			str = str.trim();
-			String[] sstr = str.split(" ");
-			for(int i = 0; i < sstr.length;i++) {
-				users.addUser(new User(sstr[i]));
-				
-			}	
-	}
-	
 	public void initUsersXY(Users users) {
 		int i = 0;
 		
@@ -132,10 +120,13 @@ public class Connection {
 	
 	public void execute_Comm() {
 		if(comm == 1) {
-			String str = new String(buff);
-			str = str.trim();
-			users.addUser(new User(str));
+			String[] names = new String(buff).trim().split(",");
+			for(String n : names) {
+				if(!users.contains(n))
+					users.addUser(new User(n));
+			}
 		}
+		
 		else if(comm == 2) {
 			String[] values = byteToString(buff).split(" ");
 			nName = values[0];
@@ -146,23 +137,25 @@ public class Connection {
 					u.setReady(ready);
 				}
 			}
-		} else if(comm == 3) {
+		} 
+		
+		else if(comm == 3) {
 			v.setVisible(false);
 			GameView gv = new GameView(this);
 		}
+		
 		else if(comm == 11) {
 			users.removeUser(new String(buff));
 		}
-		else if(comm ==100) {
-			
-			init_User(buff);
-		}
+		
 		else if(comm == 37 || comm == 38) {
 			setUsersXY(buff);
 		}
+		
 		else if(comm==4) {
 			key++;
 		}
+		
 		else if(comm == 6) {
 			
 			escapeUser++;
@@ -174,7 +167,7 @@ public class Connection {
 				}
 			}
 		}
-		
+
 		else if(comm == 7) {
 			deadUser++;
 			String str = byteToString(buff);
@@ -209,10 +202,9 @@ public class Connection {
 			}
 		}
 		
-		
 		v.view();
 		comm = 1000;
-
+		
 	}
 	
 	
@@ -269,7 +261,6 @@ public class Connection {
 	}
 	
 	public void send_Message(String str, int comm) {
-		
 		try {
 			byte[] b = str.getBytes();
 			

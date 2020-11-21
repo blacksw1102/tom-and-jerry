@@ -14,8 +14,15 @@ public class Users {
 	}
 	
 	public void addUser(User user) {
-
 		this.users.addElement(user);
+	}
+	
+	public boolean contains(String nName) {
+		for(User u : users) {
+			if(u.getnName().equals(nName))
+				return true;
+		}
+		return false;
 	}
 	
 	public User getUser(String nName) {
