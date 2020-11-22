@@ -7,7 +7,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
-import server.entity.ServerPlayer;
+import server.entity.ServerUser;
 import server.util.GameProtocol;
 
 public class WaitingRoom extends Thread implements Serializable {
@@ -17,7 +17,7 @@ public class WaitingRoom extends Thread implements Serializable {
 	int maxPlayerCount;		// 방 최대수용인원
 	int roomState;			// 방 상태 (0:대기중, 1:게임중)
 	
-	ArrayList<ServerPlayer> playerList = null;		// 게임 진행 중인 플레이어 리스트
+	ArrayList<ServerUser> playerList = null;		// 게임 진행 중인 플레이어 리스트
 	ArrayList participantList = null;					// 현재 방에 있는 플레이어 리스트
 	ArrayList sessionManList = null;					// 게임 진행 중인 플레이어 리스트
 	int sessionManScore[] = null;					// 플레이어의 점수
@@ -35,7 +35,7 @@ public class WaitingRoom extends Thread implements Serializable {
 		
 	}
 	
-	public int addPlayer(ServerPlayer player) {
+	public int addPlayer(ServerUser player) {
 		if(playerList.size() < maxPlayerCount) {
 			playerList.add(player);
 			return 1;
@@ -91,17 +91,17 @@ public class WaitingRoom extends Thread implements Serializable {
 	public void broadcastUserList() {
 		// 유저 리스트를 만든다.
 		List<WaitingRoomRow> rowList = new ArrayList<>();
-		for(ServerPlayer player : playerList) {
+		for(ServerUser player : playerList) {
 			WaitingRoomRow row = new WaitingRoomRow(player.getNickname(), player.getPlayerState());
 			rowList.add(row);
 		}
 		System.out.println("size : " + rowList.size());
 		
 		// 유저 리스트를 모든 유저들에게 보낸다.
-		for(ServerPlayer player : playerList) {
+		for(ServerUser player : playerList) {
 			GameProtocol protocol = new GameProtocol(GameProtocol.PT_BROADCAST_USER_LIST_IN_WAITING_ROOM, rowList);
 			try {
-				player.out.writeObject(protocol);
+				player.getOut().writeObject(protocol);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}			

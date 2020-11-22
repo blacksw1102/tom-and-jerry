@@ -9,11 +9,11 @@ import java.util.List;
 
 import client.gui.component.WaitingRoom;
 import client.gui.component.WaitingRoomListRow;
-import server.entity.ServerPlayer;
+import server.entity.ServerUser;
 import server.util.GameProtocol;
 
 public class Lobby extends Thread {
-	private Hashtable<String, ServerPlayer> chatList = null;	// 로비 내에 있는 클라이언트 리스트 (플레이어 아이디, ServerPlayer 객체)
+	private Hashtable<String, ServerUser> chatList = null;	// 로비 내에 있는 클라이언트 리스트 (플레이어 아이디, ServerPlayer 객체)
 	private Hashtable<Integer, WaitingRoom> roomList = null;		// 게설된 룸 리스트 (룸아이디, GRoom 객체)
 	
 	private static int currentRoomId;
@@ -22,11 +22,13 @@ public class Lobby extends Thread {
 		chatList = new Hashtable<>();
 		roomList = new Hashtable<>();
 		currentRoomId = 0;
+		
+		this.start();
 	}
 	
 	@Override
 	public void run() {
-		System.out.println("Lobby run start");
+		System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
 		while(true) {
 			// CPU 독식 방지
 			try {
@@ -35,41 +37,34 @@ public class Lobby extends Thread {
 				e.printStackTrace();
 			}
 			
-			Enumeration<ServerPlayer> e = chatList.elements();
+			Enumeration<ServerUser> e = chatList.elements();
 			while(e.hasMoreElements()) {
-				ServerPlayer player = e.nextElement();
+				ServerUser serverUser = e.nextElement();
 				WaitingRoom waitingRoom = null;
 				int result = 0;
 				
 				try {
-					GameProtocol protocol = (GameProtocol) player.in.readObject();
+					GameProtocol protocol = (GameProtocol) serverUser.getIn().readObject();
 					if(protocol == null)
 						throw new IOException("Null pointer received...");
 					switch(protocol.getProtocol()) {
 						case GameProtocol.PT_SEND_MESSAGE:
-							// 로비 채팅메시지 브로드캐스팅
-							String message = (String) protocol.getData();
-							Enumeration<ServerPlayer> elements = chatList.elements();
-							while(elements.hasMoreElements()) {
-								ServerPlayer toPlayer = elements.nextElement();
-								GameProtocol toProtocol = new GameProtocol(GameProtocol.PT_SEND_MESSAGE, message);
-								toPlayer.out.writeObject(toProtocol);
-							}
+							broadcastMessage(protocol);
 							break;
 						case GameProtocol.PT_REQ_CREATE_WAITING_ROOM:
 							// 대기방 생성 
 							waitingRoom = (WaitingRoom) protocol.getData();
 							
-							chatList.remove(player.getId());
-							player.setPlayerState(2);
-							waitingRoom.addPlayer(player);
+							chatList.remove(serverUser.getId());
+							serverUser.setPlayerState(2);
+							waitingRoom.addPlayer(serverUser);
 							waitingRoom.setRoomId(++currentRoomId);
 							waitingRoom.start(); // 대기방 스레드 시작
 							roomList.put(waitingRoom.getRoomId(), waitingRoom);
 							
 							result = 1;
 							protocol = new GameProtocol(GameProtocol.PT_RES_CREATE_WAITING_ROOM, result);
-							player.out.writeObject(protocol);
+							serverUser.getOut().writeObject(protocol);
 							
 							broadcastUserList(); // 유저 리스트 브로드캐스팅
 							broadcastRoomList(); // 대기방 리스트 브로드캐스팅
@@ -81,12 +76,12 @@ public class Lobby extends Thread {
 							
 							// 플레이어를 로비에서 없애고, 대기방에 추가한다.
 							waitingRoom = roomList.get(roomId);
-							result = waitingRoom.addPlayer(player);
+							result = waitingRoom.addPlayer(serverUser);
 							
 							if(result == 1) {
 								// 대기방 유저 리스트를 대기방에 있는 클라이언트들에게 알려준다
-								chatList.remove(player.getId());
-								player.setPlayerState(1);
+								chatList.remove(serverUser.getId());
+								serverUser.setPlayerState(1);
 								waitingRoom.broadcastUserList();
 //								protocol = new GameProtocol(GameProtocol.PT_RES_ENTER_WAITING_ROOM, result);
 //								broadcastUserList(); // 유저 리스트 브로드캐스팅
@@ -103,42 +98,47 @@ public class Lobby extends Thread {
 				} catch(ClassNotFoundException ne) {
 					ne.printStackTrace();
 				} catch(SocketException ne) {
-					System.out.println("socket exception");
-					removePlayer(player);
+					removePlayer(serverUser);
 				} catch(IOException ne) {
-					System.out.println("ioe exception");
+					
 				}
 			}
 		}
 	}
 	
 	// 방금 접속한 클라이언트를 로비에 추가한다.
-	public void addPlayer(ServerPlayer player) {
-		if(chatList.get(player.getId()) == null) {
-			int i = 0;
-			String message = null;
-			
-			// 방금 접속한 클라이언트에게 환영 메시지를 보낸다.
-			message = "[" + player.getId() + "]님 환영합니다 ^^";
-			player.sendMessage(message);
-			
-			// 방금 접속한 클라이언트가 들어왔음을 로비 내의 모두에게 알린다.
-			message = "[" + player.getId() + "]님이 입장하였습니다.";
-			broadcastMessage(message);
-			
-			// 방금 접속한 클라이언트를 클라이언트 리스트에 추가한다.
-			chatList.put(player.getId(), player);
-			
-			// 로비내의 모두에게 갱신된 사용자 리스트를 보낸다.
-			broadcastUserList();
+	public void addPlayer(ServerUser serverUser) {
+		if(chatList.get(serverUser.getId()) == null) {
+			try {
+				String message = "[" + serverUser.getId() + "]님이 입장하였습니다.";
+				GameProtocol protocol = new GameProtocol(GameProtocol.PT_SEND_MESSAGE, message);
+				broadcastMessage(protocol);
+				
+				chatList.put(serverUser.getId(), serverUser);
+				System.out.format("[%s] 현재 접속자 수 : %d\n",this.getClass().getName(), chatList.size());
+				broadcastUserList();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}
 	
 	// 접속이 끊긴 클라이언트를 로비에서 삭제한다.
-	public void removePlayer(ServerPlayer player) {
-		chatList.remove(player.getId());
-		broadcastUserList();
+	public void removePlayer(ServerUser serverUser) {
+		if(chatList.get(serverUser.getId()) != null) {
+			try {
+				chatList.remove(serverUser.getId());
+				System.out.format("[%s] 현재 접속자 수 : %d\n",this.getClass().getName(), chatList.size());
+				broadcastUserList();
+
+				String message = "[" + serverUser.getId() + "]님이 퇴장하였습니다.";
+				GameProtocol protocol = new GameProtocol(GameProtocol.PT_SEND_MESSAGE, message);
+				broadcastMessage(protocol);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	// 주어진 아이디의 클라이언트에게 메시지를 보낸다.
@@ -147,8 +147,12 @@ public class Lobby extends Thread {
 	}
 
 	// 로비 내의 모두에게 주어진 메시지를 보낸다.
-	public void broadcastMessage(String message) {
-		// TODO Auto-generated method stub
+	public void broadcastMessage(GameProtocol protocol) throws IOException {
+		Enumeration<ServerUser> elements = chatList.elements();
+		while(elements.hasMoreElements()) {
+			ServerUser toUser = elements.nextElement();
+			toUser.getOut().writeObject(protocol);
+		}
 	}
 	
 	// toIds 내에 있는 아이디를 갖는 플레이어에게 메시지를 보낸다.
@@ -163,7 +167,8 @@ public class Lobby extends Thread {
 	}
 
 	// 주어진 아이디의 플레이어에게 룸 리스트를 보낸다.
-	public void sendRoomList(ServerPlayer player) {
+	public void sendRoomList(ServerUser serverUser) {
+		
 	}
 
 	// 로비 내에 있는 전체에게 룸 리스트를 전달한다.
@@ -181,10 +186,10 @@ public class Lobby extends Thread {
 		// 대기방 리스트를 모든 유저들에게 보낸다.
 		Enumeration elements = chatList.elements();
 		while(elements.hasMoreElements()) {
-			ServerPlayer player = (ServerPlayer) elements.nextElement();
+			ServerUser serverUser = (ServerUser) elements.nextElement();
 			GameProtocol protocol = new GameProtocol(GameProtocol.PT_BROADCAST_WAITING_ROOM_LIST, rowList);
 			try {
-				player.out.writeObject(protocol);
+				serverUser.getOut().writeObject(protocol);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -198,17 +203,17 @@ public class Lobby extends Thread {
 		
 		// 유저 리스트를 만든다.
 		while(elements.hasMoreElements()) {
-			ServerPlayer player = (ServerPlayer) elements.nextElement();
-			userList.add(player.getNickname());
+			ServerUser serverUser = (ServerUser) elements.nextElement();
+			userList.add(serverUser.getNickname());
 		}
 		
 		// 유저 리스트를 모든 유저들에게 보낸다.
 		elements = chatList.elements();
 		while(elements.hasMoreElements()) {
-			ServerPlayer player = (ServerPlayer) elements.nextElement();
+			ServerUser serverUser = (ServerUser) elements.nextElement();
 			GameProtocol protocol = new GameProtocol(GameProtocol.PT_RES_USER_LIST, userList);
 			try {
-				player.out.writeObject(protocol);
+				serverUser.getOut().writeObject(protocol);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -237,7 +242,7 @@ public class Lobby extends Thread {
 	}
 	
 	// 주어진 아이디의 클라이언트에 대한 ServerPlayer 객체를 얻는다.
-	public ServerPlayer getPlayer(String playerid) {
+	public ServerUser getPlayer(String playerid) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -256,7 +261,7 @@ public class Lobby extends Thread {
 	
 	// 룸에 있던 클라이언트가 다시 대기실로 돌아오려 할 경우,
 	// 대기실의 클라이언트 리스트에 해당 클라이언트를 다시 추가한다.
-	public void takePlayer(ServerPlayer player) {
+	public void takePlayer(ServerUser serverUser) {
 		// TODO Auto-generated method stub
 	}
 }

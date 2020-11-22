@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -24,7 +26,6 @@ import javax.swing.border.LineBorder;
 
 import client.entity.Login;
 import client.entity.User;
-import client.net.ClientWindow;
 import server.util.GameProtocol;
 
 public class LoginScreen extends JFrame {
@@ -39,6 +40,17 @@ public class LoginScreen extends JFrame {
 		this.setTitle("로그인 창");
 		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		this.setLayout(null);
+		
+    	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (screenSize.width - getWidth()) / 2;
+		int y = (screenSize.height - getHeight()) / 2;
+		this.setLocation(x, y);
+		
+		this.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e) { 
+                System.exit(0);
+            }
+        });
 		
 		JLabel titleLabel = new JLabel("톰과 제리 게임");
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -71,7 +83,7 @@ public class LoginScreen extends JFrame {
 
 					if(user != null) {
 						setVisible(false);
-						new WaitingRoomListScreen(user);
+						new LobbyScreen(user);
 					}
 				} catch (ClassNotFoundException e1) {
 					e1.printStackTrace();
@@ -136,11 +148,6 @@ public class LoginScreen extends JFrame {
 		pwField.setBounds(66, 12, 230, 26);
 		pwField.setText("1234");
 		pwPanel.add(pwField);
-		
-    	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (screenSize.width - getWidth()) / 2;
-		int y = (screenSize.height - getHeight()) / 2;
-		this.setLocation(x, y);
 		
 		this.setVisible(true);
 	}

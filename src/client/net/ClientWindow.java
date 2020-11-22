@@ -12,13 +12,13 @@ import javax.swing.JPanel;
 import client.gui.LoginScreen;
 import client.gui.MakeRoomScreen;
 import client.gui.SignUpScreen;
-import client.gui.WaitingRoomListScreen;
+import client.gui.LobbyScreen;
 import client.gui.WaitingRoomScreen;
 
 public class ClientWindow extends JFrame{
 	public JPanel mainPanel = null;
     public MakeRoomScreen makeRoomScreen = null;
-    public WaitingRoomListScreen waitingRoomListScreen = null;
+    public LobbyScreen waitingRoomListScreen = null;
     public WaitingRoomScreen waitingRoomScreen = null;
     private CardLayout cards = new CardLayout();
     
