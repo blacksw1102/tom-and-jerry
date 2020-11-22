@@ -12,6 +12,7 @@ import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -20,7 +21,6 @@ import javax.swing.border.LineBorder;
 
 import client.entity.User;
 import client.gui.component.WaitingRoom;
-import client.net.ClientWindow;
 import server.util.GameProtocol;
 
 public class MakeRoomScreen extends JDialog {
@@ -29,17 +29,18 @@ public class MakeRoomScreen extends JDialog {
 	private JPasswordField roomPassword;
 	private JCheckBox pwCheckbox;
 	
-	private ClientWindow win;
+	private JFrame parent;
 	private User user;
 	
-
-	public MakeRoomScreen(ClientWindow win, User user) {
-		this.win = win;
+	public MakeRoomScreen(User user, JFrame parent) {
+		this.parent = parent;
 		this.user = user;
 		
 		this.setBackground(Color.WHITE);
 		this.getRootPane().setBorder(new LineBorder(Color.BLACK, 3));
 		this.setUndecorated(true);
+		this.setSize(370, 200);
+		this.getContentPane().setLayout(null);
 		
 		JLabel label1 = new JLabel("방 만들기");
 		label1.setBounds(20, 10, 150, 40);
@@ -109,8 +110,8 @@ public class MakeRoomScreen extends JDialog {
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				win.setEnabled(true);
-				dispose();
+				parent.setEnabled(true);
+				setVisible(false);
 			}
 		});
 
@@ -122,12 +123,10 @@ public class MakeRoomScreen extends JDialog {
 		getContentPane().add(lb3);
 		getContentPane().add(createButton);
 		getContentPane().add(cancelButton);
-		setSize(370, 200);
-		setLocationRelativeTo(win);
-		getContentPane().setLayout(null);
+		
 		setVisible(true);
 	}
-	
+
 	public void createWaitingRoom() {
 		WaitingRoom waitingRoom = new WaitingRoom(roomName.getText(), roomPassword.getText());
 		GameProtocol protocol = new GameProtocol(GameProtocol.PT_REQ_CREATE_WAITING_ROOM);
@@ -141,9 +140,9 @@ public class MakeRoomScreen extends JDialog {
 	
 	public void showAlreadyCreateDialog(String message) {
 		// 확인 메시지 표시
-		JDialog info = new JDialog(win, true);
+		JDialog info = new JDialog(this, true);
 		info.setSize(200, 110);
-		info.setLocationRelativeTo(win);
+		info.setLocationRelativeTo(this);
 		info.setLayout(new FlowLayout());
 		JButton ok = new JButton("확인");
 		info.add(new JLabel(message, JLabel.CENTER));

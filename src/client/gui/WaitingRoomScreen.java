@@ -2,16 +2,21 @@ package client.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,23 +31,21 @@ import client.gui.component.WaitingRoomRow;
 import client.net.ClientWindow;
 import server.util.GameProtocol;
 
-public class WaitingRoomScreen extends JPanel implements Runnable {
+public class WaitingRoomScreen extends JFrame implements Runnable {
 	ClientWindow win;
 	User user;
-    private ArrayList users = new ArrayList();
+    private ArrayList<User> users = new ArrayList<>();
     private RoomUserList roomUserList;
     
-	/**
-	 * Create the panel.
-	 */
-	public WaitingRoomScreen(ClientWindow win, User user) {
-    	this.win = win;
+    private Thread t;
+    
+	public WaitingRoomScreen(User user) {
     	this.user = user;
     	this.roomUserList = new RoomUserList();
-    	
+
 		this.setSize(1280, 780);
         this.setLayout(new GridBagLayout());
-        this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 5), new EmptyBorder(40, 200, 40, 200)));
+        // this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 5), new EmptyBorder(40, 200, 40, 200)));
 
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
@@ -52,13 +55,6 @@ public class WaitingRoomScreen extends JPanel implements Runnable {
 
         c.gridy = 0;
         this.add(new TopArea(), c);
-
-//        c.insets = new Insets(5, 0, 0, 0);
-//        c.gridy = 1;
-//        this.add(new MiddleArea(), c);
-//
-//        c.gridy = 2;
-//        this.add(new BottomArea(), c);
 
         c.insets = new Insets(5, 0, 0, 0);
         c.weightx = 0.7;
@@ -73,31 +69,68 @@ public class WaitingRoomScreen extends JPanel implements Runnable {
         c.insets = new Insets(5, 10, 0, 0);
         this.add(new RightArea(), c);
 
-//        c.weightx = 1;
-//        c.gridy = 0;
-//        c.gridwidth = 2;
-//        this.add(new TopArea(), c);
-//
-//        c.gridwidth = 1;
-//
-//        c.weightx = 0.8;
-//        c.gridy = 1;
-//        this.add(new RoomUserList(), c);
-//
-//        c.weightx = 0.2;
-//        c.gridx = 1;
-//        this.add(new MapInfo(), c);
-//
-//        c.gridy = 2;
-//
-//        c.weightx = 0.8;
-//        c.gridx = 0;
-//        this.add(new ChatArea(), c);
-//
-//        c.weightx = 0.2;
-//        c.gridx = 2;
-//        this.add(new Buttons(), c);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (screenSize.width - getWidth()) / 2;
+		int y = (screenSize.height - getHeight()) / 2;
+		this.setLocation(x, y);
 
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+
+		t = new Thread(this);
+		t.start();
+        
+        this.setVisible(true);
+    }
+    
+	public WaitingRoomScreen(ClientWindow win, User user) {
+    	this.win = win;
+    	this.user = user;
+    	this.roomUserList = new RoomUserList();
+
+		this.setSize(1280, 780);
+        this.setLayout(new GridBagLayout());
+        // this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 5), new EmptyBorder(40, 200, 40, 200)));
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.weightx = 1.0;
+        c.gridwidth = 2;
+
+        c.gridy = 0;
+        this.add(new TopArea(), c);
+
+        c.insets = new Insets(5, 0, 0, 0);
+        c.weightx = 0.7;
+        c.gridwidth = 1;
+        c.gridy = 1;
+        c.gridx = 0;
+        this.add(new LeftArea(), c);
+
+        c.gridx = 1;
+        c.weightx = 0.3;
+        c.weighty = 1.0;
+        c.insets = new Insets(5, 10, 0, 0);
+        this.add(new RightArea(), c);
+
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (screenSize.width - getWidth()) / 2;
+		int y = (screenSize.height - getHeight()) / 2;
+		this.setLocation(x, y);
+
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+
+		t = new Thread(this);
+		t.start();
+        
         this.setVisible(true);
     }
 
@@ -107,6 +140,7 @@ public class WaitingRoomScreen extends JPanel implements Runnable {
 
 	@Override
 	public void run() {
+		System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
 		while(true) {
 			System.out.println("대기방 스레드 동작중...");
 			// CPU 과부하 방지
@@ -123,7 +157,6 @@ public class WaitingRoomScreen extends JPanel implements Runnable {
 				
 				switch(protocol.getProtocol()) {
 					case GameProtocol.PT_BROADCAST_USER_LIST_IN_WAITING_ROOM:	// 유저 리스트 조회
-						System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@");
 						roomUserList.removeAll();
 						List<WaitingRoomRow> row = (ArrayList) protocol.getData();
 						for(WaitingRoomRow value : row) {

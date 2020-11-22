@@ -50,20 +50,21 @@ public class LobbyScreen extends JFrame implements Runnable {
 	ClientWindow win;
 	User user;
 
-	private JPanel bottomArea, roomList;
 	private JLabel chatLabel, playerLabel;
 	private JTextArea chatArea, userArea;
 	private JScrollPane scrollChatArea, scrolPlayArea;
 	private JTextField chatField;
-	private JButton sendButton;
-	JButton btnMakeRoom, btnWaitRoom, btnLogout, btnSetting;
+	private JButton btnMakeRoom, btnWaitRoom, btnLogout, sendButton;
 
+	private JFrame frame;
 	private Thread t;
 
 	MakeRoomScreen makeRoomScreen;
 
 	public LobbyScreen(User user) {
+		this.frame = this;
 		this.user = user;
+		
 		this.setTitle(String.format("로비 창 - (접속 유저:%s)", user.getNickname()));
 		this.setSize(1280, 720);
 		this.setLayout(null);
@@ -100,6 +101,7 @@ public class LobbyScreen extends JFrame implements Runnable {
 		boolean isRun = true;
 		String message = null;
 
+		System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
 		while (isRun) {
 			// CPU 독식 방지
 			try {
@@ -127,16 +129,9 @@ public class LobbyScreen extends JFrame implements Runnable {
 					break;
 				case GameProtocol.PT_RES_CREATE_WAITING_ROOM:
 					if ((int) protocol.getData() == 1) {
-						win.setEnabled(true);
-						makeRoomScreen.dispose();
-
-						// 유저 데이터를 가지고 대기방 화면으로 이동한다.
-						WaitingRoomScreen waitingRoomScreen = new WaitingRoomScreen(win, user);
-						win.waitingRoomScreen = waitingRoomScreen;
-						win.addScreen("waitingRoomScreen", waitingRoomScreen);
-						new Thread(waitingRoomScreen).start();
-						win.change("waitingRoomScreen");
-
+						makeRoomScreen.setVisible(false);
+						this.setVisible(false);
+						new WaitingRoomScreen(user);
 					}
 					break;
 				case GameProtocol.PT_BROADCAST_WAITING_ROOM_LIST:
@@ -156,12 +151,8 @@ public class LobbyScreen extends JFrame implements Runnable {
 					}
 					break;
 				case GameProtocol.PT_RES_ENTER_WAITING_ROOM:
-					// 유저 데이터를 가지고 대기방 화면으로 이동한다.
-					WaitingRoomScreen waitingRoomScreen = new WaitingRoomScreen(win, user);
-					win.waitingRoomScreen = waitingRoomScreen;
-					win.addScreen("waitingRoomScreen", waitingRoomScreen);
-					new Thread(waitingRoomScreen).start();
-					win.change("waitingRoomScreen");
+					this.setVisible(false);
+					new WaitingRoomScreen(user);
 					break;
 				}
 
@@ -187,7 +178,7 @@ public class LobbyScreen extends JFrame implements Runnable {
 		/* 방만들기 버튼 */
 		btnMakeRoom = new MakeRoomButton();
 		btnMakeRoom.setBounds(240, 60, 140, 50);
-
+		
 		/* 대기 방 버튼 */
 		btnWaitRoom = new WaitRoomButton();
 		btnWaitRoom.setBounds(390, 60, 140, 50);
@@ -195,23 +186,6 @@ public class LobbyScreen extends JFrame implements Runnable {
 		/* 로그아웃 */
 		btnLogout = new LogoutButton();
 		btnLogout.setBounds(900, 60, 140, 50);
-		btnLogout.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				GameProtocol protocol = new GameProtocol(GameProtocol.PT_LOGOUT);
-				try {
-					user.out.writeObject(protocol);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-				
-				setVisible(false);
-				new LoginScreen();
-
-			}
-		});
 		
 		this.add(btnMakeRoom);
 		this.add(btnWaitRoom);
@@ -325,8 +299,9 @@ public class LobbyScreen extends JFrame implements Runnable {
 			this.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					makeRoomScreen = new MakeRoomScreen(win, user);
-					win.setEnabled(false);
+					frame.setEnabled(false);
+					makeRoomScreen = new MakeRoomScreen(user, frame);
+					makeRoomScreen.setLocationRelativeTo(frame);
 				}
 			});
 		}
@@ -404,12 +379,28 @@ public class LobbyScreen extends JFrame implements Runnable {
 	}
 
 	class LogoutButton extends WaitRoomListButton {
+		
 		/* 로그아웃 버튼 */
 		LogoutButton() {
 			super("로그아웃");
-
 			this.setBackground(Color.WHITE);
+			this.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+					GameProtocol protocol = new GameProtocol(GameProtocol.PT_LOGOUT);
+					try {
+						user.out.writeObject(protocol);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					
+					frame.setVisible(false);
+					new LoginScreen();
+				}
+			});
 		}
+		
 	}
 
 }
