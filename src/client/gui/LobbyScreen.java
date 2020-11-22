@@ -24,17 +24,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import client.entity.User;
 import client.gui.component.WaitingRoom;
@@ -62,7 +66,7 @@ public class LobbyScreen extends JFrame implements Runnable {
 		this.user = user;
 		this.setTitle(String.format("로비 창 - (접속 유저:%s)", user.getNickname()));
 		this.setSize(1280, 720);
-		this.setLayout(new BorderLayout());
+		this.setLayout(null);
 		// this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 5), new EmptyBorder(40, 300, 40, 300)));
 
 		this.initTopArea();
@@ -146,8 +150,8 @@ public class LobbyScreen extends JFrame implements Runnable {
 					int i = 10;
 					for (WaitingRoomListRow value : rows) {
 						c.gridy = i++;
-						roomList.add(new RoomListBodyRow(value.getRoomId(), value.getRoomName(),
-								value.getCurrentPlayerCount(), value.getRoomState()), c);
+						// (리팩토링 예정)
+						// roomList.add(new RoomListBodyRow(value.getRoomId(), value.getRoomName(), value.getCurrentPlayerCount(), value.getRoomState()), c);
 						System.out.println(rows);
 					}
 					break;
@@ -179,103 +183,62 @@ public class LobbyScreen extends JFrame implements Runnable {
 	}
 
 	private void initTopArea() {
-		JPanel topArea = new JPanel();
-		topArea.setLayout(new GridLayout(1, 2));
-
-		/* 첫번째 상단 버튼 그룹 */
-		JPanel buttonsPanel1 = new JPanel();
-		buttonsPanel1.setLayout(new FlowLayout(FlowLayout.LEFT));
-
+		
 		/* 방만들기 버튼 */
 		btnMakeRoom = new MakeRoomButton();
+		btnMakeRoom.setBounds(240, 60, 140, 50);
 
 		/* 대기 방 버튼 */
 		btnWaitRoom = new WaitRoomButton();
-
-		buttonsPanel1.add(btnMakeRoom);
-		buttonsPanel1.add(btnWaitRoom);
-
-		/* 두번째 상단 버튼 그룹 */
-		JPanel buttonsPanel2 = new JPanel();
-		buttonsPanel2.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		btnWaitRoom.setBounds(390, 60, 140, 50);
 
 		/* 로그아웃 */
 		btnLogout = new LogoutButton();
-		/* 설정 */
-		btnSetting = new SettingButton();
-
-		buttonsPanel2.add(btnLogout);
-		buttonsPanel2.add(btnSetting);
-
-		topArea.add(buttonsPanel1);
-		topArea.add(buttonsPanel2);
-
-		this.add(topArea, BorderLayout.PAGE_START);
+		btnLogout.setBounds(900, 60, 140, 50);
+		
+		this.add(btnMakeRoom);
+		this.add(btnWaitRoom);
+		this.add(btnLogout);
+		
 	}
 
 	private void initMiddleArea() {
-		RoomListHeaderRow header = new RoomListHeaderRow();
+		
+        //headers for the table
+        String[] columns = new String[] {
+            "방 번호", "방 제목", "방 인원", "방 상태"
+        };
+         
+        Object[][] data = new Object[][] {
+            {1, "임시 방 제목", "2/4", "대기중"},
+        };
+        
+        //add the table to the frame
+        JTable table = new JTable(data, columns);
+        table.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+        table.setRowHeight(40);
+        table.setShowGrid(false);
+        table.getTableHeader().setPreferredSize(new Dimension(800, 40));
+        table.getTableHeader().setFont(new Font("HY견고딕", Font.PLAIN, 18));
+        
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( SwingConstants.CENTER );
+        table.setDefaultRenderer(Object.class, centerRenderer);
 
-		JPanel middleArea = new JPanel();
-		middleArea.setLayout(new GridLayout(1, 1));
-		middleArea.setBackground(new Color(0xFFFFFF));
-		middleArea.setBorder(new LineBorder(Color.BLACK, 3));
-
-		roomList = new JPanel(new GridBagLayout());
-
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 1;
-
-		// (버그)
-		roomList.add(new RoomListHeaderRow(), c);
-		for (int i = 0; i < 10; i++) {
-			c.gridy = i;
-			roomList.add(new RoomListBodyRow(i, "제목 테스트" + (i + 1), new Random().nextInt(7), new Random().nextInt(2)),
-					c);
-		}
-
-		JScrollPane scrollArea = new JScrollPane(roomList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		middleArea.add(scrollArea);
-
-		this.add(middleArea, BorderLayout.CENTER);
+        JScrollPane sp = new JScrollPane(table);
+        sp.setBorder(new LineBorder(Color.BLACK, 3));
+        sp.setBounds(1280/2-800/2, 120, 800, 300);
+        this.add(sp);
+		
 	}
 
 	private void initBottomArea() {
-		bottomArea = new JPanel();
-
-		GridBagLayout gbl = new GridBagLayout();
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		bottomArea.setLayout(gbl);
-		bottomArea.setPreferredSize(new Dimension(0, 200));
 
 		chatLabel = new JLabel("채팅창");
 		chatLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		gbc.insets = new Insets(5, 0, 0, 0);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbl.setConstraints(chatLabel, gbc);
-		bottomArea.add(chatLabel);
 
 		playerLabel = new JLabel("접속자 목록");
 		playerLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
-		gbc.insets = new Insets(5, 0, 0, 0);
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbl.setConstraints(playerLabel, gbc);
-		bottomArea.add(playerLabel);
 
 		chatArea = new JTextArea();
 		chatArea.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
@@ -283,15 +246,8 @@ public class LobbyScreen extends JFrame implements Runnable {
 		scrollChatArea = new JScrollPane(chatArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollChatArea.setBorder(new LineBorder(Color.BLACK, 3));
-		gbc.insets = new Insets(0, 0, 5, 5);
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		gbl.setConstraints(scrollChatArea, gbc);
-		bottomArea.add(scrollChatArea);
+		scrollChatArea.setBounds(240, 430, 600, 160);
+		this.add(scrollChatArea);
 
 		userArea = new JTextArea();
 		userArea.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
@@ -299,15 +255,8 @@ public class LobbyScreen extends JFrame implements Runnable {
 		scrolPlayArea = new JScrollPane(userArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrolPlayArea.setBorder(new LineBorder(Color.BLACK, 3));
-		gbc.insets = new Insets(0, 5, 5, 0);
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		gbl.setConstraints(scrolPlayArea, gbc);
-		bottomArea.add(scrolPlayArea);
+		scrolPlayArea.setBounds(850, 430, 190, 200);
+		this.add(scrolPlayArea);
 
 		chatField = new JTextField();
 		chatField.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
@@ -319,37 +268,21 @@ public class LobbyScreen extends JFrame implements Runnable {
 					sendMessage(chatField.getText());
 			}
 		});
-		gbc.insets = new Insets(0, 0, 5, 5);
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.weightx = 8;
-		gbc.weighty = 0;
-		gbl.setConstraints(chatField, gbc);
-		bottomArea.add(chatField);
+		chatField.setBounds(240, 600, 500, 30);
+		this.add(chatField);
 
 		sendButton = new JButton("전송");
 		sendButton.setBackground(Color.LIGHT_GRAY);
 		sendButton.setFont(new Font("HY견고딕", Font.PLAIN, 18));
 		sendButton.setBorder(new LineBorder(Color.BLACK, 3));
-		gbc.insets = new Insets(0, 5, 5, 0);
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.weightx = 1;
-		gbc.weighty = 0;
-		gbl.setConstraints(sendButton, gbc);
 		sendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				sendMessage(chatField.getText());
 			}
 		});
-		bottomArea.add(sendButton);
-
-		this.add(bottomArea, BorderLayout.SOUTH);
+		sendButton.setBounds(750, 600, 90, 30);
+		this.add(sendButton);
 	}
 
 	// 서버로 채팅 메시지를 전달한다
@@ -382,101 +315,34 @@ public class LobbyScreen extends JFrame implements Runnable {
 		}
 	}
 
-	abstract class RoomListRow extends JPanel {
-		/*
-		 * 대기실 목록을 표기하기 표의 각 행
-		 */
-		protected GridBagConstraints numberGbc;
-		protected GridBagConstraints titleGbc;
-		protected GridBagConstraints userCntGbc;
-		protected GridBagConstraints roomStateGbc;
-
-		public RoomListRow() {
-			super();
-
-			this.setLayout(new GridBagLayout());
-			this.setBackground(new Color(0xFFFFFF));
-
-			this.setBorder(new MatteBorder(0, 0, 3, 0, Color.BLACK));
-
-			this.numberGbc = new GridBagConstraints();
-			this.titleGbc = new GridBagConstraints();
-			this.userCntGbc = new GridBagConstraints();
-			this.roomStateGbc = new GridBagConstraints();
-
-			this.numberGbc.fill = GridBagConstraints.BOTH;
-			this.titleGbc.fill = GridBagConstraints.BOTH;
-			this.userCntGbc.fill = GridBagConstraints.BOTH;
-			this.roomStateGbc.fill = GridBagConstraints.BOTH;
-
-			this.numberGbc.weightx = 0.5;
-			this.titleGbc.weightx = 1;
-			this.userCntGbc.weightx = 1;
-			this.roomStateGbc.weightx = 1;
-
-			this.numberGbc.gridx = 0;
-			this.titleGbc.gridx = 1;
-			this.userCntGbc.gridx = 2;
-			this.roomStateGbc.gridx = 3;
-
-			this.numberGbc.gridy = 0;
-			this.titleGbc.gridy = 0;
-			this.userCntGbc.gridy = 0;
-			this.roomStateGbc.gridy = 0;
-
-			this.numberGbc.gridwidth = 1;
-			this.titleGbc.gridwidth = 1;
-			this.userCntGbc.gridwidth = 1;
-			this.roomStateGbc.gridwidth = 1;
-		}
-	}
-
-	class RoomListHeaderRow extends RoomListRow {
-		/*
-		 * 대기실 목록을 표기하기 위한 표의 행 헤더
-		 */
-		public RoomListHeaderRow() {
-			super();
-
-			this.add(new RoomListTableData("No"), this.numberGbc);
-			this.add(new RoomListTableData("방 제목"), this.titleGbc);
-			this.add(new RoomListTableData("방 인원"), this.userCntGbc);
-			this.add(new RoomListTableData("방 상태"), this.roomStateGbc);
-
-			this.setBackground(new Color(0xD9D9D9));
-		}
-	}
-
+	/*
 	class RoomListBodyRow extends RoomListRow {
-		/*
-		 * 대기실 목록을 표기하기 위한 표의 아이템
-		 */
+		 // 대기실 목록을 표기하기 위한 표의 아이템
 		public RoomListBodyRow(int number, String roomTitle, int roomUserCount, int roomState) {
 			super();
 
 			String roomStateString;
 			Color fontColor;
 
-			setLayout(new GridLayout(0, 4));
-			this.add(new RoomListTableData(String.format("%3d", number)), this.numberGbc);
-			this.add(new RoomListTableData(roomTitle), this.titleGbc);
-			this.add(new RoomListTableData(String.format("%d / 7", roomUserCount)), this.userCntGbc);
+			this.add(new RoomListTableData(String.format("%3d", number)));
+			this.add(new RoomListTableData(roomTitle));
+			this.add(new RoomListTableData(String.format("%d / 7", roomUserCount)));
 			// 아래 부분은 추후에 각 상수를 정의후에 교체할 것
 			switch (roomState) {
-			case 0:
-				roomStateString = "대기중";
-				fontColor = Color.BLACK;
-				break;
-			case 1:
-				roomStateString = "게임중";
-				fontColor = Color.RED;
-				break;
-			default:
-				roomStateString = "오류";
-				fontColor = Color.RED;
-				break;
+				case 0:
+					roomStateString = "대기중";
+					fontColor = Color.BLACK;
+					break;
+				case 1:
+					roomStateString = "게임중";
+					fontColor = Color.RED;
+					break;
+				default:
+					roomStateString = "오류";
+					fontColor = Color.RED;
+					break;
 			}
-			this.add(new RoomListTableData(roomStateString, fontColor), this.roomStateGbc);
+			this.add(new RoomListTableData(roomStateString, fontColor));
 
 			addMouseListener(new MouseAdapter() {
 				@Override
@@ -494,22 +360,7 @@ public class LobbyScreen extends JFrame implements Runnable {
 			});
 		}
 	}
-
-	class RoomListTableData extends JLabel {
-		/* 각 표의 칸 */
-		RoomListTableData(String text) {
-			super(text);
-
-			this.setFont(new Font("맑은 고딕", Font.BOLD, 18));
-			this.setBorder(new EmptyBorder(5, 10, 5, 10));
-		}
-
-		RoomListTableData(String text, Color color) {
-			this(text);
-
-			this.setForeground(color);
-		}
-	}
+	*/
 
 	/* 버튼 컴포넌트 */
 
@@ -544,12 +395,4 @@ public class LobbyScreen extends JFrame implements Runnable {
 		}
 	}
 
-	class SettingButton extends WaitRoomListButton {
-		/* 설정 버튼 */
-		SettingButton() {
-			super("설정");
-
-			this.setBackground(Color.WHITE);
-		}
-	}
 }
