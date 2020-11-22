@@ -93,6 +93,9 @@ public class Lobby extends Thread {
 								broadcastRoomList();
 							}
 							break;
+						case GameProtocol.PT_LOGOUT:
+							removePlayer(serverUser);
+							break;
 					}
 					
 				} catch(ClassNotFoundException ne) {

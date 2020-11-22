@@ -195,6 +195,23 @@ public class LobbyScreen extends JFrame implements Runnable {
 		/* 로그아웃 */
 		btnLogout = new LogoutButton();
 		btnLogout.setBounds(900, 60, 140, 50);
+		btnLogout.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				GameProtocol protocol = new GameProtocol(GameProtocol.PT_LOGOUT);
+				try {
+					user.out.writeObject(protocol);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+				setVisible(false);
+				new LoginScreen();
+
+			}
+		});
 		
 		this.add(btnMakeRoom);
 		this.add(btnWaitRoom);
