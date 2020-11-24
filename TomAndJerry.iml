@@ -16,7 +16,7 @@
       <sourceFolder url="file://$MODULE_DIR$/res" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="jdk" jdkName="JavaSE-1.8" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="module-library">
       <library name="jgoodies-forms-1.8.0.jar">
         <CLASSES>
