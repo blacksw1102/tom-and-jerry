@@ -1,5 +1,11 @@
 eclipse.preferences.version=1
+encoding//src/entity/User.java=UTF-8
 encoding//src/game/client/frame/ReadyView.java=UTF-8
 encoding//src/game/client/frame/StartView.java=UTF-8
 encoding//src/game/server/UserInfo.java=UTF-8
+encoding//src/gui/LoginScreen.java=UTF-8
+encoding//src/gui/MakeRoomScreen.java=UTF-8
+encoding//src/gui/SignUpScreen.java=UTF-8
+encoding//src/gui/WaitingRoomListScreen.java=UTF-8
+encoding/<project>=UTF-8
 encoding/README.md=UTF-8
