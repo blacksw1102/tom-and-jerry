@@ -134,7 +134,7 @@ public class LobbyScreen extends JFrame implements Runnable {
 //					c.weightx = 1;
 
 					List<WaitingRoomListRow> rows = (ArrayList) protocol.getData();
-//					int i = 10;
+					model.setRowCount(0);
 					for (WaitingRoomListRow value : rows) {
 						model.addRow(new Object[]{value.getRoomId(), 
 								value.getRoomName(), 

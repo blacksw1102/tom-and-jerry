@@ -53,9 +53,10 @@ public class Lobby extends Thread {
 						case GameProtocol.PT_REQ_CREATE_WAITING_ROOM:
 							// 대기방 생성 
 							waitingRoom = (WaitingRoom) protocol.getData();
+							waitingRoom.setLobby(this);
 							waitingRoom.setRoomId(++currentRoomId);
 							waitingRoom.start(); // 대기방 스레드 시작
-							roomList.put(waitingRoom.getRoomId(), waitingRoom);
+							addWaitingRoom(waitingRoom);
 							
 							removePlayer(serverUser);
 							waitingRoom.addPlayer(serverUser);
@@ -145,6 +146,21 @@ public class Lobby extends Thread {
 		}
 	}
 	
+	// 대기방 추가
+	public void addWaitingRoom(WaitingRoom room) {
+		roomList.put(room.getRoomId(), room);
+		System.out.format("[%s] 현재 대기방 개수 : %d\n",this.getClass().getName(), roomList.size());
+	}
+	
+	// 대기방 제거
+	public void removeWaitingRoom(WaitingRoom room) {
+		if(roomList.get(room.getRoomId()) != null) {
+			roomList.remove(room.getRoomId());
+			System.out.format("[%s] 현재 대기방 개수 : %d\n",this.getClass().getName(), roomList.size());
+			broadcastRoomList();
+		}
+	}
+	
 	// 주어진 아이디의 클라이언트에게 메시지를 보낸다.
 	public void sendMessage(String playerId, String message) {
 		// TODO Auto-generated method stub
@@ -225,19 +241,19 @@ public class Lobby extends Thread {
 	}
 	
 	// 주어진 이름의 게임 룸을 생성한다.
-	public void makeRoom(String playerId, String roomId) {
+	//public void makeRoom(String playerId, String roomId) {
 		// TODO Auto-generated method stub
-	}
+	//}
 	
 	// 주어진플레이어가 로비에서 룸을 선택하여 룸으로 들어가는 것을 처리한다.
-	public void enterRoom(String playerId, String roomId) {
+	//public void enterRoom(String playerId, String roomId) {
 		// TODO Auto-generated method stub
-	}
+	//}
 	
 	// 주어진 아이디의 룸을 로비 객체의 룸 리스트에서 제거한다.
-	public void removeRoom(String roomId) {
+	//public void removeRoom(String roomId) {
 		// TODO Auto-generated method stub
-	}
+	//}
 	
 	// 주어진 아이디에 해당하는 클라이언트의 프로파일 정보를 설정한다.
 	// 프로파일 정보(profile) : "sex, age, win, lose, total, position"

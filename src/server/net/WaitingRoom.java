@@ -20,6 +20,7 @@ public class WaitingRoom extends Thread implements Serializable {
 	private int roomState;			// 방 상태 (0:대기중, 1:게임중)
 	
 	private Hashtable<String, ServerUser> userList = null; // 대기방에 접속중인 유저리스트
+	private Lobby lobby;
 	
 	public WaitingRoom(String roomName, String roomPassword) {
 		this.roomName = roomName;
@@ -58,7 +59,6 @@ public class WaitingRoom extends Thread implements Serializable {
 				}
 			}
 		} catch (InterruptedException e2) {
-			e2.printStackTrace();
 		} finally {
 			System.out.printf("[%s] 종료..\n", this.getClass().getName());
 
@@ -80,6 +80,11 @@ public class WaitingRoom extends Thread implements Serializable {
 			userList.remove(serverUser.getId());
 			System.out.format("[%s] 현재 접속자 수 : %d\n",this.getClass().getName(), userList.size());
 			broadcastUserList();
+		}
+		
+		if(userList.size() == 0) {
+			lobby.removeWaitingRoom(this);
+			interrupt();
 		}
 	}
 
@@ -151,6 +156,10 @@ public class WaitingRoom extends Thread implements Serializable {
 			}	
 		}
 		
+	}
+
+	public void setLobby(Lobby lobby) {
+		this.lobby = lobby;
 	}
 	
 }
