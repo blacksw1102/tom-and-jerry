@@ -142,7 +142,7 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
 	public void run() {
 		System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
 		while(true) {
-			System.out.println("대기방 스레드 동작중...");
+			System.out.println("[WaitingRoomScreen] 작동 중...");
 			// CPU 과부하 방지
 			try {
 				Thread.sleep(100);

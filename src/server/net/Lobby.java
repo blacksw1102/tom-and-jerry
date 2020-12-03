@@ -129,6 +129,7 @@ public class Lobby extends Thread {
 	
 	// 접속이 끊긴 클라이언트를 로비에서 삭제한다.
 	public void removePlayer(ServerUser serverUser) {
+		System.out.println("@@");
 		if(chatList.get(serverUser.getId()) != null) {
 			try {
 				chatList.remove(serverUser.getId());

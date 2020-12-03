@@ -1,14 +1,9 @@
 package client.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,13 +17,10 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -37,11 +29,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 import client.entity.User;
-import client.gui.component.WaitingRoom;
 import client.gui.component.WaitingRoomListRow;
 import client.net.ClientWindow;
 import server.util.GameProtocol;
@@ -58,6 +49,9 @@ public class LobbyScreen extends JFrame implements Runnable {
 
 	private JFrame frame;
 	private Thread t;
+	
+	private JTable table; 
+	private DefaultTableModel model;
 
 	MakeRoomScreen makeRoomScreen;
 
@@ -135,20 +129,25 @@ public class LobbyScreen extends JFrame implements Runnable {
 					}
 					break;
 				case GameProtocol.PT_BROADCAST_WAITING_ROOM_LIST:
-					GridBagConstraints c = new GridBagConstraints();
-					c.fill = GridBagConstraints.BOTH;
-					c.gridx = 0;
-					c.gridy = 0;
-					c.weightx = 1;
+//					GridBagConstraints c = new GridBagConstraints();
+//					c.fill = GridBagConstraints.BOTH;
+//					c.gridx = 0;
+//					c.gridy = 0;
+//					c.weightx = 1;
 
 					List<WaitingRoomListRow> rows = (ArrayList) protocol.getData();
-					int i = 10;
+//					int i = 10;
 					for (WaitingRoomListRow value : rows) {
-						c.gridy = i++;
+						model.addRow(new Object[]{value.getRoomId(), 
+								value.getRoomName(), 
+								value.getCurrentPlayerCount()+"/"+value.getMaxPlayerCount(), 
+								value.getRoomState()});
+					}
+//						c.gridy = i++;
 						// (리팩토링 예정)
 						// roomList.add(new RoomListBodyRow(value.getRoomId(), value.getRoomName(), value.getCurrentPlayerCount(), value.getRoomState()), c);
-						System.out.println(rows);
-					}
+//					}
+					
 					break;
 				case GameProtocol.PT_RES_ENTER_WAITING_ROOM:
 					this.setVisible(false);
@@ -195,22 +194,32 @@ public class LobbyScreen extends JFrame implements Runnable {
 
 	private void initMiddleArea() {
 		
-        //headers for the table
-        String[] columns = new String[] {
-            "방 번호", "방 제목", "방 인원", "방 상태"
-        };
-         
-        Object[][] data = new Object[][] {
-            {1, "임시 방 제목", "2/4", "대기중"},
-        };
-        
         //add the table to the frame
-        JTable table = new JTable(data, columns);
+        model = new DefaultTableModel(); 
+        model.addColumn("방 번호");
+        model.addColumn("방 제목");
+        model.addColumn("방 인원");
+        model.addColumn("방 상태");
+        table = new JTable(model) {
+        	public boolean isCellEditable(int row, int column) {
+        		return false;
+        	}
+        };
         table.setFont(new Font("HY견고딕", Font.PLAIN, 18));
         table.setRowHeight(40);
         table.setShowGrid(false);
         table.getTableHeader().setPreferredSize(new Dimension(800, 40));
         table.getTableHeader().setFont(new Font("HY견고딕", Font.PLAIN, 18));
+        table.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent mouseEvent) {
+                JTable table =(JTable) mouseEvent.getSource();
+                Point point = mouseEvent.getPoint();
+                int row = table.rowAtPoint(point);
+                if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+                	System.out.println("clicked row : " + row);
+                }
+            }
+        });
         
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( SwingConstants.CENTER );

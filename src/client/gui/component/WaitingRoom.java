@@ -95,7 +95,6 @@ public class WaitingRoom extends Thread implements Serializable {
 			WaitingRoomRow row = new WaitingRoomRow(player.getNickname(), player.getPlayerState());
 			rowList.add(row);
 		}
-		System.out.println("size : " + rowList.size());
 		
 		// 유저 리스트를 모든 유저들에게 보낸다.
 		for(ServerUser player : playerList) {
