@@ -96,15 +96,11 @@ public class LobbyScreen extends JFrame implements Runnable {
 		String message = null;
 
 		System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
-		while (isRun) {
-			// CPU 독식 방지
-			try {
+		try {
+			while (isRun) {
+				// CPU 독식 방지
 				Thread.sleep(100);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
 
-			try {
 				GameProtocol protocol = (GameProtocol) user.in.readObject();
 				if (protocol == null)
 					throw new IOException("Null pointer received...");
@@ -124,8 +120,10 @@ public class LobbyScreen extends JFrame implements Runnable {
 				case GameProtocol.PT_RES_CREATE_WAITING_ROOM:
 					if ((int) protocol.getData() == 1) {
 						makeRoomScreen.setVisible(false);
-						this.setVisible(false);
+						makeRoomScreen.dispose();
+						this.dispose();
 						new WaitingRoomScreen(user);
+						this.t.interrupt();
 					}
 					break;
 				case GameProtocol.PT_BROADCAST_WAITING_ROOM_LIST:
@@ -150,20 +148,22 @@ public class LobbyScreen extends JFrame implements Runnable {
 					
 					break;
 				case GameProtocol.PT_RES_ENTER_WAITING_ROOM:
-					this.setVisible(false);
+					this.dispose();
 					new WaitingRoomScreen(user);
+					this.t.interrupt();
 					break;
 				}
-
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (EOFException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (EOFException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+		} finally {
+			System.out.printf("[%s] 종료..\n", this.getClass().getName());
 		}
-		// 룸 리스트 조회
 	}
 
 	private void initUserList(List<String> userList) {
@@ -216,7 +216,14 @@ public class LobbyScreen extends JFrame implements Runnable {
                 Point point = mouseEvent.getPoint();
                 int row = table.rowAtPoint(point);
                 if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
-                	System.out.println("clicked row : " + row);
+                	GameProtocol protocol = new GameProtocol(GameProtocol.PT_REQ_ENTER_WAITING_ROOM);
+                	int roomId = (int) table.getValueAt(row, 0);
+                	protocol.setData(roomId);
+                	try {
+						user.getOut().writeObject(protocol);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
                 }
             }
         });

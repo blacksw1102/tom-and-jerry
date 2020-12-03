@@ -16,6 +16,8 @@ public class User implements Serializable {
 	private String birth; 		// 생년월일
 	private String tel; 		// 전화번호
 	
+	private int playerState;
+	
 	public Socket socket;
 	public ObjectInputStream in = null;
 	public ObjectOutputStream out = null;
@@ -32,6 +34,11 @@ public class User implements Serializable {
 	public User(String id, String nickname) {
 		this.id = id;
 		this.nickname = nickname;
+	}
+	
+	public User(String nickname, int playerSatete) {
+		this.nickname = nickname;
+		this.playerState = playerSatete;
 	}
 
 	@Override
@@ -103,5 +110,20 @@ public class User implements Serializable {
 		return socket;
 	}
 	
+	public int getPlayerSatete() {
+		return playerState;
+	}
+
+	public void setPlayerSatete(int playerSatete) {
+		this.playerState = playerSatete;
+	}
+
+	public ObjectInputStream getIn() {
+		return in;
+	}
+
+	public ObjectOutputStream getOut() {
+		return out;
+	}
 
 }

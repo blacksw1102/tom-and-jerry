@@ -82,7 +82,7 @@ public class LoginScreen extends JFrame {
 					user.in = in;
 
 					if(user != null) {
-						setVisible(false);
+						dispose();
 						new LobbyScreen(user);
 					}
 				} catch (ClassNotFoundException e1) {
@@ -103,7 +103,7 @@ public class LoginScreen extends JFrame {
         joinBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
+				dispose();
 				SignUpScreen signUpScreen = new SignUpScreen();
 			}
 		});

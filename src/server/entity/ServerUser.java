@@ -42,7 +42,7 @@ public class ServerUser {
 	
 	@Override
 	public String toString() {
-		return String.format("[ServerPlayer] 아이디:%s, 닉네임:%s", id, nickname);
+		return String.format("[ServerPlayer] 아이디:%s, 닉네임:%s, 상태:%d", id, nickname, playerState);
 	}
 	
 	public ObjectInputStream getIn() {

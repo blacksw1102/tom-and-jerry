@@ -20,7 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import client.entity.User;
-import client.gui.component.WaitingRoom;
+import server.net.WaitingRoom;
 import server.util.GameProtocol;
 
 public class MakeRoomScreen extends JDialog {

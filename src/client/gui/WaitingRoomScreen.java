@@ -33,15 +33,14 @@ import server.util.GameProtocol;
 
 public class WaitingRoomScreen extends JFrame implements Runnable {
 	ClientWindow win;
-	User user;
+	private User user;
     private ArrayList<User> users = new ArrayList<>();
-    private RoomUserList roomUserList;
+    /// private RoomUserList roomUserList;
     
     private Thread t;
     
 	public WaitingRoomScreen(User user) {
     	this.user = user;
-    	this.roomUserList = new RoomUserList();
 
 		this.setSize(1280, 780);
         this.setLayout(new GridBagLayout());
@@ -76,6 +75,12 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
+				GameProtocol protocol = new GameProtocol(GameProtocol.PT_LOGOUT);
+				try {
+					user.getOut().writeObject(protocol);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 				System.exit(0);
 			}
 		});
@@ -85,11 +90,50 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
         
         this.setVisible(true);
     }
+	
+	@Override
+	public void run() {
+		System.out.printf("[%s] 작동 중..\n", this.getClass().getSimpleName());
+		try {
+			while(true) {
+				// CPU 과부하 방지
+				Thread.sleep(100);
+				
+				GameProtocol protocol = (GameProtocol) user.getIn().readObject();
+				if(protocol == null)
+					throw new IOException("Null pointer received...");
+				
+				switch(protocol.getProtocol()) {
+					case GameProtocol.PT_BROADCAST_USER_LIST_IN_WAITING_ROOM:	// 유저 리스트 조회
+						ArrayList<User> userList = (ArrayList) protocol.getData();
+						users = userList;
+		
+						System.out.printf("닉네임 : %s, 현재 상태 : %d\n", user.getNickname(), user.getPlayerSatete());
+						System.out.println("-----------현재 대기방 접속 유저 -----------");
+						for(User user : users) {
+							System.out.printf("닉네임 : %s, 현재 상태 : %d\n", user.getNickname(), user.getPlayerSatete());
+						}
+						System.out.println("------------------------------------");
+						revalidate();
+						break;
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (EOFException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+		} finally {
+			System.out.printf("[%s] 종료..\n", this.getClass().getSimpleName());
+		}
+		
+	}
     
 	public WaitingRoomScreen(ClientWindow win, User user) {
     	this.win = win;
     	this.user = user;
-    	this.roomUserList = new RoomUserList();
 
 		this.setSize(1280, 780);
         this.setLayout(new GridBagLayout());
@@ -138,45 +182,6 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
 
     }
 
-	@Override
-	public void run() {
-		System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
-		while(true) {
-			System.out.println("[WaitingRoomScreen] 작동 중...");
-			// CPU 과부하 방지
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			try {
-				GameProtocol protocol = (GameProtocol) user.in.readObject();
-				if(protocol == null)
-					throw new IOException("Null pointer received...");
-				
-				switch(protocol.getProtocol()) {
-					case GameProtocol.PT_BROADCAST_USER_LIST_IN_WAITING_ROOM:	// 유저 리스트 조회
-						roomUserList.removeAll();
-						List<WaitingRoomRow> row = (ArrayList) protocol.getData();
-						for(WaitingRoomRow value : row) {
-							roomUserList.add(new RoomUserListRow(value.getNickname(), value.getPlayerSatete()));
-							System.out.println(row);
-						}
-						revalidate();
-						break;
-				}
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (EOFException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-	}
-	
 	/**
 	 * 상단 영역
 	 */
@@ -200,7 +205,7 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
 	        c.weightx = 1.0;
 	        c.gridy = 0;
 	        c.gridx = 0;
-	        this.add(roomUserList, c);
+	       // this.add(roomUserList, c);
 
 	        c.insets = new Insets(5, 0, 0, 0);
 	        c.weighty = 1.0;
