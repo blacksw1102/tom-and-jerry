@@ -62,7 +62,7 @@ public class LobbyScreen extends JFrame implements Runnable {
 		this.setTitle(String.format("로비 창 - (접속 유저:%s)", user.getNickname()));
 		this.setSize(1280, 720);
 		this.setLayout(null);
-		// this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 5), new EmptyBorder(40, 300, 40, 300)));
+		//this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 5), new EmptyBorder(40, 300, 40, 300)));
 
 		this.initTopArea();
 		this.initMiddleArea();
@@ -94,7 +94,8 @@ public class LobbyScreen extends JFrame implements Runnable {
 	public void run() {
 		boolean isRun = true;
 		String message = null;
-
+		String[] data = null;
+		
 		System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
 		try {
 			while (isRun) {
@@ -118,21 +119,22 @@ public class LobbyScreen extends JFrame implements Runnable {
 					chatArea.setCaretPosition(chatArea.getDocument().getLength()); // 맨아래로 스크롤
 					break;
 				case GameProtocol.PT_RES_CREATE_WAITING_ROOM:
+					data = ((String) protocol.getData()).split(",");
+					makeRoomScreen.dispose();
+					this.dispose();
+					new WaitingRoomScreen(user, Integer.valueOf(data[0]), data[1]);
+					this.t.interrupt();
+					/*
 					if ((int) protocol.getData() == 1) {
 						makeRoomScreen.setVisible(false);
 						makeRoomScreen.dispose();
 						this.dispose();
-						new WaitingRoomScreen(user);
+						new WaitingRoomScreen(user, 1, "테스트 제목 입니다.");
 						this.t.interrupt();
 					}
+					*/
 					break;
 				case GameProtocol.PT_BROADCAST_WAITING_ROOM_LIST:
-//					GridBagConstraints c = new GridBagConstraints();
-//					c.fill = GridBagConstraints.BOTH;
-//					c.gridx = 0;
-//					c.gridy = 0;
-//					c.weightx = 1;
-
 					List<WaitingRoomListRow> rows = (ArrayList) protocol.getData();
 					model.setRowCount(0);
 					for (WaitingRoomListRow value : rows) {
@@ -141,16 +143,19 @@ public class LobbyScreen extends JFrame implements Runnable {
 								value.getCurrentPlayerCount()+"/"+value.getMaxPlayerCount(), 
 								value.getRoomState()});
 					}
-//						c.gridy = i++;
-						// (리팩토링 예정)
-						// roomList.add(new RoomListBodyRow(value.getRoomId(), value.getRoomName(), value.getCurrentPlayerCount(), value.getRoomState()), c);
-//					}
 					
 					break;
 				case GameProtocol.PT_RES_ENTER_WAITING_ROOM:
+					data = ((String) protocol.getData()).split(",");
 					this.dispose();
-					new WaitingRoomScreen(user);
+					new WaitingRoomScreen(user, Integer.valueOf(data[0]), data[1]);
 					this.t.interrupt();
+					
+					/*
+					this.dispose();
+					new WaitingRoomScreen(user, 1, "테스트 제목입니다.");
+					this.t.interrupt();
+					*/
 					break;
 				}
 			}
@@ -322,53 +327,6 @@ public class LobbyScreen extends JFrame implements Runnable {
 			});
 		}
 	}
-
-	/*
-	class RoomListBodyRow extends RoomListRow {
-		 // 대기실 목록을 표기하기 위한 표의 아이템
-		public RoomListBodyRow(int number, String roomTitle, int roomUserCount, int roomState) {
-			super();
-
-			String roomStateString;
-			Color fontColor;
-
-			this.add(new RoomListTableData(String.format("%3d", number)));
-			this.add(new RoomListTableData(roomTitle));
-			this.add(new RoomListTableData(String.format("%d / 7", roomUserCount)));
-			// 아래 부분은 추후에 각 상수를 정의후에 교체할 것
-			switch (roomState) {
-				case 0:
-					roomStateString = "대기중";
-					fontColor = Color.BLACK;
-					break;
-				case 1:
-					roomStateString = "게임중";
-					fontColor = Color.RED;
-					break;
-				default:
-					roomStateString = "오류";
-					fontColor = Color.RED;
-					break;
-			}
-			this.add(new RoomListTableData(roomStateString, fontColor));
-
-			addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (e.getClickCount() == 2 && !e.isConsumed()) {
-						GameProtocol protocol = new GameProtocol(GameProtocol.PT_REQ_ENTER_WAITING_ROOM);
-						protocol.setData(number);
-						try {
-							user.out.writeObject(protocol);
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-					}
-				}
-			});
-		}
-	}
-	*/
 
 	/* 버튼 컴포넌트 */
 

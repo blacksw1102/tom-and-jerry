@@ -41,6 +41,7 @@ public class Lobby extends Thread {
 				ServerUser serverUser = e.nextElement();
 				WaitingRoom waitingRoom = null;
 				int result = 0;
+				StringBuffer response = null;
 				
 				try {
 					GameProtocol protocol = (GameProtocol) serverUser.getIn().readObject();
@@ -52,16 +53,26 @@ public class Lobby extends Thread {
 							break;
 						case GameProtocol.PT_REQ_CREATE_WAITING_ROOM:
 							// 대기방 생성 
-							waitingRoom = (WaitingRoom) protocol.getData();
-							waitingRoom.setLobby(this);
-							waitingRoom.setRoomId(++currentRoomId);
-							waitingRoom.start(); // 대기방 스레드 시작
+							//waitingRoom = (WaitingRoom) protocol.getData();
+							String[] data = ((String) protocol.getData()).split(",");
+							
+							if(data.length == 1)
+								waitingRoom = new WaitingRoom(++currentRoomId, data[0], this);
+							else
+								waitingRoom = new WaitingRoom(++currentRoomId, data[0], data[1], this);
+							
+							//waitingRoom.setRoomId(++currentRoomId);
+							//waitingRoom.setLobby(this);
+							//waitingRoom.start(); // 대기방 스레드 시작
 							addWaitingRoom(waitingRoom);
 							
 							removePlayer(serverUser);
 							waitingRoom.addPlayer(serverUser);
-							result = 1;
-							protocol = new GameProtocol(GameProtocol.PT_RES_CREATE_WAITING_ROOM, result);
+							
+							response = new StringBuffer();
+							response.append(waitingRoom.getRoomId() + ",");
+							response.append(waitingRoom.getRoomName());
+							protocol = new GameProtocol(GameProtocol.PT_RES_CREATE_WAITING_ROOM, response.toString());
 							serverUser.getOut().writeObject(protocol);
 							
 							waitingRoom.broadcastUserList();
@@ -79,9 +90,18 @@ public class Lobby extends Thread {
 							if(result == 1) {
 								// 대기방 입장에 성공했음을 클라이언트에게 알림
 								removePlayer(serverUser);
-								protocol = new GameProtocol(GameProtocol.PT_RES_ENTER_WAITING_ROOM, result);
+								
+								response = new StringBuffer();
+								response.append(waitingRoom.getRoomId() + ",");
+								response.append(waitingRoom.getRoomName() + ",");
+								response.append(waitingRoom.getRoomPassword());
+								protocol = new GameProtocol(GameProtocol.PT_RES_ENTER_WAITING_ROOM, response.toString());
 								serverUser.getOut().writeObject(protocol);
 								
+								/*
+								protocol = new GameProtocol(GameProtocol.PT_RES_ENTER_WAITING_ROOM, result);
+								serverUser.getOut().writeObject(protocol);
+								*/
 								waitingRoom.broadcastUserList();
 								broadcastUserList(); // 유저 리스트 브로드캐스팅
 								broadcastRoomList(); // 대기방 리스트 브로드캐스팅

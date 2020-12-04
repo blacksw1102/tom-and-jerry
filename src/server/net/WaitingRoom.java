@@ -22,12 +22,28 @@ public class WaitingRoom extends Thread implements Serializable {
 	private Hashtable<String, ServerUser> userList = null; // 대기방에 접속중인 유저리스트
 	private Lobby lobby;
 	
-	public WaitingRoom(String roomName, String roomPassword) {
+	public WaitingRoom(int roomId, String roomName, Lobby lobby) {
+		this.roomId = roomId;
+		this.roomName = roomName;
+		this.roomPassword = "";
+		this.maxPlayerCount = 4;
+		this.userList = new Hashtable<>();
+		this.roomState = 0;
+		this.lobby = lobby;
+		
+		start();
+	}
+	
+	public WaitingRoom(int roomId, String roomName, String roomPassword, Lobby lobby) {
+		this.roomId = roomId;
 		this.roomName = roomName;
 		this.roomPassword = roomPassword;
 		this.maxPlayerCount = 4;
-		userList = new Hashtable<>();
+		this.userList = new Hashtable<>();
 		this.roomState = 0;
+		this.lobby = lobby;
+		
+		start();
 	}
 	
 	@Override
