@@ -110,6 +110,10 @@ public class User implements Serializable {
 		return socket;
 	}
 	
+	public void setUserState(int userState) {
+		this.userState = userState;
+	}
+	
 	public int getUserState() {
 		return userState;
 	}

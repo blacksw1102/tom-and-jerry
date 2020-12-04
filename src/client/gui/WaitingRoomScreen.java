@@ -110,6 +110,23 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
 		cancelBtn.setBackground(Color.WHITE);
 		cancelBtn.setFont(new Font("HY견고딕", Font.PLAIN, 18));
 		cancelBtn.setBounds(30, 475, 380, 60);
+		cancelBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 대기방에서 썼던 데이터들 초기화
+				user.setUserState(0);
+				// 대기방에서 나감
+				GameProtocol protocol = new GameProtocol(GameProtocol.PT_EXIT_PAGE);
+				try {
+					user.getOut().writeObject(protocol);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				new LobbyScreen(user);
+				t.interrupt();
+				dispose();
+			}
+		});
 		contentPane.add(cancelBtn);
 		
     	this.addWindowListener(new WindowAdapter() {

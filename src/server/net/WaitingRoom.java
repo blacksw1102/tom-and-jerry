@@ -48,7 +48,7 @@ public class WaitingRoom extends Thread implements Serializable {
 	
 	@Override
 	public void run() {
-		ServerUser user = null;
+		ServerUser serverUser = null;
 		GameProtocol protocol = null;
 		int result = 0;
 
@@ -59,19 +59,23 @@ public class WaitingRoom extends Thread implements Serializable {
 				
 				Enumeration<ServerUser> e = userList.elements();
 				while(e.hasMoreElements()) {
-					user = e.nextElement();
+					serverUser = e.nextElement();
 					try {
-						protocol = (GameProtocol) user.getIn().readObject();
+						protocol = (GameProtocol) serverUser.getIn().readObject();
 						switch(protocol.getProtocol()) {
 							case GameProtocol.PT_CHANGE_USER_READY_STATE:
 								// 유저의 상태를 변경함
 								int userState = (int) protocol.getData();
-								user.setUserState(userState);
+								serverUser.setUserState(userState);
 								// 유저 리스트 정보 브로드캐스팅
 								broadcastUserList();
 								break;
+							case GameProtocol.PT_EXIT_PAGE:
+								removePlayer(serverUser);
+								lobby.addPlayer(serverUser);
+								break;
 							case GameProtocol.PT_LOGOUT:
-								removePlayer(user);
+								removePlayer(serverUser);
 								break;
 						}
 					} catch(IOException ee) {

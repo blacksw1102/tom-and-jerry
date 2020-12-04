@@ -21,6 +21,7 @@ public class GameProtocol implements Serializable {
 	public static final int PT_BROADCAST_USER_LIST_IN_WAITING_ROOM = 13;	// 대기방 유저리스트 브로드캐스트
 	public static final int PT_LOGOUT = 14;			// 로그아웃
 	public static final int PT_CHANGE_USER_READY_STATE = 15;	// 유저 레디 상태 변경
+	public static final int PT_EXIT_PAGE = 16;	// 페이지 나가기
 	
 	protected int protocolType;
 	private Object data;	// 프로토콜과 데이터의 저장공간이 객체

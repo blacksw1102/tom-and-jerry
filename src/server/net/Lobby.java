@@ -140,8 +140,8 @@ public class Lobby extends Thread {
 				chatList.put(serverUser.getId(), serverUser);
 				System.out.format("[%s] 현재 접속자 수 : %d\n",this.getClass().getName(), chatList.size());
 
-				broadcastUserList();
 				broadcastRoomList();
+				broadcastUserList();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
