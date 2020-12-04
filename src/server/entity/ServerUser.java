@@ -18,7 +18,7 @@ import server.net.Lobby;
 public class ServerUser {
 	private String id;
 	private String nickname;
-	private int playerState; //	(0:준비 안됨, 1:준비)
+	private int userState; //	(0:준비 안됨, 1:준비)
 
 	private Socket socket= null;
 	private ObjectInputStream in = null;
@@ -27,7 +27,7 @@ public class ServerUser {
 	private Lobby lobby = null;
 	
 	public ServerUser(Socket socket, Lobby lobby) throws SocketException {
-		this.playerState = 0;
+		this.userState = 0;
 		this.socket = socket;
 		
 		try {
@@ -42,7 +42,7 @@ public class ServerUser {
 	
 	@Override
 	public String toString() {
-		return String.format("[ServerPlayer] 아이디:%s, 닉네임:%s, 상태:%d", id, nickname, playerState);
+		return String.format("[ServerPlayer] 아이디:%s, 닉네임:%s, 상태:%d", id, nickname, userState);
 	}
 	
 	public ObjectInputStream getIn() {
@@ -69,12 +69,12 @@ public class ServerUser {
 		this.nickname = nickname;
 	}
 	
-	public int getPlayerState() {
-		return playerState;
+	public int getUserState() {
+		return userState;
 	}
 
-	public void setPlayerState(int playerState) {
-		this.playerState = playerState;
+	public void setUserState(int userState) {
+		this.userState = userState;
 	}
 
 	public Socket getSocket() {

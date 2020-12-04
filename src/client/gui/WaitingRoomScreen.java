@@ -2,6 +2,8 @@ package client.gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.EOFException;
@@ -85,6 +87,22 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
 		startBtn.setBackground(new Color(64, 118, 196));
 		startBtn.setFont(new Font("HY견고딕", Font.PLAIN, 18));
 		startBtn.setBounds(30, 410, 380, 60);
+		startBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				user.switchUserState();
+				
+				GameProtocol protocol = new GameProtocol(
+						GameProtocol.PT_CHANGE_USER_READY_STATE, 
+						user.getUserState());
+				try {
+					user.getOut().writeObject(protocol);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+			}
+		});
 		contentPane.add(startBtn);
 		
 		JButton cancelBtn = new JButton("나가기");

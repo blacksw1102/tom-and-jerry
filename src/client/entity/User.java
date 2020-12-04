@@ -114,8 +114,11 @@ public class User implements Serializable {
 		return userState;
 	}
 
-	public void setUserSatete(int userState) {
-		this.userState = userState;
+	public void switchUserState() {
+		if(userState == 1)
+			userState = 0;
+		else
+			userState = 1;
 	}
 
 	public ObjectInputStream getIn() {
