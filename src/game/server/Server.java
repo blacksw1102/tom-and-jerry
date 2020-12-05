@@ -32,7 +32,7 @@ public class Server {
 				try {
 					while (true) {
 
-						ta.append("Á¢¼Ó´ë±â----\n");
+						ta.append("ì ‘ì†ëŒ€ê¸°----\n");
 						s = ss.accept();
 						UserInfo user = new UserInfo(s, users);
 
