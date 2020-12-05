@@ -166,8 +166,8 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
 						break;
 					case GameProtocol.PT_GAME_START: {
 						// 대기방 화면 비활성화
-						new GameScreen(user);
 						this.dispose();
+						new GameScreen(user);
 						this.t.interrupt();
 					}
 				}
