@@ -19,7 +19,6 @@ import client.entity.Login;
 import client.entity.User;
 
 public class DBManager {
-<<<<<<< HEAD:src/util/DBManager.java
 
 	private static Connection conn;
 	
@@ -30,7 +29,7 @@ public class DBManager {
         Properties pro = new Properties();
         Reader reader;
         try {
-            reader = new FileReader("src/config/db.properties");//읽어올 파일 지정
+            reader = new FileReader("src/server/config/db.properties");//읽어올 파일 지정
             //설정 파일 로딩하기(인자가 Reader로 된 메서드 선택했음. 필요에 따라 다양한 생성자 사용)
             pro.load(reader);
             
@@ -68,18 +67,6 @@ public class DBManager {
         }
     }
 	
-=======
-	/* 원굑 DB 전용 */
-//	private static String url = "jdbc:mysql://cloud1.igkim.com:30306/tomnjerry_db";
-//	private static String uid = "tomnjerry";
-//	private static String pwd = "tnj6jo!";
-
-	/* 로컬 DB 전용 */
-	private static String url = "jdbc:mysql://localhost/tom_n_jerry";
-	private static String uid = "admin";
-	private static String pwd = "admin";
-
->>>>>>> feature/develope_enter_waiting_room:src/server/util/DBManager.java
 	// DB 연결
 	public static Connection getConnection() {
 		return conn;
@@ -110,49 +97,9 @@ public class DBManager {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
-			close(conn, pstmt);
+			close(null, pstmt);
 		}
 		return isSuccess;
-	}
-
-	// DB 연결 종료1
-	public static void close(Connection conn, PreparedStatement pstmt,
-			ResultSet rset) {
-		if (rset != null) {
-			try {
-				rset.close();
-			} catch (SQLException e) {
-			}
-		}
-		if (pstmt != null) {
-			try {
-				pstmt.close();
-			} catch (SQLException e) {
-			}
-		}
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-			}
-		}
-	}
-
-	// DB 연결 종료2
-	public static void close(Connection conn, PreparedStatement pstmt) {
-
-		if (pstmt != null) {
-			try {
-				pstmt.close();
-			} catch (SQLException e) {
-			}
-		}
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-			}
-		}
 	}
 
 	public static User login(Login loginInfo) {
@@ -174,7 +121,7 @@ public class DBManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			close(conn, pstmt, rs);
+			close(null, pstmt, rs);
 		}
 		return user;
 	}
@@ -197,9 +144,50 @@ public class DBManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			close(conn, pstmt, rs);
+			close(null, pstmt, rs);
 		}
 		
 		return isSuccess;
 	}
+	
+	// DB 연결 종료1
+		public static void close(Connection conn, PreparedStatement pstmt,
+				ResultSet rset) {
+			if (rset != null) {
+				try {
+					rset.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		// DB 연결 종료2
+		public static void close(Connection conn, PreparedStatement pstmt) {
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
 }

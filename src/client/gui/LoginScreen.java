@@ -58,11 +58,7 @@ public class LoginScreen extends JFrame {
 		titleLabel.setBounds((getSize().width - 310) / 2, 75, 310, 86);
 		this.add(titleLabel);
 		
-<<<<<<< HEAD:src/gui/LoginScreen.java
-		JButton loginBtn = new JButton("\uB85C\uADF8\uC778");
-=======
 		JButton loginBtn = new JButton("로그인");
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/LoginScreen.java
 		loginBtn.setFont(new Font("HY견고딕", Font.PLAIN, 18));
 		loginBtn.setBounds((getSize().width - 310) / 2, 315, 150, 50);
 		loginBtn.setBackground(new Color(0xffc000));
@@ -86,17 +82,8 @@ public class LoginScreen extends JFrame {
 					user.in = in;
 
 					if(user != null) {
-<<<<<<< HEAD:src/gui/LoginScreen.java
-						// 유저 데이터를 가지고 로비 화면으로 이동한다.
-						WaitingRoomListScreen waitingRoomListScreen = new WaitingRoomListScreen(win, user);
-						win.waitingRoomListScreen = waitingRoomListScreen;
-						win.addScreen("waitingRoomListScreen", waitingRoomListScreen);
-						new Thread(waitingRoomListScreen).start();
-						win.change("waitingRoomListScreen");
-=======
 						dispose();
 						new LobbyScreen(user);
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/LoginScreen.java
 					}
 				} catch (ClassNotFoundException e1) {
 					e1.printStackTrace();

@@ -35,12 +35,8 @@ public class SignUpScreen extends JFrame {
 	private Choice birthField1, birthField2, telField1;
 	private JButton idCheckBtn, submitBtn, cancelBtn;
 
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-	private String verifiedId;	// 중복체크를 통과한 아이디
-=======
 	private static final int FRAME_WIDTH = 1280;
 	private static final int FRAME_HEIGHT = 720;
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 	
 	private String verifiedId;	// 중복체크를 통과한 아이디
 	
@@ -54,18 +50,11 @@ public class SignUpScreen extends JFrame {
 		int y = (screenSize.height - getHeight()) / 2;
 		this.setLocation(x, y);
 		
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-		JLabel signUpTitle = new JLabel("\uD68C\uC6D0 \uAC00\uC785");
-		signUpTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		signUpTitle.setFont(new Font("HY견고딕", Font.PLAIN, 36));
-		add(signUpTitle, BorderLayout.NORTH);
-=======
 		this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e) { 
                 System.exit(0);
             }
         });
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 		
 		JLabel signUpTitle = new JLabel("회원 가입");
 		signUpTitle.setHorizontalAlignment(SwingConstants.CENTER);
@@ -76,22 +65,12 @@ public class SignUpScreen extends JFrame {
 		idLabel = new JLabel("아이디 : ");
 		idLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		idLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-		idLabel.setBounds(409, 75, 125, 18);
-		inputForm.add(idLabel);
-		
-		idField = new JTextField();
-		idField.setFont(new Font("돋움", Font.PLAIN, 18));
-		idField.setBounds(545, 70, 200, 30);
-		inputForm.add(idField);
-=======
 		idLabel.setBounds(409, 155, 125, 18);
 		this.add(idLabel);
 		
 		idField = new JTextField();
 		idField.setFont(new Font("돋움", Font.PLAIN, 18));
 		idField.setBounds(545, 150, 200, 30);
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 		idField.setColumns(20);
 		idField.setText("testUser1");
 		this.add(idField);
@@ -105,50 +84,11 @@ public class SignUpScreen extends JFrame {
 				checkIdDuplicate();
 			}
 		});
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-		idCheckBtn.setFont(new Font("HY견고딕", Font.PLAIN, 14));
-		idCheckBtn.setBackground(Color.LIGHT_GRAY);
-		idCheckBtn.setBounds(759, 65, 90, 40);
-		inputForm.add(idCheckBtn);
-=======
 		this.add(idCheckBtn);
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 		
 		pwLabel = new JLabel("비밀번호 : ");
 		pwLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		pwLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-		pwLabel.setBounds(410, 125, 125, 18);
-		inputForm.add(pwLabel);
-		
-		nicknameLable = new JLabel("\uB2C9\uB124\uC784 : ");
-		nicknameLable.setHorizontalAlignment(SwingConstants.RIGHT);
-		nicknameLable.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		nicknameLable.setBounds(409, 225, 125, 18);
-		inputForm.add(nicknameLable);
-		
-		emailLabel = new JLabel("\uC774\uBA54\uC77C : ");
-		emailLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		emailLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		emailLabel.setBounds(409, 275, 125, 18);
-		inputForm.add(emailLabel);
-		
-		pwField = new JPasswordField();
-		pwField.setFont(new Font("돋움", Font.PLAIN, 18));
-		pwField.setBounds(545, 120, 200, 30);
-		pwField.setText("1234");
-		inputForm.add(pwField);
-		
-		pwConfirmLabel = new JLabel("\uBE44\uBC00\uBC88\uD638 \uD655\uC778 : ");
-		pwConfirmLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		pwConfirmLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		pwConfirmLabel.setBounds(345, 175, 188, 18);
-		inputForm.add(pwConfirmLabel);
-		
-		pwConfirmField = new JPasswordField();
-		pwConfirmField.setFont(new Font("돋움", Font.PLAIN, 18));
-		pwConfirmField.setBounds(545, 170, 200, 30);
-=======
 		pwLabel.setBounds(410, 205, 125, 18);
 		this.add(pwLabel);
 		
@@ -161,7 +101,6 @@ public class SignUpScreen extends JFrame {
 		pwConfirmField = new JPasswordField();
 		pwConfirmField.setFont(new Font("돋움", Font.PLAIN, 18));
 		pwConfirmField.setBounds(545, 250, 200, 30);
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 		pwConfirmField.setText("1234");
 		this.add(pwConfirmField);
 		
@@ -200,31 +139,8 @@ public class SignUpScreen extends JFrame {
 		birthLabel = new JLabel("생년월일 : ");
 		birthLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		birthLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-		birthLabel.setBounds(409, 325, 125, 18);
-		inputForm.add(birthLabel);
-		
-		birthLabel1 = new JLabel("\uB144");
-		birthLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-		birthLabel1.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		birthLabel1.setBounds(635, 325, 30, 18);
-		inputForm.add(birthLabel1);
-		
-		birthLabel2 = new JLabel("\uC6D4");
-		birthLabel2.setHorizontalAlignment(SwingConstants.CENTER);
-		birthLabel2.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		birthLabel2.setBounds(745, 325, 30, 18);
-		inputForm.add(birthLabel2);
-		
-		birthLabel3 = new JLabel("\uC77C");
-		birthLabel3.setHorizontalAlignment(SwingConstants.CENTER);
-		birthLabel3.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-		birthLabel3.setBounds(855, 325, 28, 18);
-		inputForm.add(birthLabel3);
-=======
 		birthLabel.setBounds(409, 405, 125, 18);
 		this.add(birthLabel);
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 		
 		birthField1 = new Choice();
 		birthField1.setSize(80, 30);
@@ -270,13 +186,8 @@ public class SignUpScreen extends JFrame {
 		JLabel telLabel = new JLabel("전화번호 : ");
 		telLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		telLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-		telLabel.setBounds(409, 375, 125, 18);
-		inputForm.add(telLabel);
-=======
 		telLabel.setBounds(409, 455, 125, 18);
 		this.add(telLabel);
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 
 		telField1 = new Choice();
 		telField1.setFont(new Font("Dialog", Font.PLAIN, 18));
@@ -289,13 +200,8 @@ public class SignUpScreen extends JFrame {
 		lineLabel1 = new JLabel("-");
 		lineLabel1.setHorizontalAlignment(SwingConstants.CENTER);
 		lineLabel1.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-		lineLabel1.setBounds(635, 375, 30, 18);
-		inputForm.add(lineLabel1);
-=======
 		lineLabel1.setBounds(635, 455, 30, 18);
 		this.add(lineLabel1);
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 
 		telField2 = new JTextField();
 		telField2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -308,13 +214,8 @@ public class SignUpScreen extends JFrame {
 		lineLabel2 = new JLabel("-");
 		lineLabel2.setHorizontalAlignment(SwingConstants.CENTER);
 		lineLabel2.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-		lineLabel2.setBounds(745, 375, 30, 18);
-		inputForm.add(lineLabel2);
-=======
 		lineLabel2.setBounds(745, 455, 30, 18);
 		this.add(lineLabel2);
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 		
 		telField3 = new JTextField();
 		telField3.setHorizontalAlignment(SwingConstants.CENTER);
@@ -327,11 +228,7 @@ public class SignUpScreen extends JFrame {
 		submitBtn = new JButton("회원가입");
 		submitBtn.setBackground(Color.ORANGE);
 		submitBtn.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-		submitBtn.setBounds(492, 471, 150, 50);
-=======
 		submitBtn.setBounds(492, 530, 150, 50);
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 		submitBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -344,11 +241,7 @@ public class SignUpScreen extends JFrame {
 		cancelBtn = new JButton("취소");
 		cancelBtn.setBackground(Color.WHITE);
 		cancelBtn.setFont(new Font("HY견고딕", Font.PLAIN, 20));
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-		cancelBtn.setBounds(656, 471, 150, 50);
-=======
 		cancelBtn.setBounds(656, 530, 150, 50);
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 		cancelBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -385,16 +278,10 @@ public class SignUpScreen extends JFrame {
 			// 아이디 중복체크 결과를 유저에게 알림
 			if(isSuccess) {
 				verifiedId = id;
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-				showDialog("사용가능한 아이디입니다.");
-			} else 
-				showDialog("이미 존재하는 아이디입니다.");
-=======
 				showDialog("사용 가능한 아이디 입니다.");
 			} else {
 				showDialog("이미 존재하는 아이디입니다.");
 			}
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} catch (ClassNotFoundException e1) {
@@ -444,10 +331,6 @@ public class SignUpScreen extends JFrame {
 			return; 
 		
 		try {
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-			// 회원가입 정보 서버에 전송
-=======
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 			socket = new Socket("localhost", 4001);
 			output = new ObjectOutputStream(socket.getOutputStream());
 			input = new ObjectInputStream(socket.getInputStream());
@@ -479,17 +362,8 @@ public class SignUpScreen extends JFrame {
 	
 	public void showDialog(String message) {
 		JDialog info = new JDialog(win, true);
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-		info.setSize(200, 110);
-		info.setLocationRelativeTo(null);
-		info.setLayout(new FlowLayout());
-		JButton ok = new JButton("확인");
-		info.add(new JLabel(message, JLabel.CENTER));
-		info.add(ok);
-=======
 		JButton ok = new JButton("확인");
 
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 		ok.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -507,22 +381,10 @@ public class SignUpScreen extends JFrame {
 
 	}
 	
-<<<<<<< HEAD:src/gui/SignUpScreen.java
-	// 회원가입에 성공했을 때 나타나는 Dialog
-	public void showSignUpSuccessDialog() {
-		JDialog info = new JDialog(win, true);
-		info.setSize(200, 110);
-		info.setLocationRelativeTo(null);
-		info.setLayout(new FlowLayout());
-		JButton ok = new JButton("확인");
-		info.add(new JLabel("회원가입이 되었습니다.", JLabel.CENTER));
-		info.add(ok);
-=======
 	public void showSignUpSuccessDialog() {
 		JDialog info = new JDialog(win, true);
 		JButton ok = new JButton("확인");
 		
->>>>>>> feature/develope_enter_waiting_room:src/client/gui/SignUpScreen.java
 		ok.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

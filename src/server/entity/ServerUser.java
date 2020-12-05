@@ -7,7 +7,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
-import client.entity.User;
 import server.net.Lobby;
 
 /*
@@ -24,28 +23,12 @@ public class ServerUser {
 	private ObjectInputStream in = null;
 	private ObjectOutputStream out = null;
 	
-<<<<<<< HEAD:src/net/ServerPlayer.java
-	// 플레이어 정보 저장
-	String id;
-	String nickname;
-	
-	// GameServer의 run()에서 생성된다.
-	// GServerPlayer 객체 생성 시, 룸 서버 정보느 null이다.
-	public ServerPlayer(Socket socket, Lobby lobby, GRoom room, User user) {
-		// 소켓, 로비 서버, 룸 서버 등의 정보를 저장
-=======
 	private Lobby lobby = null;
 	
 	public ServerUser(Socket socket, Lobby lobby) throws SocketException {
 		this.userState = 0;
->>>>>>> feature/develope_enter_waiting_room:src/server/entity/ServerUser.java
 		this.socket = socket;
 		
-<<<<<<< HEAD:src/net/ServerPlayer.java
-		// 유저 정보 저장
-		this.id = user.getId();
-		this.nickname = user.getNickname();
-=======
 		try {
 			this.out = new ObjectOutputStream(socket.getOutputStream());
 			this.in = new ObjectInputStream(socket.getInputStream());
@@ -59,7 +42,6 @@ public class ServerUser {
 	@Override
 	public String toString() {
 		return String.format("[ServerPlayer] 아이디:%s, 닉네임:%s, 상태:%d", id, nickname, userState);
->>>>>>> feature/develope_enter_waiting_room:src/server/entity/ServerUser.java
 	}
 	
 	public ObjectInputStream getIn() {
@@ -102,14 +84,6 @@ public class ServerUser {
 		this.socket = socket;
 	}
 
-<<<<<<< HEAD:src/net/ServerPlayer.java
-	// 연결되어 있는 클라이언트에게 주어진 데이터를 전송한다.
-	public void sendMessage(String message) {
-
-	}
-	
-=======
->>>>>>> feature/develope_enter_waiting_room:src/server/entity/ServerUser.java
 	// 연결되어 있는 클라이언트로부터 온 데이터를 읽어들인다.
 	public String receiveMessage() throws SocketException, IOException {
 		String message = null;
@@ -159,23 +133,5 @@ public class ServerUser {
 			e.printStackTrace();
 		}
 	}
-<<<<<<< HEAD:src/net/ServerPlayer.java
-	
-	
-	String getPlayerInfoMessage() {
-		String playerInfoMessage = "null,null";
-		
-		if(room == null)
-			playerInfoMessage = "대기실,대기중";
-		else {
-			if(room.inSession(this))
-				playerInfoMessage = room.roomId + ",참가중";
-			else
-				playerInfoMessage = room.roomId + ",관전중";
-		}
-		return playerInfoMessage;
-	}
-=======
->>>>>>> feature/develope_enter_waiting_room:src/server/entity/ServerUser.java
 
 }

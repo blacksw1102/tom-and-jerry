@@ -108,7 +108,6 @@ public class LobbyScreen extends JFrame implements Runnable {
 
 				switch (protocol.getProtocol()) {
 				case GameProtocol.PT_RES_USER_LIST: // 유저 리스트 조회
-					System.out.println("PT_RES_USER_LIST");
 					List<String> userList = (ArrayList) protocol.getData();
 					initUserList(userList);
 					break;
@@ -136,7 +135,6 @@ public class LobbyScreen extends JFrame implements Runnable {
 					*/
 					break;
 				case GameProtocol.PT_BROADCAST_WAITING_ROOM_LIST:
-					System.out.println("PT_BROADCAST_WAITING_ROOM_LIST");
 					List<WaitingRoomListRow> rows = (ArrayList) protocol.getData();
 					model.setRowCount(0);
 					for (WaitingRoomListRow value : rows) {
