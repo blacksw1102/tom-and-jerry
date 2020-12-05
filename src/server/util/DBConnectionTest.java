@@ -1,4 +1,4 @@
-package util;
+package server.util;
 
 public class DBConnectionTest {
 	public static void main(String[] args) {

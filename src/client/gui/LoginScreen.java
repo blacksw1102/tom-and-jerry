@@ -1,9 +1,13 @@
-package gui;
+package client.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,6 +16,7 @@ import java.net.UnknownHostException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -19,31 +24,45 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import entity.Login;
-import entity.User;
-import net.ClientWindow;
-import util.GameProtocol;
+import client.entity.Login;
+import client.entity.User;
+import server.util.GameProtocol;
 
-public class LoginScreen extends JPanel {
+public class LoginScreen extends JFrame {
+	
 	private JTextField idField;
 	private JPasswordField pwField;
-	private ClientWindow win;
 	
-	/**
-	 * Create the panel.
-	 */
-	public LoginScreen(ClientWindow win) {
-		this.win = win;
-		this.setSize(960, 540);
+	private static final int FRAME_WIDTH = 960;
+	private static final int FRAME_HEIGHT = 540;
+	
+	public LoginScreen() {
+		this.setTitle("로그인 창");
+		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		this.setLayout(null);
 		
-		JLabel titleLabel = new JLabel("\uD1B0\uACFC \uC81C\uB9AC \uAC8C\uC784");
+    	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (screenSize.width - getWidth()) / 2;
+		int y = (screenSize.height - getHeight()) / 2;
+		this.setLocation(x, y);
+		
+		this.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e) { 
+                System.exit(0);
+            }
+        });
+		
+		JLabel titleLabel = new JLabel("톰과 제리 게임");
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		titleLabel.setFont(new Font("HY견고딕", Font.PLAIN, 36));
 		titleLabel.setBounds((getSize().width - 310) / 2, 75, 310, 86);
-		add(titleLabel);
+		this.add(titleLabel);
 		
+<<<<<<< HEAD:src/gui/LoginScreen.java
 		JButton loginBtn = new JButton("\uB85C\uADF8\uC778");
+=======
+		JButton loginBtn = new JButton("로그인");
+>>>>>>> feature/develope_enter_waiting_room:src/client/gui/LoginScreen.java
 		loginBtn.setFont(new Font("HY견고딕", Font.PLAIN, 18));
 		loginBtn.setBounds((getSize().width - 310) / 2, 315, 150, 50);
 		loginBtn.setBackground(new Color(0xffc000));
@@ -65,13 +84,19 @@ public class LoginScreen extends JPanel {
 					user.setSocket(socket);
 					user.out = out;
 					user.in = in;
+
 					if(user != null) {
+<<<<<<< HEAD:src/gui/LoginScreen.java
 						// 유저 데이터를 가지고 로비 화면으로 이동한다.
 						WaitingRoomListScreen waitingRoomListScreen = new WaitingRoomListScreen(win, user);
 						win.waitingRoomListScreen = waitingRoomListScreen;
 						win.addScreen("waitingRoomListScreen", waitingRoomListScreen);
 						new Thread(waitingRoomListScreen).start();
 						win.change("waitingRoomListScreen");
+=======
+						dispose();
+						new LobbyScreen(user);
+>>>>>>> feature/develope_enter_waiting_room:src/client/gui/LoginScreen.java
 					}
 				} catch (ClassNotFoundException e1) {
 					e1.printStackTrace();
@@ -82,26 +107,27 @@ public class LoginScreen extends JPanel {
 				}
 			}
 		});
-		add(loginBtn);
+		this.add(loginBtn);
 		
-		JButton joinBtn = new JButton("\uD68C\uC6D0\uAC00\uC785");
+		JButton joinBtn = new JButton("회원가입");
 		joinBtn.setBackground(Color.WHITE);
 		joinBtn.setFont(new Font("HY견고딕", Font.PLAIN, 18));
 		joinBtn.setBounds((getSize().width - 310) / 2 + 150 + 10, 315, 150, 50);
         joinBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				win.change("signUpScreen");
+				dispose();
+				SignUpScreen signUpScreen = new SignUpScreen();
 			}
 		});
-		add(joinBtn);
+        this.add(joinBtn);
 		
 		JPanel idPanel = new JPanel();
+		idPanel.setLayout(null);
 		idPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		idPanel.setBackground(Color.WHITE);
 		idPanel.setBounds((getSize().width - 310) / 2, 195, 310, 50);
-		add(idPanel);
-		idPanel.setLayout(null);
+		this.add(idPanel);
 		
 		JLabel idLabel = new JLabel("ID : ");
 		idLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
@@ -121,7 +147,7 @@ public class LoginScreen extends JPanel {
 		pwPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		pwPanel.setBackground(Color.WHITE);
 		pwPanel.setBounds((getSize().width - 310) / 2, 255, 310, 50);
-		add(pwPanel);
+		this.add(pwPanel);
 		
 		JLabel pwLabel = new JLabel("PW : ");
 		pwLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
@@ -135,6 +161,12 @@ public class LoginScreen extends JPanel {
 		pwField.setBounds(66, 12, 230, 26);
 		pwField.setText("1234");
 		pwPanel.add(pwField);
+		
+		this.setVisible(true);
 	}
+	
+    public static void main(String[] args) {
+    	new LoginScreen();
+     }
 
 }

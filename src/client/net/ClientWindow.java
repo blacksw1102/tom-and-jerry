@@ -1,4 +1,4 @@
-package net;
+package client.net;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -9,37 +9,31 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import gui.LoginScreen;
-import gui.MakeRoomScreen;
-import gui.SignUpScreen;
-import gui.WaitingRoom;
-import gui.WaitingRoomListScreen;
+import client.gui.LoginScreen;
+import client.gui.MakeRoomScreen;
+import client.gui.SignUpScreen;
+import client.gui.LobbyScreen;
+import client.gui.WaitingRoomScreen;
 
 public class ClientWindow extends JFrame{
 	public JPanel mainPanel = null;
-	private LoginScreen loginScreen = null;
-	public SignUpScreen signUpScreen = null;
     public MakeRoomScreen makeRoomScreen = null;
-    public WaitingRoomListScreen waitingRoomListScreen = null;
-    public WaitingRoom waitingRoom = null;
+    public LobbyScreen waitingRoomListScreen = null;
+    public WaitingRoomScreen waitingRoomScreen = null;
     private CardLayout cards = new CardLayout();
     
     public ClientWindow() {
-    	loginScreen = new LoginScreen(ClientWindow.this);
-        signUpScreen = new SignUpScreen(ClientWindow.this);
-        makeRoomScreen = new MakeRoomScreen(ClientWindow.this);
+        // makeRoomScreen = new MakeRoomScreen(ClientWindow.this);
         // waitingRoomListScreen = new WaitingRoomListScreen();
-        waitingRoom = new WaitingRoom();
+        //waitingRoomScreen = new WaitingRoomScreen(null, null);
         
         mainPanel = new JPanel();
         mainPanel.setLayout(cards);
         add(mainPanel);
        
-        mainPanel.add("loginScreen", loginScreen);
-        mainPanel.add("signUpScreen", signUpScreen);
-        mainPanel.add("makeRoomScreen", makeRoomScreen);
+        // mainPanel.add("makeRoomScreen", makeRoomScreen);
         // mainPanel.add("waitingRoomListScreen", waitingRoomListScreen);
-        mainPanel.add("waitingRoom", waitingRoom);
+        //mainPanel.add("waitingRoomScreen", waitingRoomScreen);
         change("loginScreen");
 
         this.setTitle("frame test");
@@ -71,12 +65,12 @@ public class ClientWindow extends JFrame{
     			this.setSize(1280, 720);
     			break;
     		case "makeRoomScreen":
-    			this.setSize(400, 250);
+    			this.setSize(370, 200);
     			break;
     		case "waitingRoomListScreen":
     			this.setSize(1280, 720);        	
     			break;
-    		case "waitingRoom":
+    		case "waitingRoomScreen":
     			this.setSize(1280, 750);    
     			break;
     	}

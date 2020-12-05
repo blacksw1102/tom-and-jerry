@@ -1,4 +1,4 @@
-package entity;
+package server.entity;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,11 +10,19 @@ import java.util.Arrays;
 public class User implements Serializable {
 	private String id;			// 아이디
 	private String pw;			// 비밀번호
+<<<<<<< HEAD:src/entity/User.java
 	private String confirmPw;		// 비밀번호 확인
 	private String nickname;		// 닉네임
 	private String email;		// 이메일
 	private String birth; 		// 생년월일
 	private String tel; 			// 전화번호
+=======
+	private String confirmPw;	// 비밀번호 확인
+	private String nickname;	// 닉네임
+	private String email;		// 이메일
+	private String birth; 		// 생년월일
+	private String tel; 		// 전화번호
+>>>>>>> feature/develope_enter_waiting_room:src/server/entity/User.java
 	
 	public Socket socket;
 	public ObjectInputStream in = null;

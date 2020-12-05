@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 /game/
 /entity/
 /gui/
 /net/
 /util/
+=======
+/client/
+/server/
+>>>>>>> feature/develope_enter_waiting_room

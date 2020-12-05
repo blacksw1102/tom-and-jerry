@@ -1,4 +1,4 @@
-package util;
+package server.util;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,10 +15,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
-import entity.Login;
-import entity.User;
+import client.entity.Login;
+import client.entity.User;
 
 public class DBManager {
+<<<<<<< HEAD:src/util/DBManager.java
 
 	private static Connection conn;
 	
@@ -67,6 +68,18 @@ public class DBManager {
         }
     }
 	
+=======
+	/* 원굑 DB 전용 */
+//	private static String url = "jdbc:mysql://cloud1.igkim.com:30306/tomnjerry_db";
+//	private static String uid = "tomnjerry";
+//	private static String pwd = "tnj6jo!";
+
+	/* 로컬 DB 전용 */
+	private static String url = "jdbc:mysql://localhost/tom_n_jerry";
+	private static String uid = "admin";
+	private static String pwd = "admin";
+
+>>>>>>> feature/develope_enter_waiting_room:src/server/util/DBManager.java
 	// DB 연결
 	public static Connection getConnection() {
 		return conn;

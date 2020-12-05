@@ -1,5 +1,9 @@
 eclipse.preferences.version=1
+<<<<<<< HEAD
 encoding//src/game/client/frame/ReadyView.java=UTF-8
 encoding//src/game/client/frame/StartView.java=UTF-8
 encoding//src/game/server/UserInfo.java=UTF-8
+=======
+encoding/<project>=UTF-8
+>>>>>>> feature/develope_enter_waiting_room
 encoding/README.md=UTF-8
