@@ -16,6 +16,7 @@ import client.gui.LobbyScreen;
 import client.gui.WaitingRoomScreen;
 
 public class ClientWindow extends JFrame{
+	/*
 	public JPanel mainPanel = null;
     public MakeRoomScreen makeRoomScreen = null;
     public LobbyScreen waitingRoomListScreen = null;
@@ -84,4 +85,5 @@ public class ClientWindow extends JFrame{
     public static void main(String[] args) {
         ClientWindow win = new ClientWindow();
      }
+     */
 }

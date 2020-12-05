@@ -19,7 +19,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import client.entity.User;
-import client.game.GameScreen;
 import client.gui.component.WaitingRoomRowPanel;
 import server.util.GameProtocol;
 

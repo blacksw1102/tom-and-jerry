@@ -73,14 +73,14 @@ public class WaitingRoom extends Thread implements Serializable {
 								broadcastUserList();
 								// 모든 유저가 레디하였는지 검사
 								if(isAllReady()) {
-									// 게임 서버 활성화
-									this.game = new Game(this, serverUser, userList);
+									// 모든 유저들에게 게임에 접속할것을 알림
+									broadcastGameStart();
 									
 									// 대기방임 게임중으로 상태 변경
 									this.roomState = 1;
 									
-									// 모든 유저들에게 게임에 접속할것을 알림
-									broadcastGameStart();
+									// 게임 서버 활성화
+									this.game = new Game(this, serverUser, userList);
 									
 									// 게임이 끝날때까지, 대기방 쓰레드를 일시정지 상태로 만듬
 									synchronized (this) {
@@ -127,6 +127,7 @@ public class WaitingRoom extends Thread implements Serializable {
 		
 	}
 
+	// 대기방 인원들이 모두 레디를 한 상태인지 확인
 	private boolean isAllReady() {
 		int count = 0;
 		
