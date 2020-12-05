@@ -10,6 +10,7 @@ import java.util.List;
 
 import client.entity.User;
 import server.entity.ServerUser;
+import server.game.Game;
 import server.util.GameProtocol;
 
 public class WaitingRoom extends Thread implements Serializable {
@@ -21,6 +22,7 @@ public class WaitingRoom extends Thread implements Serializable {
 	
 	private Hashtable<String, ServerUser> userList = null; // 대기방에 접속중인 유저리스트
 	private Lobby lobby;
+	private Game game;
 	
 	public WaitingRoom(int roomId, String roomName, Lobby lobby) {
 		this.roomId = roomId;
@@ -69,6 +71,23 @@ public class WaitingRoom extends Thread implements Serializable {
 								serverUser.setUserState(userState);
 								// 유저 리스트 정보 브로드캐스팅
 								broadcastUserList();
+								// 모든 유저가 레디하였는지 검사
+								if(isAllReady()) {
+									// 게임 서버 활성화
+									this.game = new Game(this, serverUser, userList);
+									
+									// 대기방임 게임중으로 상태 변경
+									this.roomState = 1;
+									
+									// 모든 유저들에게 게임에 접속할것을 알림
+									broadcastGameStart();
+									
+									// 게임이 끝날때까지, 대기방 쓰레드를 일시정지 상태로 만듬
+									synchronized (this) {
+										wait();
+									}
+								}
+									
 								break;
 							case GameProtocol.PT_EXIT_PAGE:
 								removePlayer(serverUser);
@@ -92,6 +111,38 @@ public class WaitingRoom extends Thread implements Serializable {
 		}
 	}
 	
+	// 모든 유저들에게 게임에 접속할것을 알림
+	private void broadcastGameStart() {
+
+		Enumeration<ServerUser> elements = userList.elements();
+		while(elements.hasMoreElements()) {
+			ServerUser serverUser = elements.nextElement();
+			GameProtocol protocol = new GameProtocol(GameProtocol.PT_GAME_START);
+			try {
+				serverUser.getOut().writeObject(protocol);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	
+		}
+		
+	}
+
+	private boolean isAllReady() {
+		int count = 0;
+		
+		Enumeration<ServerUser> elements = userList.elements();
+		while(elements.hasMoreElements()) {
+			ServerUser serverUser = elements.nextElement();
+			if(serverUser.getUserState() == 1)
+				count++;
+		}
+		
+		if(count == 2)
+			return true;
+
+		return false;
+	}
+
 	public int addPlayer(ServerUser serverUser) {
 		if(userList.size() < maxPlayerCount) {
 			userList.put(serverUser.getId(), serverUser);

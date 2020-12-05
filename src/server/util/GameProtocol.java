@@ -22,6 +22,7 @@ public class GameProtocol implements Serializable {
 	public static final int PT_LOGOUT = 14;			// 로그아웃
 	public static final int PT_CHANGE_USER_READY_STATE = 15;	// 유저 레디 상태 변경
 	public static final int PT_EXIT_PAGE = 16;	// 페이지 나가기
+	public static final int PT_GAME_START = 17;
 	
 	protected int protocolType;
 	private Object data;	// 프로토콜과 데이터의 저장공간이 객체
