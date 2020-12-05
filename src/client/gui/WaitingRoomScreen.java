@@ -19,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import client.entity.User;
+import client.game.GameScreen;
 import client.gui.component.WaitingRoomRowPanel;
 import server.util.GameProtocol;
 
@@ -164,6 +165,12 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
 						this.userList = (ArrayList) protocol.getData();
 						drawUserList(this.userList);
 						break;
+					case GameProtocol.PT_GAME_START: {
+						// 대기방 화면 비활성화
+						new GameScreen(user);
+						this.dispose();
+						this.t.interrupt();
+					}
 				}
 			}
 		} catch (ClassNotFoundException e) {
