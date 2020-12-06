@@ -1,10 +1,12 @@
 package server.game;
 
+import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.LinkedList;
 
 import server.entity.Position;
 import server.entity.ServerUser;
@@ -41,7 +43,11 @@ public class Game extends Thread {
 		positions.add(new Position(1952, 1984));
 		
 		
-		broadcastPlayerRole();
+		try {
+			broadcastPlayersInfo();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		this.start();
 		// 모든 유저들의 정보를 활용해서, 플레이어 리스트를 만든다.
@@ -50,38 +56,73 @@ public class Game extends Thread {
 
 	}
 	
-	private void broadcastPlayerRole() {
+	private void broadcastPlayersInfo() throws IOException {
 		// 분배할 역할 섞기
 		Collections.shuffle(roles);
 		Collections.shuffle(positions);
 		
-		// 플레이어들에게 역할 분배
+		// 각 플레이어들의 역할을 정함
 		int i = 0;
+		LinkedList<String> datas = new LinkedList<String>();
 		Enumeration<ServerUser> elements = userList.elements();
 		while(elements.hasMoreElements()) {
+			ServerUser serverUser = elements.nextElement();
+
 			int role = roles.get(i);
 			int x = positions.get(i).getX();
 			int y = positions.get(i).getY();
-			String data = String.format("%d %d %d", role, x, y);
-			
-			ServerUser serverUser = elements.nextElement();
-			GameProtocol protocol = new GameProtocol(
-					GameProtocol.PT_BROADCAST_PLAYER_ROLE, data);
-			try {
-				serverUser.getOut().writeObject(protocol);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
+			String nickname = serverUser.getNickname();
+			String data = String.format("%d %d %d %s", role, x, y, nickname);
+			datas.add(data);
 			i++;
+		}
+		
+		// 플레이어들에게 각 플레이어의 정보를 브로드 캐스팅
+		Enumeration<ServerUser> toElements = userList.elements();
+		while(toElements.hasMoreElements()) {
+			ServerUser toServerUser = toElements.nextElement();
+			GameProtocol protocol = new GameProtocol(
+					GameProtocol.PT_BROADCAST_PLAYERS_INFO, datas);
+			toServerUser.getOut().writeObject(protocol);
 		}
 	}
 
 	@Override
 	public void run() {
+		GameProtocol protocol = null;
+		
 		System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
 		try {
 			while(true) {
 				Thread.sleep(100);
+				
+				Enumeration<ServerUser> e = userList.elements();
+				while(e.hasMoreElements()) {
+					serverUser = e.nextElement();
+					try {
+						protocol = (GameProtocol) serverUser.getIn().readObject();
+						switch(protocol.getProtocol()) {
+							case GameProtocol.PT_PLAYER_MOVE:
+								//broadcastGameInfo(protocol);
+								break;
+						}
+					} catch(IOException ee) {
+						
+					} catch (ClassNotFoundException e1) {
+						e1.printStackTrace();
+					}
+				}
+				
+				/*
+				try {
+					GameProtocol protocol = new GameProtocol(GameProtocol.PT_PLAYER_MOVE, 
+						user.getNickname() + " " + getX() + " " + getY() + " ");
+					user.getOut().writeObject(protocol);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				*/
+				
 			}
 		} catch (InterruptedException e2) {
 		
@@ -89,6 +130,17 @@ public class Game extends Thread {
 			System.out.printf("[%s] 종료..\n", this.getClass().getName());
 
 		}
+	}
+
+	private void broadcastGameInfo(GameProtocol protocol) throws IOException {
+		String nickname = ((String) protocol.getData()).split(",")[0];
+		Enumeration<ServerUser> e = userList.elements();
+		while(e.hasMoreElements()) {
+			serverUser = e.nextElement();
+			if(!serverUser.getNickname().equals(nickname))
+				serverUser.getOut().writeObject(protocol);
+		}
+			
 	}
 	
 }

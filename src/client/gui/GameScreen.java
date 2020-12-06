@@ -23,7 +23,7 @@ public class GameScreen extends JFrame {
 	
 	
 	
-	public GameScreen(User user) {
+	public GameScreen(User user, ArrayList<User> userList) {
 
 		this.setLayout(cards);
 		this.setSize(gGameWidth, gGameHeight);
@@ -35,7 +35,7 @@ public class GameScreen extends JFrame {
 		});
 		this.add("loading", new LoadingPanel(this));
 		this.setVisible(true);
-		this.add("game", new GamePanel(this, user));
+		this.add("game", new GamePanel(this, user, userList));
 		
 		
 		// 플레이어 리스트 받아와서 저장

@@ -23,7 +23,8 @@ public class GameProtocol implements Serializable {
 	public static final int PT_CHANGE_USER_READY_STATE = 15;	// 유저 레디 상태 변경
 	public static final int PT_EXIT_PAGE = 16;	// 페이지 나가기
 	public static final int PT_GAME_START = 17;
-	public static final int PT_BROADCAST_PLAYER_ROLE = 18;
+	public static final int PT_BROADCAST_PLAYERS_INFO = 18;
+	public static final int PT_PLAYER_MOVE = 19;
 	
 	protected int protocolType;
 	private Object data;	// 프로토콜과 데이터의 저장공간이 객체

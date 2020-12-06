@@ -1,8 +1,11 @@
 package client.game;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import client.entity.User;
 import client.gui.GamePanel;
+import server.util.GameProtocol;
 
 public abstract class Player extends GameObject {
 	
@@ -23,10 +26,13 @@ public abstract class Player extends GameObject {
 	
 	private Handler handler;
 	
-	public Player(GamePanel gameScreen, int x, int y, int width, int height, int speed,
+	private User user;
+	
+	public Player(User user, GamePanel gameScreen, int x, int y, int width, int height, int speed,
 			ID id, BufferedImage spritesheet, BufferedImage spritesheet_flipx, Handler handler) {
 		super(x, y, id, width, height, spritesheet, spritesheet_flipx);
 		
+		this.user = user;
 		this.gameScreen = gameScreen;
 		this.speed = speed;
 		this.velX = 0;
@@ -45,6 +51,17 @@ public abstract class Player extends GameObject {
 		y += velY;
 		collisionY();
 
+		if(user.getOut() != null) {
+			try {
+				GameProtocol protocol = new GameProtocol(GameProtocol.PT_PLAYER_MOVE, 
+					user.getNickname() + " " + getX() + " " + getY() + " ");
+				user.getOut().writeObject(protocol);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 		keyProcess();
 		spriteProcess();
 	}

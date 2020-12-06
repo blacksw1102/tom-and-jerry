@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
@@ -14,6 +15,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.EOFException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 
@@ -33,6 +36,7 @@ public class GamePanel extends Canvas implements Runnable {
     private Thread t;
     private GameScreen gameScreen;
     private User user;
+    private ArrayList<Player> playerList;
     
 	private static final int SELECTED_TOM_ROLE = 1;
 	private static final int SELECTED_JERRY_ROLE = 2;
@@ -52,9 +56,10 @@ public class GamePanel extends Canvas implements Runnable {
 	private Player player;
 	//private static int selectedRole;
 
-    public GamePanel(GameScreen gameScreen, User user) {
+    public GamePanel(GameScreen gameScreen, User user, ArrayList<User> userList) {
     	this.gameScreen = gameScreen;
     	this.user = user;
+    	this.playerList = new ArrayList<>();
     	this.handler = new Handler();
 		this.camera = new Camera(0, 0);
 		
@@ -69,24 +74,42 @@ public class GamePanel extends Canvas implements Runnable {
 			if(protocol == null)
 				throw new IOException("Null pointer received...");
 			switch(protocol.getProtocol()) {
-				case GameProtocol.PT_BROADCAST_PLAYER_ROLE:
-					String[] datas = ((String) protocol.getData()).split(" ");
-					int role = Integer.parseInt(datas[0]);
-					int x = Integer.parseInt(datas[1]);
-					int y = Integer.parseInt(datas[2]);
-					
-					if (role == SELECTED_JERRY_ROLE) {
-						BufferedImage spritesheet = makeBufferedImage("res/jerry_sprites.png");
-						BufferedImage spritesheet_flipx = getFlippedImage(spritesheet, true, false);
-						player = new Jerry(this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
-						handler.addObject(player);
-						System.out.println("Jerry 생성 완료");
-					} else if (role == SELECTED_TOM_ROLE) {
-						BufferedImage spritesheet = makeBufferedImage("res/tom_sprites.png");
-						BufferedImage spritesheet_flipx = getFlippedImage(spritesheet, true, false);
-						player = new Tom(this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
-						handler.addObject(player);
-						System.out.println("Tom 생성 완료");
+				case GameProtocol.PT_BROADCAST_PLAYERS_INFO:
+					LinkedList<String> datas = (LinkedList) protocol.getData();
+					for(String data : datas) {
+						for(User u : userList) {
+							String[] playerInfos = data.split(" ");
+							int role = Integer.parseInt(playerInfos[0]);
+							int x = Integer.parseInt(playerInfos[1]);
+							int y = Integer.parseInt(playerInfos[2]);
+							String nickname = playerInfos[3];
+							
+							if(u.getNickname().equals(nickname)) {
+								Player p = null;
+								BufferedImage spritesheet;
+								BufferedImage spritesheet_flipx;
+								
+								if (role == SELECTED_JERRY_ROLE) {
+									spritesheet = makeBufferedImage("res/jerry_sprites.png");
+									spritesheet_flipx = getFlippedImage(spritesheet, true, false);
+									p = new Jerry(u, this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
+									playerList.add(p);
+									handler.addObject(p);
+									System.out.println("Jerry 생성 완료");
+								} else if (role == SELECTED_TOM_ROLE) {
+									spritesheet = makeBufferedImage("res/tom_sprites.png");
+									spritesheet_flipx = getFlippedImage(spritesheet, true, false);
+									p = new Tom(u, this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
+									playerList.add(p);
+									handler.addObject(p);
+									System.out.println("Tom 생성 완료");
+								}
+								
+								if(u.getNickname().equals(user.getNickname())) {
+									player = p;
+								}
+							}
+						}
 					}
 					
 					this.setFocusable(true);
