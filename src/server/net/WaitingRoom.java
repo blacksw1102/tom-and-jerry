@@ -138,7 +138,7 @@ public class WaitingRoom extends Thread implements Serializable {
 				count++;
 		}
 		
-		if(count == 1)
+		if(count == 2)
 			return true;
 
 		return false;
@@ -213,21 +213,26 @@ public class WaitingRoom extends Thread implements Serializable {
 	
 	// 대기방에 있는 유저 리스트를 클라이언트에게 보낸다.
 	public void broadcastUserList() {
-		List<User> roomUserList = new ArrayList<>();
+//		List<User> roomUserList = new ArrayList<>();
+		Hashtable<String, User> roomUserList = new Hashtable<>();
 		
 		// 유저 리스트를 만든다.
 		Enumeration<ServerUser> elements = userList.elements();
 		while(elements.hasMoreElements()) {
 			ServerUser serverUser = elements.nextElement();
 			User user = new User(serverUser.getNickname(), serverUser.getUserState());
-			roomUserList.add(user);
+//			roomUserList.add(user);
+			roomUserList.put(serverUser.getNickname(), user);
 		}
+		
 		
 		// 유저 리스트를 모든 유저들에게 보낸다.
 		elements = userList.elements();
 		while(elements.hasMoreElements()) {
 			ServerUser serverUser = elements.nextElement();
-			GameProtocol protocol = new GameProtocol(GameProtocol.PT_BROADCAST_USER_LIST_IN_WAITING_ROOM, roomUserList);
+			GameProtocol protocol = new GameProtocol(
+					GameProtocol.PT_BROADCAST_USER_LIST_IN_WAITING_ROOM,
+					roomUserList);
 			try {
 				serverUser.getOut().writeObject(protocol);
 			} catch (IOException e) {

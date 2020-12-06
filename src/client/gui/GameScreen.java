@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import javax.swing.JFrame;
 
@@ -23,7 +24,7 @@ public class GameScreen extends JFrame {
 	
 	
 	
-	public GameScreen(User user, ArrayList<User> userList) {
+	public GameScreen(User user, Hashtable<String, User> userList) {
 
 		this.setLayout(cards);
 		this.setSize(gGameWidth, gGameHeight);

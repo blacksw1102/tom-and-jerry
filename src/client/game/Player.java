@@ -2,6 +2,10 @@ package client.game;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
 import client.entity.User;
 import client.gui.GamePanel;
@@ -27,12 +31,14 @@ public abstract class Player extends GameObject {
 	private Handler handler;
 	
 	private User user;
+	private String nickname;
 	
 	public Player(User user, GamePanel gameScreen, int x, int y, int width, int height, int speed,
 			ID id, BufferedImage spritesheet, BufferedImage spritesheet_flipx, Handler handler) {
 		super(x, y, id, width, height, spritesheet, spritesheet_flipx);
 		
 		this.user = user;
+		this.nickname = user.getNickname();
 		this.gameScreen = gameScreen;
 		this.speed = speed;
 		this.velX = 0;
@@ -45,16 +51,39 @@ public abstract class Player extends GameObject {
 	}
 	
 	@Override
+	public String toString() {
+		return String.format("nickname:%s, x:%d, y:%d, dir:%d, status:%d", nickname, x, y, dir, status);
+	}
+	
+	public ObjectInputStream getIn() {
+		return user.getIn();
+	}
+
+	public ObjectOutputStream getOut() {
+		return user.getOut();
+	}
+
+	
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	@Override
 	public void process() {
 		x += velX;
 		collisionX();
 		y += velY;
 		collisionY();
 
-		if(user.getOut() != null) {
+		
+		if(user.getOut() != null && (velX != 0 || velY != 0)) {
 			try {
 				GameProtocol protocol = new GameProtocol(GameProtocol.PT_PLAYER_MOVE, 
-					user.getNickname() + " " + getX() + " " + getY() + " ");
+					user.getNickname() + " " + getX() + " " + getY() + " " + getDir() + " " + getStatus());
 				user.getOut().writeObject(protocol);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -68,6 +97,7 @@ public abstract class Player extends GameObject {
 	
 	@Override
 	public void render(Graphics2D g) {
+
 		BufferedImage img = null;
 		int sx = (sprite.frameList.get(sprite.nowFrame) % 10) * width;
 		int sy = (sprite.frameList.get(sprite.nowFrame) / 10) * height;
@@ -76,12 +106,11 @@ public abstract class Player extends GameObject {
 			img = spritesheet_flipx;
 		else 
 			img = spritesheet;
-		
+
 		BufferedImage imgZoom = gameScreen.getScaledImage(img, img.getWidth() * 2, img.getHeight() * 2);
 		//g.setColor(Color.yellow);
 		//g.fillRect((int)x, (int)y, width, height);
 		gameScreen.drawImageClip(g, imgZoom, (int) x, (int) y, sx, sy, width, height, 7);		
-
 	}
 	
 	public void spriteProcess() {
@@ -169,5 +198,23 @@ public abstract class Player extends GameObject {
 	public boolean isRight() {
 		return keyBuff_RIGHT;		
 	}
+
+	public int getDir() {
+		return dir;
+	}
+
+	public void setDir(int dir) {
+		this.dir = dir;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	
+	
 	
 }

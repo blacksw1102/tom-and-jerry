@@ -9,6 +9,8 @@ import java.awt.event.WindowEvent;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,12 +22,14 @@ import javax.swing.border.LineBorder;
 
 import client.entity.User;
 import client.gui.component.WaitingRoomRowPanel;
+import server.entity.ServerUser;
 import server.util.GameProtocol;
 
 public class WaitingRoomScreen extends JFrame implements Runnable {
 	
 	private User user;
-    private ArrayList<User> userList = new ArrayList<>();
+	private Hashtable<String, User> userList = new Hashtable<>();
+//    private ArrayList<User> userList = new ArrayList<>();
     
     private JPanel contentPane;
     private WaitingRoomRowPanel[] rows;
@@ -161,7 +165,7 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
 				
 				switch(protocol.getProtocol()) {
 					case GameProtocol.PT_BROADCAST_USER_LIST_IN_WAITING_ROOM:	// 유저 리스트 조회
-						this.userList = (ArrayList) protocol.getData();
+						this.userList = (Hashtable) protocol.getData();
 						drawUserList(this.userList);
 						break;
 					case GameProtocol.PT_GAME_START: {
@@ -186,14 +190,22 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
 	}
 	
 	/* 유저 리스트 행 패널 그리기*/
-	public void drawUserList(ArrayList<User> userList) {
+	public void drawUserList(Hashtable<String, User> userList) {
 		int i = 0;
-		
-		while(i < userList.size()) {
-			rows[i].setUserName(userList.get(i).getNickname());
-			rows[i].setUserState(userList.get(i).getUserState());
+
+		Enumeration<User> elements = userList.elements();
+		while(elements.hasMoreElements()) {
+			User user = elements.nextElement();
+			rows[i].setUserName(user.getNickname());
+			rows[i].setUserState(user.getUserState());
 			i++;
 		}
+		
+//		while(i < userList.size()) {
+//			rows[i].setUserName(userList.get(i).getNickname());
+//			rows[i].setUserState(userList.get(i).getUserState());
+//			i++;
+//		}
 		
 		while(i < rows.length) {
 			rows[i].setUserName("");

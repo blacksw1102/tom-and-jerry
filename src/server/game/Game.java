@@ -33,7 +33,7 @@ public class Game extends Thread {
 		// 역할 초기화
 		roles.add(SELECTED_JERRY_ROLE);
 		roles.add(SELECTED_JERRY_ROLE);
-		roles.add(SELECTED_TOM_ROLE);
+		roles.add(SELECTED_JERRY_ROLE);
 		roles.add(SELECTED_TOM_ROLE);
 		
 		// 초기 좌표 초기화
@@ -73,6 +73,7 @@ public class Game extends Thread {
 			int y = positions.get(i).getY();
 			String nickname = serverUser.getNickname();
 			String data = String.format("%d %d %d %s", role, x, y, nickname);
+			System.out.println("data : " + data);
 			datas.add(data);
 			i++;
 		}
@@ -94,7 +95,7 @@ public class Game extends Thread {
 		System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
 		try {
 			while(true) {
-				Thread.sleep(100);
+				//Thread.sleep(100);
 				
 				Enumeration<ServerUser> e = userList.elements();
 				while(e.hasMoreElements()) {
@@ -103,7 +104,7 @@ public class Game extends Thread {
 						protocol = (GameProtocol) serverUser.getIn().readObject();
 						switch(protocol.getProtocol()) {
 							case GameProtocol.PT_PLAYER_MOVE:
-								//broadcastGameInfo(protocol);
+								broadcastGameInfo(protocol);
 								break;
 						}
 					} catch(IOException ee) {
@@ -124,8 +125,6 @@ public class Game extends Thread {
 				*/
 				
 			}
-		} catch (InterruptedException e2) {
-		
 		} finally {
 			System.out.printf("[%s] 종료..\n", this.getClass().getName());
 
@@ -133,7 +132,7 @@ public class Game extends Thread {
 	}
 
 	private void broadcastGameInfo(GameProtocol protocol) throws IOException {
-		String nickname = ((String) protocol.getData()).split(",")[0];
+		String nickname = ((String) protocol.getData()).split(" ")[0];
 		Enumeration<ServerUser> e = userList.elements();
 		while(e.hasMoreElements()) {
 			serverUser = e.nextElement();

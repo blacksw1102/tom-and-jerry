@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.MediaTracker;
-import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
@@ -16,6 +16,8 @@ import java.awt.image.ImageObserver;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
@@ -23,6 +25,7 @@ import javax.imageio.ImageIO;
 import client.entity.User;
 import client.game.Block;
 import client.game.Camera;
+import client.game.Connection;
 import client.game.Handler;
 import client.game.ID;
 import client.game.Jerry;
@@ -35,8 +38,11 @@ public class GamePanel extends Canvas implements Runnable {
 
     private Thread t;
     private GameScreen gameScreen;
-    private User user;
-    private ArrayList<Player> playerList;
+
+    private Player player;
+//    private ArrayList<Player> playerList;
+    private Hashtable<String, Player> playerList;
+    private Connection conn;
     
 	private static final int SELECTED_TOM_ROLE = 1;
 	private static final int SELECTED_JERRY_ROLE = 2;
@@ -53,13 +59,11 @@ public class GamePanel extends Canvas implements Runnable {
 	private int delay;		// 루프 딜레이. 1/1000초 단위.
 	private long pretime;	// 루프 간격을 조절하기 위한 시간 체크값
 
-	private Player player;
 	//private static int selectedRole;
 
-    public GamePanel(GameScreen gameScreen, User user, ArrayList<User> userList) {
+    public GamePanel(GameScreen gameScreen, User user, Hashtable<String, User> userList) {
     	this.gameScreen = gameScreen;
-    	this.user = user;
-    	this.playerList = new ArrayList<>();
+    	this.playerList = new Hashtable<>();
     	this.handler = new Handler();
 		this.camera = new Camera(0, 0);
 		
@@ -77,38 +81,59 @@ public class GamePanel extends Canvas implements Runnable {
 				case GameProtocol.PT_BROADCAST_PLAYERS_INFO:
 					LinkedList<String> datas = (LinkedList) protocol.getData();
 					for(String data : datas) {
-						for(User u : userList) {
-							String[] playerInfos = data.split(" ");
-							int role = Integer.parseInt(playerInfos[0]);
-							int x = Integer.parseInt(playerInfos[1]);
-							int y = Integer.parseInt(playerInfos[2]);
-							String nickname = playerInfos[3];
+						String[] playerInfos = data.split(" ");
+						int role = Integer.parseInt(playerInfos[0]);
+						int x = Integer.parseInt(playerInfos[1]);
+						int y = Integer.parseInt(playerInfos[2]);
+						String nickname = playerInfos[3];
+						
+						if(user.getNickname().equals(nickname)) {
+							Player p = null;
+							BufferedImage spritesheet;
+							BufferedImage spritesheet_flipx;
 							
-							if(u.getNickname().equals(nickname)) {
-								Player p = null;
-								BufferedImage spritesheet;
-								BufferedImage spritesheet_flipx;
-								
-								if (role == SELECTED_JERRY_ROLE) {
-									spritesheet = makeBufferedImage("res/jerry_sprites.png");
-									spritesheet_flipx = getFlippedImage(spritesheet, true, false);
-									p = new Jerry(u, this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
-									playerList.add(p);
-									handler.addObject(p);
-									System.out.println("Jerry 생성 완료");
-								} else if (role == SELECTED_TOM_ROLE) {
-									spritesheet = makeBufferedImage("res/tom_sprites.png");
-									spritesheet_flipx = getFlippedImage(spritesheet, true, false);
-									p = new Tom(u, this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
-									playerList.add(p);
-									handler.addObject(p);
-									System.out.println("Tom 생성 완료");
-								}
-								
-								if(u.getNickname().equals(user.getNickname())) {
-									player = p;
-								}
+							if (role == SELECTED_JERRY_ROLE) {
+								spritesheet = makeBufferedImage("res/jerry_sprites.png");
+								spritesheet_flipx = getFlippedImage(spritesheet, true, false);
+								p = new Jerry(user, this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
+								playerList.put(p.getNickname(), p);
+								handler.addObject(p);
+								System.out.println("Jerry 생성 완료");
+							} else if (role == SELECTED_TOM_ROLE) {
+								spritesheet = makeBufferedImage("res/tom_sprites.png");
+								spritesheet_flipx = getFlippedImage(spritesheet, true, false);
+								p = new Tom(user, this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
+								playerList.put(p.getNickname(), p);
+								handler.addObject(p);
+								System.out.println("Tom 생성 완료");
 							}
+							
+							System.out.println("nickname : " + p.getNickname() + " x : " + p.getX() + " y : " + p.getY());
+							
+							player = p;
+						} else {
+							Player p = null;
+							BufferedImage spritesheet;
+							BufferedImage spritesheet_flipx;
+							
+							if (role == SELECTED_JERRY_ROLE) {
+								spritesheet = makeBufferedImage("res/jerry_sprites.png");
+								spritesheet_flipx = getFlippedImage(spritesheet, true, false);
+								p = new Jerry(userList.get(nickname), this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
+								playerList.put(p.getNickname(), p);
+								handler.addObject(p);
+								System.out.println("Jerry 생성 완료");
+							} else if (role == SELECTED_TOM_ROLE) {
+								spritesheet = makeBufferedImage("res/tom_sprites.png");
+								spritesheet_flipx = getFlippedImage(spritesheet, true, false);
+								p = new Tom(userList.get(nickname), this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
+								playerList.put(p.getNickname(), p);
+								handler.addObject(p);
+								System.out.println("Tom 생성 완료");
+							}
+							
+							System.out.println("nickname : " + p.getNickname() + " x : " + p.getX() + " y : " + p.getY());
+							
 						}
 					}
 					
@@ -116,6 +141,9 @@ public class GamePanel extends Canvas implements Runnable {
 					this.addKeyListener(new KeyInput(player));
 					
 					loadLevel(mapStructureImg);
+					
+					this.conn = new Connection(player, playerList);
+					this.conn.start();
 					
 					Thread thread = new Thread(this);
 					thread.start();
@@ -154,11 +182,13 @@ public class GamePanel extends Canvas implements Runnable {
 	}
 	
 	void process() {
-		for(int i = 0; i<handler.object.size(); i++) {
-			if(handler.object.get(i).getId() == ID.Player) {
-				camera.tick(handler.object.get(i));
-			}
-		}
+		//for(int i = 0; i<handler.object.size(); i++) {
+			//if(handler.object.get(i).getId() == ID.Player) {
+			//	camera.tick(handler.object.get(i));
+			//}
+		//}
+		
+		camera.tick(player);
 		
 		handler.process();
 	}
@@ -183,22 +213,26 @@ public class GamePanel extends Canvas implements Runnable {
 		
 		g2d.translate(-camera.getX(), -camera.getY());
 		drawBG(g2d);
-		g2d.drawImage(viewImg, camera.getX()-64, camera.getY()-64, this); // (1408-1270)/2 == 64
 		drawPlayer(g2d);
+		drawView(g2d);
 		g2d.translate(camera.getX(), camera.getY());
 
 		g.dispose();
 		bs.show();
 	}
 
-	void drawBG(Graphics2D g2d) {
+	private void drawBG(Graphics2D g2d) {
 		drawImageF(g2d, gameMapImg, 0, 0, this);
 	}
 
-	void drawPlayer(Graphics2D g2d) {
+	private void drawPlayer(Graphics2D g2d) {
 		handler.render(g2d);
 	}
-	
+
+	private void drawView(Graphics2D g2d) {
+		g2d.drawImage(viewImg, camera.getX()-64, camera.getY()-64, this); // (1408-1270)/2 == 64		
+	}
+
 	// loading the level
 	private void loadLevel(BufferedImage image) {
 
@@ -296,10 +330,11 @@ public class GamePanel extends Canvas implements Runnable {
 		}
 		if (wd < 0 || ht < 0)
 			return;
+		Shape backupShape = g.getClip();
 		g.setClip(x, y, wd, ht);
 		drawImageF(g, img, x - sx, y - sy, this);
-		g.setClip(0, 0, gameScreen.gGameWidth, gameScreen.gGameHeight);
-		
+		g.setClip(backupShape);
+		//g.setClip(0, 0, gameScreen.gGameWidth, gameScreen.gGameHeight);
 	}
 
 	// float를 좌표로 받는 그리기
