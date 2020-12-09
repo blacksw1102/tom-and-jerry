@@ -15,7 +15,7 @@ public class Jerry extends Player {
 			BufferedImage spritesheet, BufferedImage spritesheet_flipx, Handler handler) {
 		super(user, gameScreen, x, y, JERRY_WIDTH, JERRY_HEIGHT, JERRY_SPEED, id, spritesheet, spritesheet_flipx, handler);
 	}
-
+	
 	@Override
 	public Rectangle getBounds() {
 		return new Rectangle(x, y, JERRY_WIDTH, JERRY_HEIGHT);

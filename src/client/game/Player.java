@@ -20,18 +20,18 @@ public abstract class Player extends GameObject {
 	protected int velX;
 	protected int velY;
 	
-	boolean keyBuff_UP;
-	boolean keyBuff_DOWN;
-	boolean keyBuff_LEFT;
-	boolean keyBuff_RIGHT;
+	protected boolean keyBuff_UP;
+	protected boolean keyBuff_DOWN;
+	protected boolean keyBuff_LEFT;
+	protected boolean keyBuff_RIGHT;
 	
 	protected GamePanel gameScreen;
 	protected AnimatedSprite sprite;
 	
-	private Handler handler;
+	protected Handler handler;
 	
-	private User user;
-	private String nickname;
+	protected User user;
+	protected String nickname;
 	
 	public Player(User user, GamePanel gameScreen, int x, int y, int width, int height, int speed,
 			ID id, BufferedImage spritesheet, BufferedImage spritesheet_flipx, Handler handler) {
@@ -155,7 +155,7 @@ public abstract class Player extends GameObject {
 		
 	}
 	
-	private void collisionX() {
+	private synchronized void collisionX() {
 		for(int i = 0; i < handler.object.size(); i++) {
 			
 			GameObject tempObject = handler.object.get(i);
@@ -164,12 +164,16 @@ public abstract class Player extends GameObject {
 					x += velX * -1;
 					//y += velY * -1;
 				}
+			} else if(tempObject.getId() == ID.CHEESE) {
+				if(getBounds().intersects(tempObject.getBounds())) {
+					handler.removeObject(tempObject);
+					gameScreen.decreaseCheese();
+				}
 			}
-			
 		}
 	}
 	
-	private void collisionY() {
+	private synchronized void collisionY() {
 		for(int i = 0; i < handler.object.size(); i++) {
 			
 			GameObject tempObject = handler.object.get(i);
@@ -178,7 +182,13 @@ public abstract class Player extends GameObject {
 					//x += velX * -1;
 					y += velY * -1;
 				}
+			} else if(tempObject.getId() == ID.CHEESE) {
+				if(getBounds().intersects(tempObject.getBounds())) {
+					handler.removeObject(tempObject);
+					gameScreen.decreaseCheese();
+				}
 			}
+
 			
 		}
 	}

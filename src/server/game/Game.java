@@ -32,14 +32,14 @@ public class Game extends Thread {
 
 		// 역할 초기화
 		roles.add(SELECTED_JERRY_ROLE);
-		roles.add(SELECTED_JERRY_ROLE);
-		roles.add(SELECTED_JERRY_ROLE);
-		roles.add(SELECTED_TOM_ROLE);
+		//roles.add(SELECTED_JERRY_ROLE);
+		//roles.add(SELECTED_JERRY_ROLE);
+		//roles.add(SELECTED_TOM_ROLE);
 		
 		// 초기 좌표 초기화
-		positions.add(new Position(96, 128));
-		positions.add(new Position(128, 1952));
-		positions.add(new Position(2016, 160));
+		//positions.add(new Position(96, 128));
+		//positions.add(new Position(128, 1952));
+		//positions.add(new Position(2016, 160));
 		positions.add(new Position(1952, 1984));
 		
 		
@@ -73,7 +73,6 @@ public class Game extends Thread {
 			int y = positions.get(i).getY();
 			String nickname = serverUser.getNickname();
 			String data = String.format("%d %d %d %s", role, x, y, nickname);
-			System.out.println("data : " + data);
 			datas.add(data);
 			i++;
 		}

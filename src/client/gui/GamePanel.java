@@ -25,6 +25,7 @@ import javax.imageio.ImageIO;
 import client.entity.User;
 import client.game.Block;
 import client.game.Camera;
+import client.game.Cheese;
 import client.game.Connection;
 import client.game.Handler;
 import client.game.ID;
@@ -55,10 +56,13 @@ public class GamePanel extends Canvas implements Runnable {
 	private BufferedImage gameMapImg;
 	private BufferedImage mapStructureImg = null;
 	private BufferedImage viewImg = null;
+	private BufferedImage cheeseSprite = null;
 	
 	private int delay;		// 루프 딜레이. 1/1000초 단위.
 	private long pretime;	// 루프 간격을 조절하기 위한 시간 체크값
 
+	private int remainCheeseCount;
+	
 	//private static int selectedRole;
 
     public GamePanel(GameScreen gameScreen, User user, Hashtable<String, User> userList) {
@@ -68,10 +72,13 @@ public class GamePanel extends Canvas implements Runnable {
 		this.camera = new Camera(0, 0);
 		
 		this.gameMapImg = makeBufferedImage("res/game_map.png"); // 배경 그림 로딩
-		this.mapStructureImg = loadImage("/game_map_structure.png");
+		this.mapStructureImg = loadImage("/temp_game_map_structure.png");
+		//this.mapStructureImg = loadImage("/game_map_structure.png");
 		this.viewImg = makeBufferedImage("res/view.png");
-
+		this.cheeseSprite = loadImage("/cheese_sprites.png");
+		
 		this.delay = 30;
+		this.remainCheeseCount = 0;
 		
 		try {
 			GameProtocol protocol = (GameProtocol) user.getIn().readObject();
@@ -95,14 +102,14 @@ public class GamePanel extends Canvas implements Runnable {
 							if (role == SELECTED_JERRY_ROLE) {
 								spritesheet = makeBufferedImage("res/jerry_sprites.png");
 								spritesheet_flipx = getFlippedImage(spritesheet, true, false);
-								p = new Jerry(user, this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
+								p = new Jerry(user, this, x, y, ID.JERRY, spritesheet, spritesheet_flipx, handler);
 								playerList.put(p.getNickname(), p);
 								handler.addObject(p);
 								System.out.println("Jerry 생성 완료");
 							} else if (role == SELECTED_TOM_ROLE) {
 								spritesheet = makeBufferedImage("res/tom_sprites.png");
 								spritesheet_flipx = getFlippedImage(spritesheet, true, false);
-								p = new Tom(user, this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
+								p = new Tom(user, this, x, y, ID.TOM, spritesheet, spritesheet_flipx, handler);
 								playerList.put(p.getNickname(), p);
 								handler.addObject(p);
 								System.out.println("Tom 생성 완료");
@@ -119,14 +126,14 @@ public class GamePanel extends Canvas implements Runnable {
 							if (role == SELECTED_JERRY_ROLE) {
 								spritesheet = makeBufferedImage("res/jerry_sprites.png");
 								spritesheet_flipx = getFlippedImage(spritesheet, true, false);
-								p = new Jerry(userList.get(nickname), this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
+								p = new Jerry(userList.get(nickname), this, x, y, ID.JERRY, spritesheet, spritesheet_flipx, handler);
 								playerList.put(p.getNickname(), p);
 								handler.addObject(p);
 								System.out.println("Jerry 생성 완료");
 							} else if (role == SELECTED_TOM_ROLE) {
 								spritesheet = makeBufferedImage("res/tom_sprites.png");
 								spritesheet_flipx = getFlippedImage(spritesheet, true, false);
-								p = new Tom(userList.get(nickname), this, x, y, ID.Player, spritesheet, spritesheet_flipx, handler);
+								p = new Tom(userList.get(nickname), this, x, y, ID.TOM, spritesheet, spritesheet_flipx, handler);
 								playerList.put(p.getNickname(), p);
 								handler.addObject(p);
 								System.out.println("Tom 생성 완료");
@@ -145,8 +152,8 @@ public class GamePanel extends Canvas implements Runnable {
 					this.conn = new Connection(player, playerList);
 					this.conn.start();
 					
-					Thread thread = new Thread(this);
-					thread.start();
+					t = new Thread(this);
+					t.start();
 					break;
 			}
 		} catch (ClassNotFoundException e) {
@@ -163,8 +170,9 @@ public class GamePanel extends Canvas implements Runnable {
     
 	@Override
 	public void run() {
-		while (true) {
-			try {
+		try {
+			System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
+			while (true) {
 				pretime = System.currentTimeMillis();
 
 				synchronized(this) {
@@ -175,10 +183,12 @@ public class GamePanel extends Canvas implements Runnable {
 				long nowTime = System.currentTimeMillis();
 				if (nowTime - pretime < delay)
 					Thread.sleep(delay - (nowTime - pretime) < 0 ? 1 : delay - (nowTime - pretime));
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-		}		
+		} catch(InterruptedException e) {
+			
+		} finally {
+			System.out.printf("[%s] 작동 종료..\n", this.getClass().getName());
+		}
 	}
 	
 	void process() {
@@ -213,10 +223,18 @@ public class GamePanel extends Canvas implements Runnable {
 		
 		g2d.translate(-camera.getX(), -camera.getY());
 		drawBG(g2d);
-		drawPlayer(g2d);
+		drawGameObject(g2d);
 		drawView(g2d);
 		g2d.translate(camera.getX(), camera.getY());
-
+		
+		if(remainCheeseCount == 0) {
+			if(player.getId() == ID.JERRY)
+				gameScreen.changeGameResultScreen(1);
+			else if(player.getId() == ID.TOM)
+				gameScreen.changeGameResultScreen(4);
+			t.interrupt();
+		}
+		
 		g.dispose();
 		bs.show();
 	}
@@ -225,14 +243,14 @@ public class GamePanel extends Canvas implements Runnable {
 		drawImageF(g2d, gameMapImg, 0, 0, this);
 	}
 
-	private void drawPlayer(Graphics2D g2d) {
+	private void drawGameObject(Graphics2D g2d) {
 		handler.render(g2d);
 	}
 
 	private void drawView(Graphics2D g2d) {
 		g2d.drawImage(viewImg, camera.getX()-64, camera.getY()-64, this); // (1408-1270)/2 == 64		
 	}
-
+	
 	// loading the level
 	private void loadLevel(BufferedImage image) {
 
@@ -248,9 +266,19 @@ public class GamePanel extends Canvas implements Runnable {
 				
 				if(red==0 && green==0 && blue==0) {
 					handler.addObject(new Block(xx*32, yy*32, ID.Block));
+				} else if(red==255 && green==255 && blue==0) {
+					handler.addObject(new Cheese(xx*32, yy*32, ID.CHEESE, cheeseSprite));
+					remainCheeseCount++;
 				}
 			}
 		}
+		
+		System.out.println("cheese count : " + remainCheeseCount);
+	}
+	
+	public void decreaseCheese() {
+		this.remainCheeseCount--;
+		System.out.println("남은 치즈 개수 : " + this.remainCheeseCount);
 	}
 	
 	public BufferedImage loadImage(String path) {

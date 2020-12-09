@@ -8,8 +8,8 @@ public abstract class GameObject {
 	protected int x, y;
 	protected int width, height;
 	protected ID id;
-	public BufferedImage spritesheet;// �ִϸ��̼ǿ� �̹���	
-	public BufferedImage spritesheet_flipx;// �ִϸ��̼ǿ� �̹���(���ʺ���)
+	protected BufferedImage spritesheet;// �ִϸ��̼ǿ� �̹���	
+	protected BufferedImage spritesheet_flipx;// �ִϸ��̼ǿ� �̹���(���ʺ���)
 	
 	public GameObject(int x, int y, ID id, int width, int height, BufferedImage spritesheet) {
 		this.x = x;

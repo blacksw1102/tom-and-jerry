@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import client.entity.User;
 import client.game.Player;
@@ -16,16 +17,16 @@ import client.game.Tom;
 import server.util.GameProtocol;
 
 public class GameScreen extends JFrame {
-	
+	private User user;
 	private CardLayout cards = new CardLayout();
 	
 	final public int gGameWidth = 1280;
 	final public int gGameHeight = 720;
 	
 	
-	
 	public GameScreen(User user, Hashtable<String, User> userList) {
-
+		this.user = user;
+		
 		this.setLayout(cards);
 		this.setSize(gGameWidth, gGameHeight);
 		this.setLocationRelativeTo(null);
@@ -38,13 +39,18 @@ public class GameScreen extends JFrame {
 		this.setVisible(true);
 		this.add("game", new GamePanel(this, user, userList));
 		
-		
 		// 플레이어 리스트 받아와서 저장
 		// 본인 플레이어를 플레이어 리스트에서 찾아서 따로 변수로 관리
 		
 	}
 	
 	public void changeGameScreen() {
+		cards.next(this.getContentPane());
+	}
+	
+	public void changeGameResultScreen(int resultFlag) {
+		GameResultPanel resultPanel = new GameResultPanel(this, user, resultFlag);
+		this.add("result", resultPanel);
 		cards.next(this.getContentPane());
 	}
 
