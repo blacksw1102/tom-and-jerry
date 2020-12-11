@@ -42,7 +42,7 @@ public class TestPanel extends Canvas implements Runnable {
 		setVisible(true);
 
 		// 타이머 시작
-		timer = new Timer(5, 0);
+		//timer = new Timer(5, 0);
 		timer.start();
 		
 		t = new Thread(this);

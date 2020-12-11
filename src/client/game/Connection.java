@@ -71,17 +71,13 @@ public class Connection extends Thread {
 						String[] data = ((String) protocol.getData()).split(" ");
 						String deadNickname = data[1];
 
-						Enumeration<Player> e = playerList.elements();
-						while(e.hasMoreElements()) {
-							Player p = e.nextElement();
-							if(p.getNickname().equals(deadNickname)) {
-								p.setDead(true);
-								gamePanel.decreaseJerryCount();
-								break;
-							}
-							if(player.getNickname().equals(deadNickname)) {
-								gamePanel.changeWatchPlayer();
-							}
+						Player p = playerList.get(deadNickname);
+						p.setDead(true);
+						handler.removeObject(p);
+						gamePanel.decreaseJerryCount();
+						
+						if(player.getNickname().equals(deadNickname)) {
+							gamePanel.changeWatchPlayer();
 						}
 					}
 					

@@ -165,6 +165,7 @@ public abstract class Player extends GameObject {
 		for(int i = 0; i < handler.object.size(); i++) {
 			GameObject tempObject = handler.object.get(i);
 			if(tempObject.getId() == ID.JERRY && getBounds().intersects(tempObject.getBounds())) {
+				((Player) tempObject).setDead(true);
 				handler.removeObject(tempObject);
 				gameScreen.decreaseJerryCount();
 				

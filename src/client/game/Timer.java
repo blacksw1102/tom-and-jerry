@@ -1,22 +1,22 @@
 
 package client.game;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.JFrame;
 
-public class Timer extends JFrame implements Runnable {
-	private Image bufferImage;
-	private Graphics screenGraphic;
+import client.gui.GamePanel;
 
-	int minute = 0, second = 5;
+public class Timer extends JFrame implements Runnable {
+	private GamePanel gamePanel;
+	
+	private int minute = 0, second = 5;
 	
 	private Thread t;
 
-	public Timer(int minute, int second) {
+	public Timer(GamePanel gamePanel, int minute, int second) {
+		this.gamePanel = gamePanel;
 		this.minute = minute;
 		this.second = second;
 
@@ -41,8 +41,8 @@ public class Timer extends JFrame implements Runnable {
 			} else
 				second--;
 			if (minute == 0 && second == 0) {
+				gamePanel.timeOver();
 				t.interrupt();
-				System.out.println("타임 종료!!!");
 				break;
 			}
 		}

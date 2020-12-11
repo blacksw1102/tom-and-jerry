@@ -37,12 +37,12 @@ import client.game.ID;
 import client.game.Jerry;
 import client.game.KeyInput;
 import client.game.Player;
+import client.game.Timer;
 import client.game.Tom;
 import server.util.GameProtocol;
 
 public class GamePanel extends Canvas implements Runnable {
 
-    private Thread t;
     private GameScreen gameScreen;
 
     private Player player;
@@ -64,12 +64,25 @@ public class GamePanel extends Canvas implements Runnable {
 	private BufferedImage viewImg = null;
 	private BufferedImage cheeseSprite = null;
 	
+	// 왼쪽 사이드 아이콘 이미지
+	private BufferedImage tomAliveImg;
+	private BufferedImage jerryAliveImg;
+	private BufferedImage jerryDeadImg;
+	
+	// 미니맵 이미지
+	private BufferedImage minimapImg;
+	
 	private int delay;		// 루프 딜레이. 1/1000초 단위.
 	private long pretime;	// 루프 간격을 조절하기 위한 시간 체크값
 
 	private int remainCheeseCount;
 	private int remainJerryCount;
 	private int currentWatchPlayerIndex;
+	
+	private boolean isTimeOver;
+	
+	private Timer timer;
+	private Thread t;
 	
 	//private static int selectedRole;
 
@@ -81,14 +94,23 @@ public class GamePanel extends Canvas implements Runnable {
 		
 		this.gameMapImg = makeBufferedImage("res/game_map.png"); // 배경 그림 로딩
 		this.mapStructureImg = loadImage("/temp_game_map_structure.png");
-		//this.mapStructureImg = loadImage("/game_map_structure.png");
+
 		this.viewImg = makeBufferedImage("res/view.png");
+		
 		this.cheeseSprite = loadImage("/cheese_sprites.png");
+		
+		this.tomAliveImg = loadImage("/tom_alive.png");		
+		this.jerryAliveImg = loadImage("/jerry_alive.png");
+		this.jerryDeadImg = loadImage("/jerry_dead2.png");
+		
+		this.minimapImg = loadImage("/mini_map.png");
 		
 		this.delay = 0;
 		this.remainCheeseCount = 0;
 		this.remainJerryCount = 2;
 		this.currentWatchPlayerIndex = -1;
+		
+		this.isTimeOver = false;
 		
 		try {
 			GameProtocol protocol = (GameProtocol) user.getIn().readObject();
@@ -125,8 +147,6 @@ public class GamePanel extends Canvas implements Runnable {
 								System.out.println("Tom 생성 완료");
 							}
 							
-							System.out.println("nickname : " + p.getNickname() + " x : " + p.getX() + " y : " + p.getY());
-							
 							player = p;
 							watchPlayer = player;
 						} else {
@@ -161,6 +181,11 @@ public class GamePanel extends Canvas implements Runnable {
 					this.conn = new Connection(this, handler, player, playerList);
 					this.conn.start();
 					
+					// 타이머 시작
+					timer = new Timer(this, 0, 10);
+					timer.start();
+					
+					// 게임 시작
 					t = new Thread(this);
 					t.start();
 					break;
@@ -208,7 +233,12 @@ public class GamePanel extends Canvas implements Runnable {
 	
 	public void checkGameOver() {
 		// 남은 치즈 개수가 0개가 됬을 경우 => 게임 종료
-		if(remainCheeseCount == 0) {
+		if(isTimeOver == true) {
+			gameScreen.changeGameResultScreen(5);
+			
+			// 게임 종료
+			this.t.interrupt();
+		} else if(remainCheeseCount == 0) {
 			if(player.getId() == ID.JERRY)
 				gameScreen.changeGameResultScreen(1);
 			else if(player.getId() == ID.TOM)
@@ -233,6 +263,10 @@ public class GamePanel extends Canvas implements Runnable {
 	
 	public void decreaseJerryCount() {
 		this.remainJerryCount--;
+	}
+	
+	public void timeOver() {
+		isTimeOver = true;
 	}
 	
 	// 죽었을 때, 다른 플레이어 관전 기능
@@ -272,7 +306,10 @@ public class GamePanel extends Canvas implements Runnable {
 		drawBacgkround(g2d);
 		drawGameObject(g2d);
 		drawView(g2d);
+		drawTimer(g);
 		drawRemainCheeseInfo(g);
+		drawPlayerInfo(g);
+		drawMinimap(g);
 		g2d.translate(camera.getX(), camera.getY());
 		
 		g.dispose();
@@ -283,6 +320,14 @@ public class GamePanel extends Canvas implements Runnable {
 		drawImageF(g2d, gameMapImg, 0, 0, this);
 	}
 	
+	void drawTimer(Graphics g) {
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("HY견고딕", Font.PLAIN, 50));
+		String str = String.format("%02d : %02d", timer.getMinute(), timer.getSecond());
+		int width = g.getFontMetrics().stringWidth(str);
+		g.drawString(str, camera.getX() + (640 - width / 2),camera.getY() +  60);
+	}
+	
 	private void drawRemainCheeseInfo(Graphics g) {
 		// 치즈
 		g.drawImage(cheeseSprite, camera.getX() + 1, camera.getY() + 10, 70, 70, null);
@@ -291,6 +336,40 @@ public class GamePanel extends Canvas implements Runnable {
 		g.setColor(Color.white);
 		g.setFont(new Font("HY견고딕", Font.PLAIN, 28));
 		g.drawString(String.format("%02d개 남음", remainCheeseCount), camera.getX() + 80, camera.getY() + 50);
+	}
+	
+	void drawPlayerInfo(Graphics g) {
+		int y = 100;
+		
+		Enumeration<Player> e = playerList.elements();
+		while(e.hasMoreElements()) {
+			Player p = e.nextElement();
+			BufferedImage selectedImg = null;
+			
+			// 캐릭터 얼굴
+			if(p.getId() == ID.TOM) {
+				selectedImg = tomAliveImg;
+			} else {
+				if(p.isDead())
+					selectedImg = jerryDeadImg;
+				else
+					selectedImg = jerryAliveImg;
+			}
+			g.drawImage(selectedImg, camera.getX() + 10, camera.getY() + y + 5, 50, 50, null);
+			
+			// 닉네임
+			g.setColor(Color.white);
+			g.setFont(new Font("HY견고딕", Font.PLAIN, 28));
+			g.drawString(p.getNickname(), camera.getX() + 70, camera.getY() + y + 40);
+			
+			// 좌표 이동
+			y += 70;
+		}
+		
+	}
+	
+	void drawMinimap(Graphics g) {
+		g.drawImage(minimapImg, camera.getX() + 1000, camera.getY() + 410, 250, 250, null);
 	}
 
 	private void drawGameObject(Graphics2D g2d) {
