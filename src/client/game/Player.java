@@ -159,12 +159,12 @@ public abstract class Player extends GameObject {
 	
 	// 제리가 톰에게 죽음
 	public synchronized void dead() {
-		if(id != ID.JERRY) 
+		if(id != ID.TOM) 
 			return;
 		
 		for(int i = 0; i < handler.object.size(); i++) {
 			GameObject tempObject = handler.object.get(i);
-			if(tempObject.getId() == ID.TOM && getBounds().intersects(tempObject.getBounds())) {
+			if(tempObject.getId() == ID.JERRY && getBounds().intersects(tempObject.getBounds())) {
 				handler.removeObject(tempObject);
 				gameScreen.decreaseJerryCount();
 				

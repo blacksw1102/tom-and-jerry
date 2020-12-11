@@ -40,7 +40,7 @@ public class LoadingPanel extends JPanel implements Runnable {
 	public void run() {
 		try {
 			while(value < 100) {
-				Thread.sleep(100);
+				Thread.sleep(150);
 				value += 3;
 				setProgressBarValue(value);
 			}

@@ -79,6 +79,9 @@ public class Connection extends Thread {
 								gamePanel.decreaseJerryCount();
 								break;
 							}
+							if(player.getNickname().equals(deadNickname)) {
+								gamePanel.changeWatchPlayer();
+							}
 						}
 					}
 					

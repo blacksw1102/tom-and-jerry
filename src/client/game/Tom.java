@@ -9,7 +9,7 @@ public class Tom extends Player {
 
 	private static final int TOM_WIDTH = 64;
 	private static final int TOM_HEIGHT = 80;
-	private static final int TOM_SPEED = 4;
+	private static final int TOM_SPEED = 8;
 	
 	public Tom(User user, GamePanel gameScreen, int x, int y, 
 			ID id, BufferedImage spritesheet, BufferedImage spritesheet_flipx, Handler handler) {

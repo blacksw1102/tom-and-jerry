@@ -85,7 +85,7 @@ public class GamePanel extends Canvas implements Runnable {
 		this.viewImg = makeBufferedImage("res/view.png");
 		this.cheeseSprite = loadImage("/cheese_sprites.png");
 		
-		this.delay = 30;
+		this.delay = 0;
 		this.remainCheeseCount = 0;
 		this.remainJerryCount = 2;
 		this.currentWatchPlayerIndex = -1;

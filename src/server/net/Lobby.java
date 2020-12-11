@@ -192,7 +192,6 @@ public class Lobby extends Thread {
 		Enumeration<ServerUser> elements = chatList.elements();
 		while(elements.hasMoreElements()) {
 			ServerUser toUser = elements.nextElement();
-			System.out.println("@@@@");
 			toUser.getOut().writeObject(protocol);
 		}
 	}

@@ -9,7 +9,7 @@ public class Jerry extends Player {
 
 	private static final int JERRY_WIDTH = 64;
 	private static final int JERRY_HEIGHT = 64;
-	private static final int JERRY_SPEED = 4;
+	private static final int JERRY_SPEED = 8;
 	
 	public Jerry(User user, GamePanel gameScreen, int x, int y, ID id,
 			BufferedImage spritesheet, BufferedImage spritesheet_flipx, Handler handler) {
