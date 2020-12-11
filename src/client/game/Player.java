@@ -122,20 +122,27 @@ public abstract class Player extends GameObject {
 	}
 	
 	public synchronized void eatCheese() {
+		if(id != ID.JERRY)
+			return;
+		
+		GameObject tempObject = null;
 		for(int i = 0; i < handler.object.size(); i++) {
-			GameObject tempObject = handler.object.get(i);
-			if(id == ID.JERRY && tempObject.getId() == ID.CHEESE) {
+			tempObject = handler.object.get(i);
+			if(tempObject.getId() == ID.CHEESE) {
 				if(getBounds().intersects(tempObject.getBounds())) {
 					handler.removeObject(tempObject);
 					gameScreen.decreaseCheese();
-
-					GameProtocol protocol = new GameProtocol(
-							GameProtocol.PT_EAT_CHEESE, user.getNickname());
+					
+					int x = tempObject.getX();
+					int y = tempObject.getY();
+					String data = user.getNickname() + " " + x + " " + y;
+					GameProtocol protocol = new GameProtocol(GameProtocol.PT_EAT_CHEESE, data);
+					
 					sendMessage(protocol);
 				}
 			}
-			
 		}
+		
 	}
 	
 	@Override

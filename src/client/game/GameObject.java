@@ -34,7 +34,7 @@ public abstract class GameObject {
 		return id;
 	}
 
-	public void setId(ID id) {
+	public void setType(ID id) {
 		this.id = id;
 	}
 

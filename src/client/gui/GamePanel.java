@@ -143,8 +143,6 @@ public class GamePanel extends Canvas implements Runnable {
 								System.out.println("Tom 생성 완료");
 							}
 							
-							System.out.println("nickname : " + p.getNickname() + " x : " + p.getX() + " y : " + p.getY());
-							
 						}
 					}
 					
@@ -153,7 +151,7 @@ public class GamePanel extends Canvas implements Runnable {
 					
 					loadLevel(mapStructureImg);
 					
-					this.conn = new Connection(this, player, playerList);
+					this.conn = new Connection(this, handler, player, playerList);
 					this.conn.start();
 					
 					t = new Thread(this);
@@ -292,7 +290,6 @@ public class GamePanel extends Canvas implements Runnable {
 			}
 		}
 		
-		System.out.println("cheese count : " + remainCheeseCount);
 	}
 	
 	public BufferedImage loadImage(String path) {

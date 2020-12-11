@@ -13,11 +13,13 @@ import server.util.GameProtocol;
 public class Connection extends Thread {
 	
 	private GamePanel gamePanel;
+	private Handler handler;
 	private Player player;
 	private Hashtable<String, Player> playerList;
 	
-	public Connection(GamePanel gamePanel, Player player, Hashtable<String, Player> playerList) {
+	public Connection(GamePanel gamePanel, Handler handler, Player player, Hashtable<String, Player> playerList) {
 		this.gamePanel = gamePanel;
+		this.handler = handler;
 		this.player = player;
 		this.playerList = playerList;
 	}
@@ -32,7 +34,7 @@ public class Connection extends Thread {
 					throw new IOException("Null pointer received...");
 				
 				switch(protocol.getProtocol()) {
-					case GameProtocol.PT_PLAYER_MOVE:
+					case GameProtocol.PT_PLAYER_MOVE: {
 						String[] data = ((String) protocol.getData()).split(" ");
 						String nickname = data[0];
 						int x = Integer.valueOf(data[1]);
@@ -45,9 +47,25 @@ public class Connection extends Thread {
 						p.setDir(dir);
 						p.setStatus(status);
 						break;
-					case GameProtocol.PT_EAT_CHEESE:
-						gamePanel.decreaseCheese();
+					}
+					case GameProtocol.PT_EAT_CHEESE: {
+						String[] data = ((String) protocol.getData()).split(" ");
+						int x = Integer.parseInt(data[1]);
+						int y = Integer.parseInt(data[2]);
+						
+						GameObject tempObject = null;
+						for(int i = 0; i < handler.object.size(); i++) {
+							tempObject = handler.object.get(i);
+							if(tempObject.getId() == ID.CHEESE 
+									&& tempObject.getX() == x 
+									&& tempObject.getY() == y) {
+								handler.removeObject(tempObject);
+								gamePanel.decreaseCheese();
+							}
+						}
+						
 						break;
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

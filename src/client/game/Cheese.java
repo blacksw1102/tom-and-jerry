@@ -12,11 +12,10 @@ public class Cheese extends GameObject {
 	public Cheese(int x, int y, ID id, BufferedImage spritesheet) {
 		super(x, y, id, CHEESE_WIDTH, CHEESE_HEIGHT, spritesheet);
 	}
-
+	
 	@Override
 	public void process() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
