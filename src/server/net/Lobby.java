@@ -31,7 +31,7 @@ public class Lobby extends Thread {
 		while(true) {
 			 // CPU 독식 방지
 			try {
-				Thread.sleep(100);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

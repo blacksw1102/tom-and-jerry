@@ -2,11 +2,15 @@ package client.game;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import client.gui.GamePanel;
+
 public class KeyInput extends KeyAdapter {
 
+	private GamePanel gamePanel;
 	private Player player;
 	
-	public KeyInput(Player player) {
+	public KeyInput(GamePanel gamePanel, Player player) {
+		this.gamePanel = gamePanel;
 		this.player = player;
 	}
 	
@@ -26,6 +30,9 @@ public class KeyInput extends KeyAdapter {
 		case KeyEvent.VK_DOWN:
 			player.keyBuff_DOWN = true;
 			break;
+		case KeyEvent.VK_SPACE:
+			if(player.isDead())
+				gamePanel.changeWatchPlayer();
 		default:
 			break;
 		}

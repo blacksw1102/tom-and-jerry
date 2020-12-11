@@ -31,13 +31,13 @@ public class Game extends Thread {
 
 		// 역할 초기화
 		roles.add(SELECTED_JERRY_ROLE);
-		//roles.add(SELECTED_JERRY_ROLE);
+		roles.add(SELECTED_JERRY_ROLE);
 		//roles.add(SELECTED_JERRY_ROLE);
 		roles.add(SELECTED_TOM_ROLE);
 		
 		// 초기 좌표 초기화
 		//positions.add(new Position(96, 128));
-		//positions.add(new Position(128, 1952));
+		positions.add(new Position(128, 1952));
 		positions.add(new Position(2016, 160));
 		positions.add(new Position(1952, 1984));
 		
@@ -105,6 +105,9 @@ public class Game extends Thread {
 								broadcastGameInfo(protocol);
 								break;
 							case GameProtocol.PT_EAT_CHEESE:
+								broadcastGameInfo(protocol);
+								break;
+							case GameProtocol.PT_KILLED_JERRY:
 								broadcastGameInfo(protocol);
 								break;
 						}

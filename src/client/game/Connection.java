@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import client.gui.GamePanel;
 import client.gui.GameScreen;
 import server.entity.ServerUser;
+import server.net.WaitingRoom;
 import server.util.GameProtocol;
 
 public class Connection extends Thread {
@@ -53,9 +54,8 @@ public class Connection extends Thread {
 						int x = Integer.parseInt(data[1]);
 						int y = Integer.parseInt(data[2]);
 						
-						GameObject tempObject = null;
 						for(int i = 0; i < handler.object.size(); i++) {
-							tempObject = handler.object.get(i);
+							GameObject tempObject = handler.object.get(i);
 							if(tempObject.getId() == ID.CHEESE 
 									&& tempObject.getX() == x 
 									&& tempObject.getY() == y) {
@@ -66,6 +66,24 @@ public class Connection extends Thread {
 						
 						break;
 					}
+					case GameProtocol.PT_KILLED_JERRY: {
+
+						String[] data = ((String) protocol.getData()).split(" ");
+						String deadNickname = data[1];
+
+						Enumeration<Player> e = playerList.elements();
+						while(e.hasMoreElements()) {
+							Player p = e.nextElement();
+							if(p.getNickname().equals(deadNickname)) {
+								p.setDead(true);
+								gamePanel.decreaseJerryCount();
+								break;
+							}
+						}
+					}
+					
+					
+					
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

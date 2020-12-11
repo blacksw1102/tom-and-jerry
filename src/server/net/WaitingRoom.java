@@ -57,7 +57,7 @@ public class WaitingRoom extends Thread implements Serializable {
 		try {
 			System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
 			while(true) {
-				Thread.sleep(100);
+				Thread.sleep(200);
 				
 				Enumeration<ServerUser> e = userList.elements();
 				while(e.hasMoreElements()) {
@@ -138,7 +138,7 @@ public class WaitingRoom extends Thread implements Serializable {
 				count++;
 		}
 		
-		if(count == 2)
+		if(count == 3)
 			return true;
 
 		return false;

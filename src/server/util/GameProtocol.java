@@ -28,6 +28,7 @@ public class GameProtocol implements Serializable {
 	public static final int PT_BROADCAST_PLAYERS_INFO = 18;	// 플레이어 정보 브로드캐스팅
 	public static final int PT_PLAYER_MOVE = 19;	// 플레이어가 움직임
 	public static final int PT_EAT_CHEESE = 20;	// 치즈를 먹음
+	public static final int PT_KILLED_JERRY = 21;	// 제리를 죽임
 	
 	protected int protocolType;
 	private Object data;	// 프로토콜과 데이터의 저장공간이 객체

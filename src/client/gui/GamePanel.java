@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -45,6 +46,7 @@ public class GamePanel extends Canvas implements Runnable {
     private GameScreen gameScreen;
 
     private Player player;
+    private Player watchPlayer;
 //    private ArrayList<Player> playerList;
     private Hashtable<String, Player> playerList;
     private Connection conn;
@@ -66,6 +68,8 @@ public class GamePanel extends Canvas implements Runnable {
 	private long pretime;	// 루프 간격을 조절하기 위한 시간 체크값
 
 	private int remainCheeseCount;
+	private int remainJerryCount;
+	private int currentWatchPlayerIndex;
 	
 	//private static int selectedRole;
 
@@ -83,6 +87,8 @@ public class GamePanel extends Canvas implements Runnable {
 		
 		this.delay = 30;
 		this.remainCheeseCount = 0;
+		this.remainJerryCount = 2;
+		this.currentWatchPlayerIndex = -1;
 		
 		try {
 			GameProtocol protocol = (GameProtocol) user.getIn().readObject();
@@ -122,6 +128,7 @@ public class GamePanel extends Canvas implements Runnable {
 							System.out.println("nickname : " + p.getNickname() + " x : " + p.getX() + " y : " + p.getY());
 							
 							player = p;
+							watchPlayer = player;
 						} else {
 							Player p = null;
 							BufferedImage spritesheet;
@@ -147,7 +154,7 @@ public class GamePanel extends Canvas implements Runnable {
 					}
 					
 					this.setFocusable(true);
-					this.addKeyListener(new KeyInput(player));
+					this.addKeyListener(new KeyInput(this, player));
 					
 					loadLevel(mapStructureImg);
 					
@@ -193,7 +200,7 @@ public class GamePanel extends Canvas implements Runnable {
 	
 	private synchronized void process() throws InterruptedException {
 		
-		camera.tick(player);
+		camera.tick(watchPlayer);
 		handler.process();
 		checkGameOver();
 		
@@ -202,12 +209,19 @@ public class GamePanel extends Canvas implements Runnable {
 	public void checkGameOver() {
 		// 남은 치즈 개수가 0개가 됬을 경우 => 게임 종료
 		if(remainCheeseCount == 0) {
-			if(player.getId() == ID.JERRY) {
+			if(player.getId() == ID.JERRY)
 				gameScreen.changeGameResultScreen(1);
-			}
 			else if(player.getId() == ID.TOM)
 				gameScreen.changeGameResultScreen(4);
-	
+
+			// 게임 종료
+			this.t.interrupt();
+		} else if (remainJerryCount == 0) {
+			if(player.getId() == ID.JERRY)
+				gameScreen.changeGameResultScreen(2);
+			else if(player.getId() == ID.TOM)
+				gameScreen.changeGameResultScreen(3);
+			
 			// 게임 종료
 			this.t.interrupt();
 		}
@@ -215,6 +229,25 @@ public class GamePanel extends Canvas implements Runnable {
 	
 	public void decreaseCheese() {
 		this.remainCheeseCount--;
+	}
+	
+	public void decreaseJerryCount() {
+		this.remainJerryCount--;
+	}
+	
+	// 죽었을 때, 다른 플레이어 관전 기능
+	public void changeWatchPlayer() {
+		ArrayList<Player> arr = new ArrayList<>(playerList.values());
+		while(true) {
+			++currentWatchPlayerIndex;
+			if(currentWatchPlayerIndex >= arr.size())
+				currentWatchPlayerIndex = 0;
+			
+			if(!arr.get(currentWatchPlayerIndex).isDead()) {
+				watchPlayer = arr.get(currentWatchPlayerIndex);
+				break;
+			}
+		}
 	}
 	
 	@Override

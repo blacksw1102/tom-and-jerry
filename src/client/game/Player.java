@@ -20,6 +20,9 @@ public abstract class Player extends GameObject {
 	protected int velX;
 	protected int velY;
 	
+	protected boolean isDead;
+	protected boolean isHide;
+	
 	protected boolean keyBuff_UP;
 	protected boolean keyBuff_DOWN;
 	protected boolean keyBuff_LEFT;
@@ -46,6 +49,9 @@ public abstract class Player extends GameObject {
 		this.dir = 1;
 		this.sprite = new AnimatedSprite(this);
 		this.handler = handler;
+		
+		this.isDead = false;
+		this.isHide = false;
 		
 		sprite.setIdle();
 	}
@@ -74,14 +80,18 @@ public abstract class Player extends GameObject {
 
 	@Override
 	public void process() {
-		if(getOut() != null) {
+		if(getOut() != null && !isDead()) {
 			move();
 			eatCheese();
+			dead();
 		}
-		keyProcess();
-		spriteProcess();
+		if(!isDead) {
+			keyProcess();
+			spriteProcess();
+		}
 	}
 	
+	// 캐릭터 이동 기능
 	public void move() {
 		x += velX;
 		collisionX();
@@ -95,6 +105,7 @@ public abstract class Player extends GameObject {
 		sendMessage(protocol);
 	}
 	
+	// x 좌표 충돌여부 확인
 	private synchronized void collisionX() {
 		for(int i = 0; i < handler.object.size(); i++) {
 			
@@ -108,6 +119,7 @@ public abstract class Player extends GameObject {
 		}
 	}
 	
+	// y 좌표 충돌여부 확인
 	private synchronized void collisionY() {
 		for(int i = 0; i < handler.object.size(); i++) {
 			
@@ -121,6 +133,7 @@ public abstract class Player extends GameObject {
 		}
 	}
 	
+	// 치즈 먹기 기능
 	public synchronized void eatCheese() {
 		if(id != ID.JERRY)
 			return;
@@ -142,25 +155,45 @@ public abstract class Player extends GameObject {
 				}
 			}
 		}
+	}
+	
+	// 제리가 톰에게 죽음
+	public synchronized void dead() {
+		if(id != ID.JERRY) 
+			return;
 		
+		for(int i = 0; i < handler.object.size(); i++) {
+			GameObject tempObject = handler.object.get(i);
+			if(tempObject.getId() == ID.TOM && getBounds().intersects(tempObject.getBounds())) {
+				handler.removeObject(tempObject);
+				gameScreen.decreaseJerryCount();
+				
+				String deadNickname = ((Player) tempObject).getNickname();
+				String data = user.getNickname() + " " + deadNickname;
+				GameProtocol protocol = new GameProtocol(GameProtocol.PT_KILLED_JERRY, data);
+				
+				sendMessage(protocol);
+			}
+		}
 	}
 	
 	@Override
 	public void render(Graphics2D g) {
-
-		BufferedImage img = null;
-		int sx = (sprite.frameList.get(sprite.nowFrame) % 10) * width;
-		int sy = (sprite.frameList.get(sprite.nowFrame) / 10) * height;
-		
-		if(dir == 0)
-			img = spritesheet_flipx;
-		else 
-			img = spritesheet;
-
-		BufferedImage imgZoom = gameScreen.getScaledImage(img, img.getWidth() * 2, img.getHeight() * 2);
-		//g.setColor(Color.yellow);
-		//g.fillRect((int)x, (int)y, width, height);
-		gameScreen.drawImageClip(g, imgZoom, (int) x, (int) y, sx, sy, width, height, 7);		
+		if(!isDead) {
+			BufferedImage img = null;
+			int sx = (sprite.frameList.get(sprite.nowFrame) % 10) * width;
+			int sy = (sprite.frameList.get(sprite.nowFrame) / 10) * height;
+			
+			if(dir == 0)
+				img = spritesheet_flipx;
+			else 
+				img = spritesheet;
+	
+			BufferedImage imgZoom = gameScreen.getScaledImage(img, img.getWidth() * 2, img.getHeight() * 2);
+			//g.setColor(Color.yellow);
+			//g.fillRect((int)x, (int)y, width, height);
+			gameScreen.drawImageClip(g, imgZoom, (int) x, (int) y, sx, sy, width, height, 7);
+		}
 	}
 	
 	public void spriteProcess() {
@@ -211,6 +244,22 @@ public abstract class Player extends GameObject {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isDead() {
+		return isDead;
+	}
+
+	public void setDead(boolean isDead) {
+		this.isDead = isDead;
+	}
+
+	public boolean isHide() {
+		return isHide;
+	}
+
+	public void setHide(boolean isHide) {
+		this.isHide = isHide;
 	}
 	
 	public boolean isUp() {
