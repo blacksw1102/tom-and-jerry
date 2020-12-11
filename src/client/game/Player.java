@@ -74,25 +74,68 @@ public abstract class Player extends GameObject {
 
 	@Override
 	public void process() {
+		if(getOut() != null) {
+			move();
+			eatCheese();
+		}
+		keyProcess();
+		spriteProcess();
+	}
+	
+	public void move() {
 		x += velX;
 		collisionX();
 		y += velY;
 		collisionY();
 
-		
-		if(user.getOut() != null && (velX != 0 || velY != 0)) {
-			try {
-				GameProtocol protocol = new GameProtocol(GameProtocol.PT_PLAYER_MOVE, 
-					user.getNickname() + " " + getX() + " " + getY() + " " + getDir() + " " + getStatus());
-				user.getOut().writeObject(protocol);
-			} catch (IOException e) {
-				e.printStackTrace();
+		GameProtocol protocol = new GameProtocol(
+				GameProtocol.PT_PLAYER_MOVE, 
+				user.getNickname() + " " + getX() 
+				+ " " + getY() + " " + getDir() + " " + getStatus());
+		sendMessage(protocol);
+	}
+	
+	private synchronized void collisionX() {
+		for(int i = 0; i < handler.object.size(); i++) {
+			
+			GameObject tempObject = handler.object.get(i);
+			if(tempObject.getId() == ID.Block) {
+				if(getBounds().intersects(tempObject.getBounds())) {
+					x += velX * -1;
+					//y += velY * -1;
+				}
 			}
 		}
-		
-		
-		keyProcess();
-		spriteProcess();
+	}
+	
+	private synchronized void collisionY() {
+		for(int i = 0; i < handler.object.size(); i++) {
+			
+			GameObject tempObject = handler.object.get(i);
+			if(tempObject.getId() == ID.Block) {
+				if(getBounds().intersects(tempObject.getBounds())) {
+					//x += velX * -1;
+					y += velY * -1;
+				}
+			}
+		}
+	}
+	
+	public synchronized void eatCheese() {
+		for(int i = 0; i < handler.object.size(); i++) {
+			GameObject tempObject = handler.object.get(i);
+			if(id == ID.JERRY && tempObject.getId() == ID.CHEESE) {
+				if(getBounds().intersects(tempObject.getBounds())) {
+					handler.removeObject(tempObject);
+					gameScreen.decreaseCheese();
+
+					GameProtocol protocol = new GameProtocol(
+							GameProtocol.PT_EAT_CHEESE, user.getNickname());
+					sendMessage(protocol);
+				}
+			}
+			
+		}
 	}
 	
 	@Override
@@ -155,41 +198,11 @@ public abstract class Player extends GameObject {
 		
 	}
 	
-	private synchronized void collisionX() {
-		for(int i = 0; i < handler.object.size(); i++) {
-			
-			GameObject tempObject = handler.object.get(i);
-			if(tempObject.getId() == ID.Block) {
-				if(getBounds().intersects(tempObject.getBounds())) {
-					x += velX * -1;
-					//y += velY * -1;
-				}
-			} else if(tempObject.getId() == ID.CHEESE) {
-				if(getBounds().intersects(tempObject.getBounds())) {
-					handler.removeObject(tempObject);
-					gameScreen.decreaseCheese();
-				}
-			}
-		}
-	}
-	
-	private synchronized void collisionY() {
-		for(int i = 0; i < handler.object.size(); i++) {
-			
-			GameObject tempObject = handler.object.get(i);
-			if(tempObject.getId() == ID.Block) {
-				if(getBounds().intersects(tempObject.getBounds())) {
-					//x += velX * -1;
-					y += velY * -1;
-				}
-			} else if(tempObject.getId() == ID.CHEESE) {
-				if(getBounds().intersects(tempObject.getBounds())) {
-					handler.removeObject(tempObject);
-					gameScreen.decreaseCheese();
-				}
-			}
-
-			
+	public void sendMessage(GameProtocol protocol) {
+		try {
+			user.getOut().writeObject(protocol);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

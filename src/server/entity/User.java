@@ -1,5 +1,6 @@
 package server.entity;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -27,6 +28,7 @@ public class User implements Serializable {
 		this.email = email;
 		this.birth = birth;
 		this.tel = tel;
+		
 	}
 	
 	public User(String id, String nickname) {

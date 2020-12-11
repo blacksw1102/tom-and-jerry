@@ -138,7 +138,7 @@ public class WaitingRoom extends Thread implements Serializable {
 				count++;
 		}
 		
-		if(count == 1)
+		if(count == 2)
 			return true;
 
 		return false;

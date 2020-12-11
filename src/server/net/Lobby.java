@@ -29,7 +29,7 @@ public class Lobby extends Thread {
 	public void run() {
 		System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
 		while(true) {
-			// CPU 독식 방지
+			 // CPU 독식 방지
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -49,6 +49,7 @@ public class Lobby extends Thread {
 						throw new IOException("Null pointer received...");
 					switch(protocol.getProtocol()) {
 						case GameProtocol.PT_SEND_MESSAGE:
+							System.out.println("send message 전");
 							broadcastMessage(protocol);
 							break;
 						case GameProtocol.PT_REQ_CREATE_WAITING_ROOM:
@@ -123,7 +124,7 @@ public class Lobby extends Thread {
 				} catch(SocketException ne) {
 					removePlayer(serverUser);
 				} catch(IOException ne) {
-					
+
 				}
 			}
 		}
@@ -191,6 +192,7 @@ public class Lobby extends Thread {
 		Enumeration<ServerUser> elements = chatList.elements();
 		while(elements.hasMoreElements()) {
 			ServerUser toUser = elements.nextElement();
+			System.out.println("@@@@");
 			toUser.getOut().writeObject(protocol);
 		}
 	}

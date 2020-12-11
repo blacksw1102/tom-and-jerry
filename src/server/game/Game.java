@@ -1,6 +1,5 @@
 package server.game;
 
-import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,12 +33,12 @@ public class Game extends Thread {
 		roles.add(SELECTED_JERRY_ROLE);
 		//roles.add(SELECTED_JERRY_ROLE);
 		//roles.add(SELECTED_JERRY_ROLE);
-		//roles.add(SELECTED_TOM_ROLE);
+		roles.add(SELECTED_TOM_ROLE);
 		
 		// 초기 좌표 초기화
 		//positions.add(new Position(96, 128));
 		//positions.add(new Position(128, 1952));
-		//positions.add(new Position(2016, 160));
+		positions.add(new Position(2016, 160));
 		positions.add(new Position(1952, 1984));
 		
 		
@@ -103,6 +102,9 @@ public class Game extends Thread {
 						protocol = (GameProtocol) serverUser.getIn().readObject();
 						switch(protocol.getProtocol()) {
 							case GameProtocol.PT_PLAYER_MOVE:
+								broadcastGameInfo(protocol);
+								break;
+							case GameProtocol.PT_EAT_CHEESE:
 								broadcastGameInfo(protocol);
 								break;
 						}

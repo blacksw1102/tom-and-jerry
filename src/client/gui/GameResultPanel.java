@@ -38,7 +38,7 @@ public class GameResultPanel extends JPanel {
 		this.jerryWin = loadImage("/jerry_win.png");
 		this.jerryLose = loadImage("/jerry_lose.png");
 		this.tomWin = loadImage("/tom_win.png");
-		this.tomLose = loadImage("/jerry_lose.png");
+		this.tomLose = loadImage("/tom_lose.png");
 		this.draw = loadImage("/draw.png");
 		
 		if(resultFlag == 1) {
@@ -74,7 +74,6 @@ public class GameResultPanel extends JPanel {
 	
 	public BufferedImage loadImage(String path) {
 		BufferedImage image = null;
-		
 		try {
 			image = ImageIO.read(getClass().getResource(path));
 		} catch (IOException e) {

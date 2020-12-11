@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class GameProtocol implements Serializable {
 	
+	private static final long serialVersionUID = 2L;
+	
 	// 프로토콜 타입에 관한 변수
 	public static final int PT_UNDEFIEND = -1;			// 프로토콜이 지정되지 않은 상태
 	public static final int PT_REQ_SIGN_UP = 1;			// 회원가입 요청
@@ -22,9 +24,10 @@ public class GameProtocol implements Serializable {
 	public static final int PT_LOGOUT = 14;			// 로그아웃
 	public static final int PT_CHANGE_USER_READY_STATE = 15;	// 유저 레디 상태 변경
 	public static final int PT_EXIT_PAGE = 16;	// 페이지 나가기
-	public static final int PT_GAME_START = 17;
-	public static final int PT_BROADCAST_PLAYERS_INFO = 18;
-	public static final int PT_PLAYER_MOVE = 19;
+	public static final int PT_GAME_START = 17;	// 게임시작
+	public static final int PT_BROADCAST_PLAYERS_INFO = 18;	// 플레이어 정보 브로드캐스팅
+	public static final int PT_PLAYER_MOVE = 19;	// 플레이어가 움직임
+	public static final int PT_EAT_CHEESE = 20;	// 치즈를 먹음
 	
 	protected int protocolType;
 	private Object data;	// 프로토콜과 데이터의 저장공간이 객체

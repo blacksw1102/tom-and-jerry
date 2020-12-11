@@ -5,16 +5,19 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import client.gui.GamePanel;
 import client.gui.GameScreen;
 import server.entity.ServerUser;
 import server.util.GameProtocol;
 
 public class Connection extends Thread {
 	
+	private GamePanel gamePanel;
 	private Player player;
-	 private Hashtable<String, Player> playerList;
+	private Hashtable<String, Player> playerList;
 	
-	public Connection(Player player, Hashtable<String, Player> playerList) {
+	public Connection(GamePanel gamePanel, Player player, Hashtable<String, Player> playerList) {
+		this.gamePanel = gamePanel;
 		this.player = player;
 		this.playerList = playerList;
 	}
@@ -22,8 +25,8 @@ public class Connection extends Thread {
 	@Override
 	public void run() {
 		System.out.printf("[%s] 작동 중..\n", this.getClass().getSimpleName());
-		try {
-			while(true) {
+		while(!Thread.currentThread().isInterrupted()) {
+			try {
 				GameProtocol protocol = (GameProtocol) player.getIn().readObject();
 				if(protocol == null)
 					throw new IOException("Null pointer received...");
@@ -42,17 +45,17 @@ public class Connection extends Thread {
 						p.setDir(dir);
 						p.setStatus(status);
 						break;
+					case GameProtocol.PT_EAT_CHEESE:
+						gamePanel.decreaseCheese();
+						break;
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
 			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (EOFException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			System.out.printf("[%s] 종료..\n", this.getClass().getSimpleName());
 		}
+		System.out.printf("[%s] 종료..\n", this.getClass().getSimpleName());
 	}
-
+	
 }

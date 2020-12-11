@@ -1,6 +1,8 @@
 package client.gui;
 
 import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -21,6 +23,8 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
+
+import com.sun.javafx.embed.swing.Disposer;
 
 import client.entity.User;
 import client.game.Block;
@@ -149,7 +153,7 @@ public class GamePanel extends Canvas implements Runnable {
 					
 					loadLevel(mapStructureImg);
 					
-					this.conn = new Connection(player, playerList);
+					this.conn = new Connection(this, player, playerList);
 					this.conn.start();
 					
 					t = new Thread(this);
@@ -172,44 +176,56 @@ public class GamePanel extends Canvas implements Runnable {
 	public void run() {
 		try {
 			System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
-			while (true) {
+			while (!Thread.currentThread().isInterrupted()) {
 				pretime = System.currentTimeMillis();
 
-				synchronized(this) {
-					process();
-					repaint();
-				}
+				process();
+				repaint();
 				
 				long nowTime = System.currentTimeMillis();
 				if (nowTime - pretime < delay)
 					Thread.sleep(delay - (nowTime - pretime) < 0 ? 1 : delay - (nowTime - pretime));
 			}
 		} catch(InterruptedException e) {
-			
+
 		} finally {
 			System.out.printf("[%s] 작동 종료..\n", this.getClass().getName());
 		}
 	}
 	
-	void process() {
-		//for(int i = 0; i<handler.object.size(); i++) {
-			//if(handler.object.get(i).getId() == ID.Player) {
-			//	camera.tick(handler.object.get(i));
-			//}
-		//}
+	private synchronized void process() throws InterruptedException {
 		
 		camera.tick(player);
-		
 		handler.process();
+		checkGameOver();
+		
 	}
-
+	
+	public void checkGameOver() {
+		// 남은 치즈 개수가 0개가 됬을 경우 => 게임 종료
+		if(remainCheeseCount == 0) {
+			if(player.getId() == ID.JERRY) {
+				gameScreen.changeGameResultScreen(1);
+			}
+			else if(player.getId() == ID.TOM)
+				gameScreen.changeGameResultScreen(4);
+	
+			// 게임 종료
+			this.t.interrupt();
+		}
+	}
+	
+	public void decreaseCheese() {
+		this.remainCheeseCount--;
+	}
+	
 	@Override
 	public void update(Graphics g) {
 		dblpaint();
 
 	}
 
-	void dblpaint() {
+	synchronized void dblpaint() {
 		BufferStrategy bs = this.getBufferStrategy();
 		if(bs == null) {
 			this.createBufferStrategy(3);
@@ -222,25 +238,28 @@ public class GamePanel extends Canvas implements Runnable {
 		g.clearRect(0, 0, 1280, 720);
 		
 		g2d.translate(-camera.getX(), -camera.getY());
-		drawBG(g2d);
+		drawBacgkround(g2d);
 		drawGameObject(g2d);
 		drawView(g2d);
+		drawRemainCheeseInfo(g);
 		g2d.translate(camera.getX(), camera.getY());
-		
-		if(remainCheeseCount == 0) {
-			if(player.getId() == ID.JERRY)
-				gameScreen.changeGameResultScreen(1);
-			else if(player.getId() == ID.TOM)
-				gameScreen.changeGameResultScreen(4);
-			t.interrupt();
-		}
 		
 		g.dispose();
 		bs.show();
 	}
 
-	private void drawBG(Graphics2D g2d) {
+	private void drawBacgkround(Graphics2D g2d) {
 		drawImageF(g2d, gameMapImg, 0, 0, this);
+	}
+	
+	private void drawRemainCheeseInfo(Graphics g) {
+		// 치즈
+		g.drawImage(cheeseSprite, camera.getX() + 1, camera.getY() + 10, 70, 70, null);
+		
+		// 남은 개수
+		g.setColor(Color.white);
+		g.setFont(new Font("HY견고딕", Font.PLAIN, 28));
+		g.drawString(String.format("%02d개 남음", remainCheeseCount), camera.getX() + 80, camera.getY() + 50);
 	}
 
 	private void drawGameObject(Graphics2D g2d) {
@@ -274,11 +293,6 @@ public class GamePanel extends Canvas implements Runnable {
 		}
 		
 		System.out.println("cheese count : " + remainCheeseCount);
-	}
-	
-	public void decreaseCheese() {
-		this.remainCheeseCount--;
-		System.out.println("남은 치즈 개수 : " + this.remainCheeseCount);
 	}
 	
 	public BufferedImage loadImage(String path) {
