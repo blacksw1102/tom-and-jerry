@@ -50,6 +50,7 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
     	
     	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBounds(100, 100, 450, 600);
+		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		this.contentPane = new JPanel();
 		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

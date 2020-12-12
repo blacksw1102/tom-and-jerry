@@ -61,6 +61,7 @@ public class LobbyScreen extends JFrame implements Runnable {
 		
 		this.setTitle(String.format("로비 창 - (접속 유저:%s)", user.getNickname()));
 		this.setSize(1280, 720);
+		this.setResizable(false);
 		this.setLayout(null);
 		//this.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 5), new EmptyBorder(40, 300, 40, 300)));
 

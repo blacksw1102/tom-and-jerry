@@ -41,6 +41,7 @@ public class LoginScreen extends JFrame {
 	public LoginScreen() {
 		this.setTitle("로그인 창");
 		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		this.setResizable(false);
 		this.setLayout(null);
 		
     	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

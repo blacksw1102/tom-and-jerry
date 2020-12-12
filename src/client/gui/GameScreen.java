@@ -29,6 +29,7 @@ public class GameScreen extends JFrame {
 		
 		this.setLayout(cards);
 		this.setSize(gGameWidth, gGameHeight);
+		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {

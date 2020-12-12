@@ -43,6 +43,7 @@ public class SignUpScreen extends JFrame {
 	public SignUpScreen() {
 		this.setTitle("회원가입 창");
 		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		this.setResizable(false);
 		this.setLayout(null);
 		
     	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
