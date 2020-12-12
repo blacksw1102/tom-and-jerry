@@ -36,11 +36,15 @@ public class Game extends Thread {
 		roles.add(SELECTED_TOM_ROLE);
 		
 		// 초기 좌표 초기화
-		//positions.add(new Position(96, 128));
+		positions.add(new Position(96, 128));
 		positions.add(new Position(128, 1952));
 		positions.add(new Position(2016, 160));
 		positions.add(new Position(1952, 1984));
-		
+		positions.add(new Position(448, 1024));
+		positions.add(new Position(1184, 1792));
+		positions.add(new Position(1216, 320));
+		positions.add(new Position(1920, 1056));
+		positions.add(new Position(1184,1056));
 		
 		try {
 			broadcastPlayersInfo();

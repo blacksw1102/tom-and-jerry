@@ -299,7 +299,7 @@ public class SignUpScreen extends JFrame {
 	private boolean isValidate() {
 
 		// 아이디 중복 체크
-		if(verifiedId.isEmpty() || !verifiedId.equals(idField.getText())) {
+		if(verifiedId == null || !verifiedId.equals(idField.getText())) {
 			showDialog("아이디 중복을 체크해주세요.");
 			return false;
 		}

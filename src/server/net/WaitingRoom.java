@@ -2,11 +2,8 @@ package server.net;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
 
 import client.entity.User;
 import server.entity.ServerUser;

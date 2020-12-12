@@ -194,7 +194,6 @@ public class WaitingRoomScreen extends JFrame implements Runnable {
 		int i = 0;
 
 		Enumeration<User> elements = userList.elements();
-		System.out.println("size : " + userList.size());
 		while(elements.hasMoreElements()) {
 			User user = elements.nextElement();
 			rows[i].setUserName(user.getNickname());

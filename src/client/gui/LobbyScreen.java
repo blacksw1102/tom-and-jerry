@@ -138,10 +138,18 @@ public class LobbyScreen extends JFrame implements Runnable {
 					List<WaitingRoomListRow> rows = (ArrayList) protocol.getData();
 					model.setRowCount(0);
 					for (WaitingRoomListRow value : rows) {
+						// 방상태 값 문자열로 치환
+						String roomStateStr;
+						if(value.getRoomState() == 0)
+							roomStateStr = "대기중";
+						else 
+							roomStateStr = "게임중";
+						
+						// 방 정보 추가
 						model.addRow(new Object[]{value.getRoomId(), 
 								value.getRoomName(), 
 								value.getCurrentPlayerCount()+"/"+value.getMaxPlayerCount(), 
-								value.getRoomState()});
+								roomStateStr});
 					}
 					
 					break;

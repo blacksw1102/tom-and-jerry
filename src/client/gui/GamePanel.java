@@ -93,9 +93,9 @@ public class GamePanel extends Canvas implements Runnable {
 		this.camera = new Camera(0, 0);
 		
 		this.gameMapImg = makeBufferedImage("res/game_map.png"); // 배경 그림 로딩
-		this.mapStructureImg = loadImage("/temp_game_map_structure.png");
+		this.mapStructureImg = loadImage("/game_map_structure.png");
 
-		this.viewImg = makeBufferedImage("res/view.png");
+		this.viewImg = makeBufferedImage("res/view2.png");
 		
 		this.cheeseSprite = loadImage("/cheese_sprites.png");
 		
@@ -137,14 +137,12 @@ public class GamePanel extends Canvas implements Runnable {
 								p = new Jerry(user, this, x, y, ID.JERRY, spritesheet, spritesheet_flipx, handler);
 								playerList.put(p.getNickname(), p);
 								handler.addObject(p);
-								System.out.println("Jerry 생성 완료");
 							} else if (role == SELECTED_TOM_ROLE) {
 								spritesheet = makeBufferedImage("res/tom_sprites.png");
 								spritesheet_flipx = getFlippedImage(spritesheet, true, false);
 								p = new Tom(user, this, x, y, ID.TOM, spritesheet, spritesheet_flipx, handler);
 								playerList.put(p.getNickname(), p);
 								handler.addObject(p);
-								System.out.println("Tom 생성 완료");
 							}
 							
 							player = p;
@@ -160,14 +158,12 @@ public class GamePanel extends Canvas implements Runnable {
 								p = new Jerry(userList.get(nickname), this, x, y, ID.JERRY, spritesheet, spritesheet_flipx, handler);
 								playerList.put(p.getNickname(), p);
 								handler.addObject(p);
-								System.out.println("Jerry 생성 완료");
 							} else if (role == SELECTED_TOM_ROLE) {
 								spritesheet = makeBufferedImage("res/tom_sprites.png");
 								spritesheet_flipx = getFlippedImage(spritesheet, true, false);
 								p = new Tom(userList.get(nickname), this, x, y, ID.TOM, spritesheet, spritesheet_flipx, handler);
 								playerList.put(p.getNickname(), p);
 								handler.addObject(p);
-								System.out.println("Tom 생성 완료");
 							}
 							
 						}
@@ -182,7 +178,7 @@ public class GamePanel extends Canvas implements Runnable {
 					this.conn.start();
 					
 					// 타이머 시작
-					timer = new Timer(this, 0, 10);
+					timer = new Timer(this, 5, 0);
 					timer.start();
 					
 					// 게임 시작

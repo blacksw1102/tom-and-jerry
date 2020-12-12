@@ -2,6 +2,7 @@ package client.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,7 @@ import java.net.UnknownHostException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -77,13 +79,17 @@ public class LoginScreen extends JFrame {
 
 					// 로그인 응답 결과 처리
 					User user = (User) in.readObject();
-					user.setSocket(socket);
-					user.out = out;
-					user.in = in;
 
-					if(user != null) {
+					if(user == null) {
+						showDialog("아이디 또는 비밀번호를 잘못입력했습니다.");
+					} else {
+						user.setSocket(socket);
+						user.out = out;
+						user.in = in;
+
 						dispose();
 						new LobbyScreen(user);
+						
 					}
 				} catch (ClassNotFoundException e1) {
 					e1.printStackTrace();
@@ -150,6 +156,27 @@ public class LoginScreen extends JFrame {
 		pwPanel.add(pwField);
 		
 		this.setVisible(true);
+	}
+	
+	public void showDialog(String message) {
+		JDialog info = new JDialog(this, true);
+		JButton ok = new JButton("확인");
+
+		ok.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				info.setVisible(false);
+				info.dispose();
+			}
+		});
+
+		info.setSize(300, 110);
+		info.setLocationRelativeTo(this);
+		info.setLayout(new FlowLayout());
+		info.add(new JLabel(message, JLabel.CENTER));
+		info.add(ok);
+		info.setVisible(true);
+
 	}
 	
     public static void main(String[] args) {

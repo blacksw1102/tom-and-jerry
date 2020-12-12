@@ -66,17 +66,17 @@ public class GameServer extends Thread {
 					
 					user = loginValidate(login);
 					if(user == null) {
-						System.out.println("로그인 실패");
-						continue;
+						serverUser.getOut().writeObject(user);
 					} else {
 						serverUser.setId(user.getId());
 						serverUser.setNickname(user.getNickname());
+
+						serverUser.getOut().writeObject(user);
+						serverUser.getSocket().setSoTimeout(10);
+						
+						lobby.addPlayer(serverUser);
 					}
 
-					serverUser.getOut().writeObject(user);
-					serverUser.getSocket().setSoTimeout(10);
-					
-					lobby.addPlayer(serverUser);
 
 					// 접속한 클라이언트에게 룸 리스트를 보낸다.
 					// lobby.sendRoomList(player);
