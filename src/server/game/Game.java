@@ -30,9 +30,9 @@ public class Game extends Thread {
 		this.userList = userList;
 
 		// 역할 초기화
-		roles.add(SELECTED_JERRY_ROLE);
-		roles.add(SELECTED_JERRY_ROLE);
 		//roles.add(SELECTED_JERRY_ROLE);
+		roles.add(SELECTED_JERRY_ROLE);
+		roles.add(SELECTED_JERRY_ROLE);
 		roles.add(SELECTED_TOM_ROLE);
 		
 		// 초기 좌표 초기화

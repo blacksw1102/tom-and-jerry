@@ -105,7 +105,7 @@ public class GamePanel extends Canvas implements Runnable {
 		
 		this.minimapImg = loadImage("/mini_map.png");
 		
-		this.delay = 0;
+		this.delay = 10;
 		this.remainCheeseCount = 0;
 		this.remainJerryCount = 2;
 		this.currentWatchPlayerIndex = -1;
@@ -254,6 +254,7 @@ public class GamePanel extends Canvas implements Runnable {
 	}
 	
 	public void decreaseCheese() {
+		System.out.println("남은 치즈 개수 : " + remainCheeseCount);
 		this.remainCheeseCount--;
 	}
 	
