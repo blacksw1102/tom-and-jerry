@@ -30,6 +30,8 @@ import client.entity.Login;
 import client.entity.User;
 import server.util.GameProtocol;
 
+// 클라이언트 시작점
+
 public class LoginScreen extends JFrame {
 	
 	private JTextField idField;

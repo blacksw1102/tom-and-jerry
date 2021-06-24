@@ -10,6 +10,8 @@ import server.entity.ServerUser;
 import server.util.DBManager;
 import server.util.GameProtocol;
 
+// 서버 진입점
+
 public class GameServer extends Thread {
 	private static final int SERVER_PORT = 4001;
 	private Lobby lobby = null;

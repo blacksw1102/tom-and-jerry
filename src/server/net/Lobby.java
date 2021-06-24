@@ -29,7 +29,7 @@ public class Lobby extends Thread {
 	public void run() {
 		System.out.printf("[%s] 작동 중..\n", this.getClass().getName());
 		while(true) {
-			 // CPU 독식 방지
+			// CPU 독식 방지
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
